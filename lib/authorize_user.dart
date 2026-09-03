@@ -12,7 +12,8 @@ class AuthorizedAgentScreen extends ConsumerStatefulWidget {
   const AuthorizedAgentScreen({super.key});
 
   @override
-  ConsumerState<AuthorizedAgentScreen> createState() => _AuthorizedAgentScreenState();
+  ConsumerState<AuthorizedAgentScreen> createState() =>
+      _AuthorizedAgentScreenState();
 }
 
 class _AuthorizedAgentScreenState extends ConsumerState<AuthorizedAgentScreen> {
@@ -217,7 +218,10 @@ class _AuthorizedAgentScreenState extends ConsumerState<AuthorizedAgentScreen> {
                   ],
                 ),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 14,
+                  ),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                     gradient: LinearGradient(
@@ -237,7 +241,10 @@ class _AuthorizedAgentScreenState extends ConsumerState<AuthorizedAgentScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 3,
+                            ),
                             decoration: BoxDecoration(
                               color: Colors.amber,
                               borderRadius: BorderRadius.circular(20),
@@ -279,19 +286,34 @@ class _AuthorizedAgentScreenState extends ConsumerState<AuthorizedAgentScreen> {
                       ),
                       Align(
                         alignment: Alignment.centerLeft,
-                        child: SizedBox(
-                          height: 32,
-                          child: ElevatedButton.icon(
-                            onPressed: () {},
-                            icon: const Icon(Icons.arrow_forward_rounded, size: 13),
-                            label: Text(item['buttonText']!),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.white,
-                              foregroundColor: Colors.blue[800],
-                              elevation: 0,
-                              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 0),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                              textStyle: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700),
+                        child: IntrinsicWidth(
+                          child: SizedBox(
+                            height: 32,
+                            child: ElevatedButton.icon(
+                              onPressed: () {
+                                context.push(RoutePaths.login);
+                              },
+                              icon: const Icon(
+                                Icons.rocket_launch_outlined,
+                                size: 13,
+                              ),
+                              label: Text(item['buttonText']!),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                foregroundColor: AppColors.primaryColor,
+                                elevation: 0,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 14,
+                                  vertical: 0,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(25),
+                                ),
+                                textStyle: const TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
                             ),
                           ),
                         ),
