@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../data/mock/mock_data.dart';
 import '../../data/models/product.dart';
 import '../const.dart';
+import '../providers/router_provider.dart';
 import '../widgets/soft_card.dart';
 import 'product_icons.dart';
 import '../../data/models/quote_field.dart';
@@ -130,7 +131,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                   return;
                 }
                 context.push(
-                  '/products/compare?left=${product.code}&right=${peer.code}',
+                  '${RoutePaths.productsCompare}?left=${product.code}&right=${peer.code}',
                 );
               },
               icon: const Icon(Icons.compare_arrows, size: 18),

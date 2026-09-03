@@ -284,36 +284,45 @@ class _ChangeSheet extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          for (final p in MockData.products)
-            Material(
-              color: Colors.transparent,
-              child: ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: Icon(
-                  Icons.hexagon_outlined,
-                  color: AppColors.primaryColor,
-                ),
-                title: Text(
-                  p.name,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 13,
-                    color: AppColors.deep,
+          Flexible(
+            child: ListView.builder(
+              shrinkWrap: true,
+              physics: const AlwaysScrollableScrollPhysics(),
+              itemCount: MockData.products.length,
+              itemBuilder: (context, index) {
+                final p = MockData.products[index];
+                return Material(
+                  color: Colors.transparent,
+                  child: ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: Icon(
+                      Icons.hexagon_outlined,
+                      color: AppColors.primaryColor,
+                    ),
+                    title: Text(
+                      p.name,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 13,
+                        color: AppColors.deep,
+                      ),
+                    ),
+                    subtitle: Text(
+                      '${p.category.name.toUpperCase()} · ${p.code}${p.code == otherCode ? ' · On the other side · tap to swap' : ''}',
+                      style: TextStyle(
+                        fontSize: 10.5,
+                        color: AppColors.deepAlpha(0.5),
+                      ),
+                    ),
+                    trailing: p.code == currentCode
+                        ? const Icon(Icons.check, color: AppColors.mint)
+                        : null,
+                    onTap: () => Navigator.pop(context, p.code),
                   ),
-                ),
-                subtitle: Text(
-                  '${p.category.name.toUpperCase()} · ${p.code}${p.code == otherCode ? ' · On the other side · tap to swap' : ''}',
-                  style: TextStyle(
-                    fontSize: 10.5,
-                    color: AppColors.deepAlpha(0.5),
-                  ),
-                ),
-                trailing: p.code == currentCode
-                    ? const Icon(Icons.check, color: AppColors.mint)
-                    : null,
-                onTap: () => Navigator.pop(context, p.code),
-              ),
+                );
+              },
             ),
+          ),
         ],
       ),
     );

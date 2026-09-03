@@ -241,7 +241,9 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
       _selectedProductCode ??= policy?.productCode;
     }
     if (_startDone) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => _applyCustomerPrefill());
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) => _applyCustomerPrefill(),
+      );
     }
     _applyCrmPrefill();
     _clientSig.addListener(() {
@@ -302,6 +304,7 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
           c.text = v;
           _prefillValues[key] = v;
         }
+
         fill('name', _holder.nameController, match.name);
         fill('mobile', _holder.mobileController, match.phone);
         fill('email', _holder.emailController, match.email);
@@ -1296,7 +1299,8 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
             ),
         for (var i = 0; i < _beneficiaries.length; i++) ...[
           const SizedBox(height: 14),
-          if (_beneficiaries[i].isEntity || _beneficiaries[i].idNoController.text.trim() == 'No ID')
+          if (_beneficiaries[i].isEntity ||
+              _beneficiaries[i].idNoController.text.trim() == 'No ID')
             _NoDocsCard(
               title: _beneficiaries.length == 1
                   ? 'Beneficiary Documents'
@@ -2310,7 +2314,10 @@ class _CustomerPickerSheetState extends State<_CustomerPickerSheet> {
   List<CRMContactModel> get _results {
     final q = _searchController.text.trim().toLowerCase();
     return widget.contacts.where((c) {
-      if (_contactTypeFilter != null && c.contactType.name != _contactTypeFilter) return false;
+      if (_contactTypeFilter != null &&
+          c.contactType.name != _contactTypeFilter) {
+        return false;
+      }
       if (q.isEmpty) return true;
       return c.name.toLowerCase().contains(q) ||
           c.phone.replaceAll(' ', '').contains(q);
@@ -2320,8 +2327,12 @@ class _CustomerPickerSheetState extends State<_CustomerPickerSheet> {
   @override
   Widget build(BuildContext context) {
     final results = _results;
-    final clients = widget.contacts.where((c) => c.contactType.name == 'client').length;
-    final halfQualified = widget.contacts.where((c) => c.contactType.name == 'halfQualified').length;
+    final clients = widget.contacts
+        .where((c) => c.contactType.name == 'client')
+        .length;
+    final halfQualified = widget.contacts
+        .where((c) => c.contactType.name == 'halfQualified')
+        .length;
     final leads = widget.contacts.length - clients - halfQualified;
 
     return DraggableScrollableSheet(
@@ -2363,19 +2374,22 @@ class _CustomerPickerSheetState extends State<_CustomerPickerSheet> {
                       AppSelectionChip(
                         label: 'All (${widget.contacts.length})',
                         selected: _contactTypeFilter == null,
-                        onSelected: (_) => setState(() => _contactTypeFilter = null),
+                        onSelected: (_) =>
+                            setState(() => _contactTypeFilter = null),
                       ),
                       const SizedBox(width: 8),
                       AppSelectionChip(
                         label: 'Clients ($clients)',
                         selected: _contactTypeFilter == 'client',
-                        onSelected: (_) => setState(() => _contactTypeFilter = 'client'),
+                        onSelected: (_) =>
+                            setState(() => _contactTypeFilter = 'client'),
                       ),
                       const SizedBox(width: 8),
                       AppSelectionChip(
                         label: 'Leads ($leads)',
                         selected: _contactTypeFilter == 'lead',
-                        onSelected: (_) => setState(() => _contactTypeFilter = 'lead'),
+                        onSelected: (_) =>
+                            setState(() => _contactTypeFilter = 'lead'),
                       ),
                     ],
                   ),
@@ -2470,24 +2484,24 @@ class _CustomerPickerSheetState extends State<_CustomerPickerSheet> {
                               color: c.contactType.name == 'client'
                                   ? AppColors.mint.withValues(alpha: 0.14)
                                   : c.contactType.name == 'halfQualified'
-                                      ? Colors.orange.withValues(alpha: 0.14)
-                                      : AppColors.deepAlpha(0.06),
+                                  ? Colors.orange.withValues(alpha: 0.14)
+                                  : AppColors.deepAlpha(0.06),
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Text(
                               c.contactType.name == 'client'
                                   ? 'Client'
                                   : c.contactType.name == 'halfQualified'
-                                      ? 'Half-Qualified'
-                                      : 'Lead',
+                                  ? 'Half-Qualified'
+                                  : 'Lead',
                               style: TextStyle(
                                 fontSize: 9.5,
                                 fontWeight: FontWeight.w800,
                                 color: c.contactType.name == 'client'
                                     ? AppColors.mint
                                     : c.contactType.name == 'halfQualified'
-                                        ? Colors.orange
-                                        : AppColors.primaryColor,
+                                    ? Colors.orange
+                                    : AppColors.primaryColor,
                               ),
                             ),
                           ),
@@ -3075,23 +3089,38 @@ class _SignaturePad extends StatelessWidget {
                       child: Container(
                         padding: const EdgeInsets.symmetric(vertical: 8),
                         decoration: BoxDecoration(
-                          color: mode == 'esign' ? Colors.white : Colors.transparent,
+                          color: mode == 'esign'
+                              ? Colors.white
+                              : Colors.transparent,
                           borderRadius: BorderRadius.circular(6),
                           boxShadow: mode == 'esign'
-                              ? [BoxShadow(color: Colors.black.withValues(alpha: 0.08), blurRadius: 4)]
+                              ? [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.08),
+                                    blurRadius: 4,
+                                  ),
+                                ]
                               : null,
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.draw, size: 14, color: mode == 'esign' ? AppColors.primaryColor : AppColors.muted),
+                            Icon(
+                              Icons.draw,
+                              size: 14,
+                              color: mode == 'esign'
+                                  ? AppColors.primaryColor
+                                  : AppColors.muted,
+                            ),
                             const SizedBox(width: 4),
                             Text(
                               'E-Sign',
                               style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w600,
-                                color: mode == 'esign' ? AppColors.primaryColor : AppColors.muted,
+                                color: mode == 'esign'
+                                    ? AppColors.primaryColor
+                                    : AppColors.muted,
                               ),
                             ),
                           ],
@@ -3106,23 +3135,38 @@ class _SignaturePad extends StatelessWidget {
                       child: Container(
                         padding: const EdgeInsets.symmetric(vertical: 8),
                         decoration: BoxDecoration(
-                          color: mode == 'upload' ? Colors.white : Colors.transparent,
+                          color: mode == 'upload'
+                              ? Colors.white
+                              : Colors.transparent,
                           borderRadius: BorderRadius.circular(6),
                           boxShadow: mode == 'upload'
-                              ? [BoxShadow(color: Colors.black.withValues(alpha: 0.08), blurRadius: 4)]
+                              ? [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.08),
+                                    blurRadius: 4,
+                                  ),
+                                ]
                               : null,
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.photo_camera_outlined, size: 14, color: mode == 'upload' ? AppColors.primaryColor : AppColors.muted),
+                            Icon(
+                              Icons.photo_camera_outlined,
+                              size: 14,
+                              color: mode == 'upload'
+                                  ? AppColors.primaryColor
+                                  : AppColors.muted,
+                            ),
                             const SizedBox(width: 4),
                             Text(
                               'Upload',
                               style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w600,
-                                color: mode == 'upload' ? AppColors.primaryColor : AppColors.muted,
+                                color: mode == 'upload'
+                                    ? AppColors.primaryColor
+                                    : AppColors.muted,
                               ),
                             ),
                           ],
@@ -3175,7 +3219,9 @@ class _SignaturePad extends StatelessWidget {
                           decoration: BoxDecoration(
                             color: AppColors.cream,
                             border: Border.all(
-                              color: photo != null ? AppColors.primaryColor : AppColors.deepAlpha(0.1),
+                              color: photo != null
+                                  ? AppColors.primaryColor
+                                  : AppColors.deepAlpha(0.1),
                             ),
                           ),
                           child: photo != null
@@ -3185,8 +3231,12 @@ class _SignaturePad extends StatelessWidget {
                                     Image.asset(
                                       photo.path,
                                       fit: BoxFit.cover,
-                                      errorBuilder: (_, __, ___) => const Center(
-                                        child: Icon(Icons.image, size: 40, color: AppColors.muted),
+                                      errorBuilder: (_, _, _) => const Center(
+                                        child: Icon(
+                                          Icons.image,
+                                          size: 40,
+                                          color: AppColors.muted,
+                                        ),
                                       ),
                                     ),
                                     Positioned(
@@ -3197,10 +3247,16 @@ class _SignaturePad extends StatelessWidget {
                                         child: Container(
                                           padding: const EdgeInsets.all(4),
                                           decoration: BoxDecoration(
-                                            color: Colors.black.withValues(alpha: 0.5),
+                                            color: Colors.black.withValues(
+                                              alpha: 0.5,
+                                            ),
                                             shape: BoxShape.circle,
                                           ),
-                                          child: const Icon(Icons.close, size: 14, color: Colors.white),
+                                          child: const Icon(
+                                            Icons.close,
+                                            size: 14,
+                                            color: Colors.white,
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -3210,7 +3266,11 @@ class _SignaturePad extends StatelessWidget {
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Icon(Icons.add_a_photo_outlined, size: 32, color: AppColors.deepAlpha(0.3)),
+                                      Icon(
+                                        Icons.add_a_photo_outlined,
+                                        size: 32,
+                                        color: AppColors.deepAlpha(0.3),
+                                      ),
                                       const SizedBox(height: 8),
                                       Text(
                                         'Tap to upload signature',

@@ -27,6 +27,7 @@ import '../policy/detail.dart';
 import '../policy/index.dart';
 import '../products/product_detail_screen.dart';
 import '../products/product_library_screen.dart';
+import '../products/compare_screen.dart';
 import '../profile/change_password.dart';
 import '../profile/guest_profile.dart';
 import '../profile/index.dart';
@@ -93,6 +94,7 @@ class RoutePaths {
   static const comparison = '/comparison';
   static const calculator = '/calculator';
   static const commission = '/commission';
+  static const productsCompare = '/products/compare';
 }
 
 // --- Navigation State ---
@@ -300,6 +302,15 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
 
       // --- Top-Level Detail Routes ---
+      GoRoute(
+        path: RoutePaths.productsCompare,
+        name: RoutePaths.productsCompare,
+        builder: (_, state) {
+          final left = state.uri.queryParameters['left'] ?? '';
+          final right = state.uri.queryParameters['right'] ?? '';
+          return CompareScreen(leftCode: left, rightCode: right);
+        },
+      ),
       GoRoute(
         path: RoutePaths.productDetail,
         builder: (_, state) =>

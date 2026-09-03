@@ -27,7 +27,6 @@ extension TaskTypeX on TaskType {
     TaskType.servicing => 'Servicing',
     TaskType.eapp => 'e-App',
     TaskType.other => 'Other',
-    // TODO: Handle this case.
     TaskType.followUp => throw UnimplementedError(),
   };
 }
