@@ -312,7 +312,7 @@ class _CreateLeadScreenState extends ConsumerState<CreateLeadScreen> {
                     if (_isIndividual) ...[
                       AppTextField(
                         controller: _nrcController,
-                        label: 'Identification *',
+                        label: 'NRC *',
                         hint: '12/KaMaNa(N)127487',
                         readOnly: true,
                         suffixIcon: const Icon(Icons.chevron_right),
@@ -322,7 +322,7 @@ class _CreateLeadScreenState extends ConsumerState<CreateLeadScreen> {
                             initial: _nrcController.text,
                           );
                           if (result != null) {
-                            setState(() => _nrcController.text = result);
+                            setState(() => _nrcController.text = result.$1);
                           }
                         },
                       ),
