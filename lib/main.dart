@@ -22,6 +22,7 @@ class MyApp extends ConsumerWidget {
       debugShowCheckedModeBanner: false,
       routerConfig: router,
       theme: ThemeData(
+        fontFamily: 'Inter',
         useMaterial3: true,
         brightness: Brightness.light,
         primaryColor: AppColors.primaryColor,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../data/mock/mock_data.dart';
@@ -71,6 +72,33 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
             ],
           ),
         ),
+        actions: [
+          IconButton(
+            tooltip: 'Compare',
+            color: AppColors.primaryColor,
+            onPressed: () {
+              final peer = MockData.products.firstWhere(
+                (p) => p.code != product.code && p.category == product.category,
+                orElse: () => MockData.products.firstWhere(
+                  (p) => p.code != product.code,
+                  orElse: () => product,
+                ),
+              );
+              if (peer.code == product.code) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Need at least two products to compare'),
+                  ),
+                );
+                return;
+              }
+              context.push(
+                '${RoutePaths.productsCompare}?left=${product.code}&right=${peer.code}',
+              );
+            },
+            icon: const FaIcon(FontAwesomeIcons.rightLeft),
+          ),
+        ],
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
@@ -93,52 +121,29 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
           const SizedBox(height: 12),
           ..._tabContent(product),
           const SizedBox(height: 20),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton.icon(
-              onPressed: () => context.push('/quote?product=${product.code}'),
-              icon: const Icon(Icons.calculate_outlined, size: 18),
-              label: const Text('Calculate Premium'),
-            ),
-          ),
-          const SizedBox(height: 10),
-          SizedBox(
-            width: double.infinity,
-            child: OutlinedButton.icon(
-              onPressed: () => context.push('/e-app?product=${product.code}'),
-              icon: const Icon(Icons.description_outlined, size: 18),
-              label: const Text('Start e-App'),
-            ),
-          ),
-          const SizedBox(height: 10),
-          Center(
-            child: TextButton.icon(
-              onPressed: () {
-                final peer = MockData.products.firstWhere(
-                  (p) =>
-                      p.code != product.code && p.category == product.category,
-                  orElse: () => MockData.products.firstWhere(
-                    (p) => p.code != product.code,
-                    orElse: () => product,
-                  ),
-                );
-                if (peer.code == product.code) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Need at least two products to compare'),
-                    ),
-                  );
-                  return;
-                }
-                context.push(
-                  '${RoutePaths.productsCompare}?left=${product.code}&right=${peer.code}',
-                );
-              },
-              icon: const Icon(Icons.compare_arrows, size: 18),
-              label: const Text('Compare'),
-            ),
-          ),
         ],
+      ),
+      bottomNavigationBar: BottomAppBar(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        child: Row(
+          children: [
+            Expanded(
+              child: ElevatedButton.icon(
+                onPressed: () => context.push('/quote?product=${product.code}'),
+                icon: const FaIcon(FontAwesomeIcons.calculator, size: 16),
+                label: const Text('Calculate Premium'),
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: OutlinedButton.icon(
+                onPressed: () => context.push('/e-app?product=${product.code}'),
+                icon: const Icon(Icons.description_outlined, size: 18),
+                label: const Text('Start e-App'),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -163,7 +168,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
           title: 'This policy is designed for',
           child: _Bullets(
             lines: product.eligibility,
-            icon: Icons.person_outline,
+            icon: FontAwesomeIcons.user,
             color: AppColors.primaryColor,
           ),
         ),
@@ -171,7 +176,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
       const SizedBox(height: 10),
       const _AccordionCard(
         entry: _AccordionEntry(
-          icon: Icons.description_outlined,
+          icon: FontAwesomeIcons.fileLines,
           color: AppColors.primaryColor,
           title: 'Endorsements',
           lines: [
@@ -183,7 +188,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
       const SizedBox(height: 10),
       const _AccordionCard(
         entry: _AccordionEntry(
-          icon: Icons.shopping_cart_outlined,
+          icon: FontAwesomeIcons.cartShopping,
           color: AppColors.primaryColor,
           title: 'How to purchase',
           lines: [
@@ -194,7 +199,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
       const SizedBox(height: 10),
       const _AccordionCard(
         entry: _AccordionEntry(
-          icon: Icons.history,
+          icon: FontAwesomeIcons.clockRotateLeft,
           color: AppColors.primaryColor,
           title: 'How to claim',
           lines: [
@@ -210,7 +215,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
           title: "What's covered",
           child: _Bullets(
             lines: product.benefits,
-            icon: Icons.check_circle,
+            icon: FontAwesomeIcons.solidCircleCheck,
             color: AppColors.mint,
           ),
         ),
@@ -220,7 +225,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
           title: "What's not covered",
           child: _Bullets(
             lines: product.exclusions,
-            icon: Icons.remove_circle_outline,
+            icon: FontAwesomeIcons.solidCircleXmark,
             color: AppColors.warn,
           ),
         ),
@@ -236,7 +241,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
           title: 'Who can be insured',
           child: _Bullets(
             lines: product.eligibility,
-            icon: Icons.check_circle,
+            icon: FontAwesomeIcons.solidCircleCheck,
             color: AppColors.primaryColor,
           ),
         )
@@ -274,7 +279,9 @@ class _TabBar extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(vertical: 9),
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: t == value ? AppColors.deep : Colors.transparent,
+                    color: t == value
+                        ? AppColors.primaryColor
+                        : Colors.transparent,
                     borderRadius: BorderRadius.circular(999),
                   ),
                   child: Text(
@@ -328,7 +335,7 @@ class _Bullets extends StatelessWidget {
     required this.color,
   });
   final List<String> lines;
-  final IconData icon;
+  final FaIconData icon;
   final Color color;
 
   @override
@@ -343,7 +350,7 @@ class _Bullets extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.only(top: 1),
-                child: Icon(icon, size: 15, color: color),
+                child: FaIcon(icon, size: 15, color: color),
               ),
               const SizedBox(width: 9),
               Expanded(
@@ -476,7 +483,7 @@ class _Stat {
     required this.label,
     required this.value,
   });
-  final IconData icon;
+  final FaIconData icon;
   final Color color;
   final String label;
   final String value;
@@ -490,7 +497,7 @@ List<_Stat> _buildStats(Product product) {
   if (sumInsured != null && sumInsured.defaultNumber != null) {
     stats.add(
       _Stat(
-        icon: Icons.shield_outlined,
+        icon: FontAwesomeIcons.shield,
         color: AppColors.primaryColor,
         label: 'Sum Insured',
         value: 'From ${_fmtNum(sumInsured.defaultNumber!)} MMK',
@@ -499,7 +506,7 @@ List<_Stat> _buildStats(Product product) {
   } else if (baseAnnual == null) {
     stats.add(
       _Stat(
-        icon: Icons.shield_outlined,
+        icon: FontAwesomeIcons.shield,
         color: AppColors.primaryColor,
         label: 'Coverage',
         value: product.coverage,
@@ -512,7 +519,7 @@ List<_Stat> _buildStats(Product product) {
   if (policyTerm != null && policyTerm.options.isNotEmpty) {
     stats.add(
       _Stat(
-        icon: Icons.calendar_today_outlined,
+        icon: FontAwesomeIcons.calendar,
         color: AppColors.primaryColor,
         label: 'Term',
         value: _joinOptions(policyTerm),
@@ -521,7 +528,7 @@ List<_Stat> _buildStats(Product product) {
   } else if (policyTermYears != null && policyTermYears.defaultNumber != null) {
     stats.add(
       _Stat(
-        icon: Icons.calendar_today_outlined,
+        icon: FontAwesomeIcons.calendar,
         color: AppColors.primaryColor,
         label: 'Term',
         value: '${policyTermYears.defaultNumber} yrs',
@@ -532,7 +539,7 @@ List<_Stat> _buildStats(Product product) {
   if (baseAnnual != null && baseAnnual.defaultNumber != null) {
     stats.add(
       _Stat(
-        icon: Icons.schedule,
+        icon: FontAwesomeIcons.clock,
         color: AppColors.primaryColor,
         label: 'Premium',
         value: 'From ${_fmtNum(baseAnnual.defaultNumber!)} MMK/yr',
@@ -546,7 +553,7 @@ List<_Stat> _buildStats(Product product) {
   if (paymentType != null && paymentType.options.isNotEmpty) {
     stats.add(
       _Stat(
-        icon: Icons.add_circle_outline,
+        icon: FontAwesomeIcons.circlePlus,
         color: AppColors.mint,
         label: 'Payment',
         value: _joinOptions(paymentType),
@@ -555,7 +562,7 @@ List<_Stat> _buildStats(Product product) {
   } else if (productType != null && productType.options.isNotEmpty) {
     stats.add(
       _Stat(
-        icon: Icons.add_circle_outline,
+        icon: FontAwesomeIcons.circlePlus,
         color: AppColors.mint,
         label: 'Type',
         value: _joinOptions(productType),
@@ -564,7 +571,7 @@ List<_Stat> _buildStats(Product product) {
   } else if (dividendRate != null && dividendRate.defaultNumber != null) {
     stats.add(
       _Stat(
-        icon: Icons.add_circle_outline,
+        icon: FontAwesomeIcons.circlePlus,
         color: AppColors.mint,
         label: 'Dividend Rate',
         value: '${dividendRate.defaultNumber}%',
@@ -625,7 +632,7 @@ class _StatCell extends StatelessWidget {
             color: stat.color.withValues(alpha: 0.12),
             shape: BoxShape.circle,
           ),
-          child: Icon(stat.icon, size: 15, color: stat.color),
+          child: FaIcon(stat.icon, size: 15, color: stat.color),
         ),
         const SizedBox(width: 8),
         Expanded(
@@ -666,7 +673,7 @@ class _AccordionEntry {
     required this.title,
     required this.lines,
   });
-  final IconData icon;
+  final FaIconData icon;
   final Color color;
   final String title;
   final List<String> lines;
@@ -704,7 +711,7 @@ class _AccordionCardState extends State<_AccordionCard> {
                     color: entry.color.withValues(alpha: 0.12),
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(entry.icon, size: 17, color: entry.color),
+                  child: FaIcon(entry.icon, size: 17, color: entry.color),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -720,8 +727,8 @@ class _AccordionCardState extends State<_AccordionCard> {
                 AnimatedRotation(
                   turns: _expanded ? 0.5 : 0,
                   duration: const Duration(milliseconds: 180),
-                  child: Icon(
-                    Icons.keyboard_arrow_down,
+                  child: FaIcon(
+                    FontAwesomeIcons.chevronDown,
                     color: AppColors.deepAlpha(0.4),
                   ),
                 ),

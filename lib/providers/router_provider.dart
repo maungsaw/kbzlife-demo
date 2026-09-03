@@ -32,6 +32,7 @@ import '../profile/change_password.dart';
 import '../profile/guest_profile.dart';
 import '../profile/index.dart';
 import '../profile/language.dart';
+import '../profile/account_detail_screen.dart';
 import '../quote/quote_screen.dart';
 import '../quote/saved_quotes_screen.dart';
 import '../rolebase_dashboard/index.dart';
@@ -168,6 +169,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           location != RoutePaths.forgotPassword &&
           !location.startsWith('/products') &&
           location != RoutePaths.calculator &&
+          location != RoutePaths.quote &&
           !location.startsWith('/webview');
 
       // Guest: redirect restricted pages to login
@@ -422,6 +424,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: RoutePaths.language,
         builder: (_, _) => const LanguageScreen(),
+      ),
+      GoRoute(
+        path: '/account',
+        builder: (_, _) => const AccountDetailScreen(),
       ),
 
       GoRoute(

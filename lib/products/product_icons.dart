@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../data/models/product.dart';
 import '../const.dart';
@@ -7,33 +8,33 @@ import 'product_scene.dart';
 class ProductVisuals {
   ProductVisuals._();
 
-  static const _byCode = <String, IconData>{
+  static const _byCode = <String, FaIconData>{
     // Saving — what the money is for.
-    'UL-01': Icons.trending_up, // wealth that grows
-    'STE-01': Icons.savings_outlined, // cash accumulation
-    'EL-01': Icons.school_outlined, // school fees
+    'UL-01': FontAwesomeIcons.chartLine,
+    'STE-01': FontAwesomeIcons.piggyBank,
+    'EL-01': FontAwesomeIcons.graduationCap,
     // Protection — who or what is covered.
-    'GL-01': Icons.groups_outlined, // a workforce
-    'PA-01': Icons.personal_injury_outlined, // injury cover
-    'CLP-01': Icons.account_balance_outlined, // bank loan
-    'CLS-01': Icons.credit_score_outlined, // short-term credit
-    'TV-01': Icons.flight_outlined, // travel
+    'GL-01': FontAwesomeIcons.users,
+    'PA-01': FontAwesomeIcons.personFalling,
+    'CLP-01': FontAwesomeIcons.buildingColumns,
+    'CLS-01': FontAwesomeIcons.creditCard,
+    'TV-01': FontAwesomeIcons.plane,
     // Health — the care being paid for.
-    'HI-01': Icons.local_hospital_outlined, // in-patient
-    'IM-01': Icons.medical_services_outlined, // individual medical
-    'MH-01': Icons.health_and_safety_outlined, // micro health
-    'CI-01': Icons.monitor_heart_outlined, // critical condition
+    'HI-01': FontAwesomeIcons.hospital,
+    'IM-01': FontAwesomeIcons.stethoscope,
+    'MH-01': FontAwesomeIcons.shieldHeart,
+    'CI-01': FontAwesomeIcons.heartPulse,
   };
 
   /// Falls back to the category glyph for any product not yet mapped, so a
   /// new product code renders sensibly before anyone picks its icon.
-  static IconData iconFor(Product product) =>
+  static FaIconData iconFor(Product product) =>
       _byCode[product.code] ?? categoryIcon(product.category);
 
-  static IconData categoryIcon(ProductCategory category) => switch (category) {
-    ProductCategory.protection => Icons.shield_outlined,
-    ProductCategory.saving => Icons.savings_outlined,
-    ProductCategory.health => Icons.favorite_border,
+  static FaIconData categoryIcon(ProductCategory category) => switch (category) {
+    ProductCategory.protection => FontAwesomeIcons.shield,
+    ProductCategory.saving => FontAwesomeIcons.piggyBank,
+    ProductCategory.health => FontAwesomeIcons.heart,
   };
 
   /// Category colour — the pairing the product detail and quote screens
@@ -77,8 +78,8 @@ class ProductIllustration extends StatelessWidget {
     'EL-01': 'education_life',
     'GL-01': 'group_life',
     'PA-01': 'personal_accident',
-    'CLP-01': 'credit_life_insurance_single_premium',
-    'CLS-01': 'credit_life_insurance_short_term_single_premium',
+    'CLP-01': 'short_term_single_premium_credit_life',
+    'CLS-01': 'single_premium_credit',
     'TV-01': 'travel',
     'HI-01': 'health_insurance',
     'IM-01': 'i_medical',
@@ -147,7 +148,7 @@ class ProductIconTile extends StatelessWidget {
         color: color.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(size * 0.25),
       ),
-      child: Icon(
+      child: FaIcon(
         ProductVisuals.iconFor(product),
         size: iconSize,
         color: color,
