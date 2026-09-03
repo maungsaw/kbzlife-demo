@@ -413,9 +413,9 @@ class ApplicantCard extends StatelessWidget {
                 ApplicantRole.insured => 'Insured Person Name *',
                 ApplicantRole.beneficiary => 'Beneficiary Name *',
               },
-        prefixIcon: Icon(applicant.isEntity
-            ? Icons.business_outlined
-            : Icons.person_outline),
+        prefixIcon: Icon(
+          applicant.isEntity ? Icons.business_outlined : Icons.person_outline,
+        ),
         helperText: _helper('name'),
         errorText: ApplicantValidators.name(applicant.nameController.text),
       ),
@@ -776,27 +776,24 @@ class _AddressRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final summary = applicant.addressSummary;
-    return InkWell(
-      borderRadius: BorderRadius.circular(12),
+    // Address opens a sub-sheet rather than taking typing, but it is one of
+    // the card's fields — so it wears the same AppTextField shell as the
+    // rest instead of a bare InputDecorator.
+    return AppTextField(
+      label: 'Address',
+      helperText: prefilled ? 'From lead record' : null,
+      suffixIcon: const Icon(Icons.chevron_right),
       onTap: () async {
         if (await showAddressSheet(context, applicant)) onChanged();
       },
-      child: InputDecorator(
-        decoration: InputDecoration(
-          label: const Text('Address'),
-          floatingLabelBehavior: FloatingLabelBehavior.always,
-          helperText: prefilled ? 'From lead record' : null,
-          suffixIcon: const Icon(Icons.chevron_right),
-        ),
-        child: Text(
-          summary ?? 'Tap to fill',
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-          style: TextStyle(
-            fontSize: 12.5,
-            fontWeight: summary == null ? FontWeight.normal : FontWeight.bold,
-            color: summary == null ? AppColors.deepAlpha(0.42) : Colors.black,
-          ),
+      child: Text(
+        summary ?? 'Tap to fill',
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+        style: TextStyle(
+          fontSize: 13,
+          fontWeight: summary == null ? FontWeight.normal : FontWeight.w600,
+          color: summary == null ? AppColors.muted : AppColors.accentNavy,
         ),
       ),
     );
@@ -1018,8 +1015,10 @@ class MeasurementRow extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-          child: InkWell(
-            borderRadius: BorderRadius.circular(12),
+          // Same shell as Weight beside it, which is a plain AppTextField.
+          child: AppTextField(
+            label: 'Height',
+            suffixIcon: const Icon(Icons.chevron_right),
             onTap: () async {
               final result = await showHeightPickerSheet(context);
               if (result == null) return;
@@ -1032,19 +1031,12 @@ class MeasurementRow extends StatelessWidget {
                 onChanged();
               }
             },
-            child: InputDecorator(
-              decoration: const InputDecoration(
-                label: Text('Height'),
-                floatingLabelBehavior: FloatingLabelBehavior.always,
-                suffixIcon: Icon(Icons.chevron_right),
-              ),
-              child: Text(
-                ft.isEmpty ? 'Tap to set' : "$ft' $inch\"",
-                style: TextStyle(
-                  fontSize: 12.5,
-                  fontWeight: ft.isEmpty ? FontWeight.normal : FontWeight.bold,
-                  color: ft.isEmpty ? AppColors.deepAlpha(0.42) : Colors.black,
-                ),
+            child: Text(
+              ft.isEmpty ? 'Tap to set' : "$ft' $inch\"",
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: ft.isEmpty ? FontWeight.normal : FontWeight.w600,
+                color: ft.isEmpty ? AppColors.muted : AppColors.accentNavy,
               ),
             ),
           ),

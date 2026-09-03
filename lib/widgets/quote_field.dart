@@ -56,7 +56,9 @@ class QuoteFieldRenderer extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
             ),
             child: Text(
-              '${value ?? 0}${field.suffix != null ? ' ${field.suffix}' : ''}',
+              value == null
+                  ? '—'
+                  : '$value${field.suffix != null ? ' ${field.suffix}' : ''}',
               style: const TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w700,

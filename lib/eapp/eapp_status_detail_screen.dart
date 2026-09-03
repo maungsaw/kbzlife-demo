@@ -19,10 +19,13 @@ class EappStatusDetailScreen extends ConsumerStatefulWidget {
       _EappStatusDetailScreenState();
 }
 
-class _EappStatusDetailScreenState extends ConsumerState<EappStatusDetailScreen> {
+class _EappStatusDetailScreenState
+    extends ConsumerState<EappStatusDetailScreen> {
   @override
   Widget build(BuildContext context) {
-    final app = mockEappApplications.where((a) => a.id == widget.appId).firstOrNull;
+    final app = mockEappApplications
+        .where((a) => a.id == widget.appId)
+        .firstOrNull;
 
     if (app == null) {
       return Scaffold(

@@ -4,7 +4,12 @@ import 'eapp_status.dart';
 /// (§5 timeline UX rules: full spine always shown, timestamps read as
 /// "Core said this happened").
 class EappTimelineEvent {
-  const EappTimelineEvent({required this.status, required this.at, required this.actor, this.note});
+  const EappTimelineEvent({
+    required this.status,
+    required this.at,
+    required this.actor,
+    this.note,
+  });
   final EappStatus status;
   final DateTime at;
   final String actor;
@@ -54,8 +59,16 @@ final mockEappApplications = <EappApplication>[
     draftStep: 2,
     correctionReason: 'NRC photo is blurred — please rescan the front side.',
     history: [
-      EappTimelineEvent(status: EappStatus.draft, at: DateTime(2026, 8, 18, 9, 40), actor: 'You'),
-      EappTimelineEvent(status: EappStatus.submitted, at: DateTime(2026, 8, 18, 10, 5), actor: 'You'),
+      EappTimelineEvent(
+        status: EappStatus.draft,
+        at: DateTime(2026, 8, 18, 9, 40),
+        actor: 'You',
+      ),
+      EappTimelineEvent(
+        status: EappStatus.submitted,
+        at: DateTime(2026, 8, 18, 10, 5),
+        actor: 'You',
+      ),
       EappTimelineEvent(
         status: EappStatus.correction,
         at: DateTime(2026, 8, 19, 14, 22),
@@ -72,8 +85,16 @@ final mockEappApplications = <EappApplication>[
     status: EappStatus.submitted,
     draftStep: 5,
     history: [
-      EappTimelineEvent(status: EappStatus.draft, at: DateTime(2026, 8, 20, 8, 12), actor: 'You'),
-      EappTimelineEvent(status: EappStatus.submitted, at: DateTime(2026, 8, 20, 8, 30), actor: 'You'),
+      EappTimelineEvent(
+        status: EappStatus.draft,
+        at: DateTime(2026, 8, 20, 8, 12),
+        actor: 'You',
+      ),
+      EappTimelineEvent(
+        status: EappStatus.submitted,
+        at: DateTime(2026, 8, 20, 8, 30),
+        actor: 'You',
+      ),
     ],
   ),
   EappApplication(
@@ -84,9 +105,22 @@ final mockEappApplications = <EappApplication>[
     status: EappStatus.approved,
     draftStep: 5,
     history: [
-      EappTimelineEvent(status: EappStatus.draft, at: DateTime(2026, 8, 10, 9, 0), actor: 'You'),
-      EappTimelineEvent(status: EappStatus.submitted, at: DateTime(2026, 8, 10, 9, 20), actor: 'You'),
-      EappTimelineEvent(status: EappStatus.approved, at: DateTime(2026, 8, 15, 11, 5), actor: 'Underwriting', note: 'All checks passed.'),
+      EappTimelineEvent(
+        status: EappStatus.draft,
+        at: DateTime(2026, 8, 10, 9, 0),
+        actor: 'You',
+      ),
+      EappTimelineEvent(
+        status: EappStatus.submitted,
+        at: DateTime(2026, 8, 10, 9, 20),
+        actor: 'You',
+      ),
+      EappTimelineEvent(
+        status: EappStatus.approved,
+        at: DateTime(2026, 8, 15, 11, 5),
+        actor: 'Underwriting',
+        note: 'All checks passed.',
+      ),
     ],
   ),
   EappApplication(
@@ -96,10 +130,19 @@ final mockEappApplications = <EappApplication>[
     ref: 'EA-10176',
     status: EappStatus.rejected,
     draftStep: 5,
-    rejectionReason: 'Declared health condition falls outside underwriting appetite.',
+    rejectionReason:
+        'Declared health condition falls outside underwriting appetite.',
     history: [
-      EappTimelineEvent(status: EappStatus.draft, at: DateTime(2026, 8, 5, 13, 0), actor: 'You'),
-      EappTimelineEvent(status: EappStatus.submitted, at: DateTime(2026, 8, 5, 13, 15), actor: 'You'),
+      EappTimelineEvent(
+        status: EappStatus.draft,
+        at: DateTime(2026, 8, 5, 13, 0),
+        actor: 'You',
+      ),
+      EappTimelineEvent(
+        status: EappStatus.submitted,
+        at: DateTime(2026, 8, 5, 13, 15),
+        actor: 'You',
+      ),
       EappTimelineEvent(
         status: EappStatus.rejected,
         at: DateTime(2026, 8, 9, 16, 40),
@@ -116,7 +159,11 @@ final mockEappApplications = <EappApplication>[
     status: EappStatus.draft,
     draftStep: 1,
     history: [
-      EappTimelineEvent(status: EappStatus.draft, at: DateTime(2026, 8, 24, 17, 5), actor: 'You'),
+      EappTimelineEvent(
+        status: EappStatus.draft,
+        at: DateTime(2026, 8, 24, 17, 5),
+        actor: 'You',
+      ),
     ],
   ),
 ];

@@ -1,8 +1,119 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../const.dart';
 import '../widgets/app_text_field.dart';
+import 'applicant_card.dart';
+
+/// Documents can come off the camera or out of the gallery — a photo of an
+/// NRC taken before the appointment is as good as one taken during it, and
+/// the FA should not have to re-shoot it. Both e-App document capture and
+/// the signature upload go through this one sheet.
+Future<ImageSource?> showImageSourceSheet(
+  BuildContext context, {
+  String title = 'Add photo',
+}) {
+  return showModalBottomSheet<ImageSource>(
+    context: context,
+    showDragHandle: true,
+    backgroundColor: AppColors.paper,
+    builder: (context) => SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w800,
+                color: AppColors.deep,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Expanded(
+                  child: _SourceTile(
+                    icon: Icons.photo_camera_outlined,
+                    label: 'Take photo',
+                    hint: 'Use the camera',
+                    onTap: () => Navigator.pop(context, ImageSource.camera),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: _SourceTile(
+                    icon: Icons.photo_library_outlined,
+                    label: 'Upload image',
+                    hint: 'Pick from gallery',
+                    onTap: () => Navigator.pop(context, ImageSource.gallery),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Text(
+              'JPG or PNG, up to 5 MB.',
+              style: TextStyle(fontSize: 11, color: AppColors.deepAlpha(0.5)),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
+class _SourceTile extends StatelessWidget {
+  const _SourceTile({
+    required this.icon,
+    required this.label,
+    required this.hint,
+    required this.onTap,
+  });
+  final IconData icon;
+  final String label;
+  final String hint;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(12),
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 12),
+        decoration: BoxDecoration(
+          color: AppColors.cream,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: AppColors.deepAlpha(0.08)),
+        ),
+        child: Column(
+          children: [
+            Icon(icon, size: 22, color: AppColors.primaryColor),
+            const SizedBox(height: 8),
+            Text(
+              label,
+              style: const TextStyle(
+                fontSize: 12.5,
+                fontWeight: FontWeight.w800,
+                color: AppColors.deep,
+              ),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              hint,
+              style: TextStyle(fontSize: 10.5, color: AppColors.deepAlpha(0.5)),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
 Future<String?> showIdentificationPickerSheet(
   BuildContext context, {
@@ -113,30 +224,36 @@ class _IdSheetState extends ConsumerState<_IdSheet> {
                   if (showNrcRow) ...[
                     Row(
                       children: [
+                        // Same field shell as the rest of the proposal —
+                        // these three were the only bare InputDecorators
+                        // left, and read as a different form control.
                         Expanded(
-                          child: _MiniDropdown(
+                          child: EappDropdownField(
                             label: 'State',
                             value: _state,
                             options: const ['12', '9', '1'],
-                            onChanged: (v) => setState(() => _state = v),
+                            onChanged: (v) =>
+                                setState(() => _state = v ?? _state),
                           ),
                         ),
                         const SizedBox(width: 8),
                         Expanded(
-                          child: _MiniDropdown(
+                          child: EappDropdownField(
                             label: 'Township',
                             value: _township,
                             options: const ['KaMaNa', 'PaZaTa', 'LaMaNa'],
-                            onChanged: (v) => setState(() => _township = v),
+                            onChanged: (v) =>
+                                setState(() => _township = v ?? _township),
                           ),
                         ),
                         const SizedBox(width: 8),
                         Expanded(
-                          child: _MiniDropdown(
+                          child: EappDropdownField(
                             label: 'Type',
                             value: _idType,
                             options: const ['N', 'P', 'E'],
-                            onChanged: (v) => setState(() => _idType = v),
+                            onChanged: (v) =>
+                                setState(() => _idType = v ?? _idType),
                           ),
                         ),
                       ],
@@ -253,43 +370,6 @@ class _IdTypeTile extends StatelessWidget {
                 ),
               ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class _MiniDropdown extends StatelessWidget {
-  const _MiniDropdown({
-    required this.label,
-    required this.value,
-    required this.options,
-    required this.onChanged,
-  });
-  final String label;
-  final String value;
-  final List<String> options;
-  final ValueChanged<String> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    return InputDecorator(
-      decoration: InputDecoration(
-        labelText: label,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          value: value,
-          isExpanded: true,
-          items: [
-            for (final o in options)
-              DropdownMenuItem(
-                value: o,
-                child: Text(o, style: const TextStyle(fontSize: 12.5)),
-              ),
-          ],
-          onChanged: (v) => v == null ? null : onChanged(v),
         ),
       ),
     );

@@ -12,7 +12,6 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../data/mock/mock_crm_data.dart';
 import '../../data/mock/mock_data.dart';
-import '../../data/models/customer.dart';
 import '../../data/models/product.dart';
 import '../app_date.dart';
 import '../const.dart';
@@ -29,6 +28,7 @@ import 'address_master.dart';
 import 'applicant.dart';
 import 'applicant_card.dart';
 import 'eapp_status.dart';
+import 'pickers.dart';
 
 class EAppScreen extends ConsumerStatefulWidget {
   const EAppScreen({
@@ -150,8 +150,7 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
   // there is no real Core/branch API in this prototype).
   final String _proposalNo =
       'PRP-${DateTime.now().millisecondsSinceEpoch % 900000 + 100000}';
-  final DateTime _proposalDate = DateTime.now();
-  final String _branchOffice = 'Yangon HQ'; // mock — normally Core-sourced.
+  String _branchOffice = kBranchOffices.first;
   DateTime? _requestPolicyDate;
   String _notifyType = 'Not Notify';
   final _notifyMobileController = TextEditingController();
@@ -166,6 +165,41 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
   // BRD "Proposal Validation Message" sheet — the field-level validators
   // now live in [ApplicantValidators] so the Policy Holder, Insured and
   // Beneficiary cards, which share one renderer, cannot drift apart.
+
+  /// Accepts a product code or a product name and returns the code. CRM
+  /// opportunities carry loose product labels ("Health Insurance",
+  /// "Education Plan") rather than catalogue names, so an exact match is
+  /// tried first and then the closest catalogue product by shared words —
+  /// without it the Start step opens with no product and no estimate.
+  static String? _resolveProductCode(String? codeOrName) {
+    final query = codeOrName?.trim().toLowerCase() ?? '';
+    if (query.isEmpty) return null;
+
+    for (final p in MockData.products) {
+      if (p.code.toLowerCase() == query || p.name.toLowerCase() == query) {
+        return p.code;
+      }
+    }
+
+    const filler = {'insurance', 'plan', 'policy', 'the', 'a'};
+    Set<String> words(String v) => v
+        .toLowerCase()
+        .split(RegExp(r'[^a-z]+'))
+        .where((w) => w.isNotEmpty && !filler.contains(w))
+        .toSet();
+
+    final queryWords = words(query);
+    String? best;
+    var bestScore = 0;
+    for (final p in MockData.products) {
+      final score = words(p.name).intersection(queryWords).length;
+      if (score > bestScore) {
+        bestScore = score;
+        best = p.code;
+      }
+    }
+    return best;
+  }
 
   Product get _product => MockData.products.firstWhere(
     (p) => p.code == _selectedProductCode,
@@ -229,7 +263,11 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
   @override
   void initState() {
     super.initState();
-    _selectedProductCode = widget.productCode;
+    // Entry points are not consistent: products and quotes pass a product
+    // code, CRM passes the opportunity's product *name*. Resolve either one
+    // to a code here so the Start step arrives with the product filled and
+    // its premium already estimated.
+    _selectedProductCode = _resolveProductCode(widget.productCode);
     _selectedCustomerId = widget.customerId;
     // Doc 81 renewal — the in-force policy already names the product, so
     // the FA is never asked to re-pick it.
@@ -259,24 +297,30 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
   /// Copies everything the lead/client record already knows onto the
   /// Policy Holder card. Father's name, DOB and gender are deliberately
   /// absent — the CRM record does not carry them (doc 111 §2.3).
+  /// CRM stores phone numbers the way they are read out — "09-123-456-789".
+  /// The proposal validators want the bare digits ("09" + 7 or more), so a
+  /// prefilled number is stripped here rather than failing on the Insured
+  /// step with "Please enter correct mobile no."
+  static String? _plainPhone(String? v) => v?.replaceAll(RegExp(r'[^0-9]'), '');
+
   Future<void> _applyCustomerPrefill() async {
     final id = _selectedCustomerId;
     if (id == null) return;
-    var customer = ref.read(crmControllerProvider.notifier).byId(id);
-    // Fallback: try matching by name (for CRM contacts without Customer ID)
-    customer ??= ref.read(crmControllerProvider.notifier).byName(id);
+
+    void fill(String key, TextEditingController c, String? value) {
+      final v = value?.trim() ?? '';
+      if (v.isEmpty) return;
+      c.text = v;
+      _prefillValues[key] = v;
+    }
+
+    final controller = ref.read(crmControllerProvider.notifier);
+    final customer = controller.byId(id) ?? controller.byName(id);
 
     if (customer != null) {
       _prefilledFrom = customer.name;
-      void fill(String key, TextEditingController c, String? value) {
-        final v = value?.trim() ?? '';
-        if (v.isEmpty) return;
-        c.text = v;
-        _prefillValues[key] = v;
-      }
-
       fill('name', _holder.nameController, customer.name);
-      fill('mobile', _holder.mobileController, customer.phone);
+      fill('mobile', _holder.mobileController, _plainPhone(customer.phone));
       fill('email', _holder.emailController, customer.email);
       fill('nrc', _holder.idNoController, customer.nrc);
       fill('occupation', _holder.occupationController, customer.jobTitle);
@@ -293,23 +337,45 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
       final address = _holder.addressSummary;
       if (address != null) _prefillValues['address'] = address;
     } else {
-      // Fallback: look up by name from CRM contacts
+      // The CRM contact list is the other source of a linked record, and
+      // its IDs are its own — match on either ID or name before giving up.
       final contacts = await ref.read(crmContactsProvider.future);
-      final match = contacts.where((c) => c.name == id).firstOrNull;
-      if (match != null) {
-        _prefilledFrom = match.name;
-        void fill(String key, TextEditingController c, String? value) {
-          final v = value?.trim() ?? '';
-          if (v.isEmpty) return;
-          c.text = v;
-          _prefillValues[key] = v;
-        }
+      final match = contacts
+          .where((c) => c.id == id || c.name == id)
+          .firstOrNull;
+      if (match == null) return;
 
-        fill('name', _holder.nameController, match.name);
-        fill('mobile', _holder.mobileController, match.phone);
-        fill('email', _holder.emailController, match.email);
+      _prefilledFrom = match.name;
+      fill('name', _holder.nameController, match.name);
+      fill('mobile', _holder.mobileController, _plainPhone(match.phone));
+      fill('email', _holder.emailController, match.email);
+      fill('fatherName', _holder.fatherNameController, match.fatherName);
+      fill('nrc', _holder.idNoController, match.nrc);
+      fill('occupation', _holder.occupationController, match.occupation);
+      if (match.dob != null) {
+        _holder.dob = match.dob;
+        _prefillValues['dob'] = _formatDate(match.dob!);
       }
+      if (match.gender != null) {
+        _holder.gender = match.gender;
+        _prefillValues['gender'] = match.gender!;
+      }
+      _holder.maritalStatus ??= match.maritalStatus;
+
+      _holder.houseNoController.text = match.houseNo ?? '';
+      _holder.streetNoController.text = match.streetNo ?? '';
+      _holder.wardNoController.text = match.wardNo ?? '';
+      _holder.townController.text = match.town ?? '';
+      _holder.townshipController.text = match.township ?? '';
+      _holder.districtController.text = match.district ?? '';
+      _holder.stateRegionController.text = match.stateRegion ?? '';
+      final address = _holder.addressSummary;
+      if (address != null) _prefillValues['address'] = address;
     }
+
+    // The cards read their values from controllers, but the prefill banner
+    // and the marital-status chips are plain state — repaint them.
+    if (mounted) setState(() {});
   }
 
   void _applyCrmPrefill() {
@@ -328,7 +394,7 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
     }
 
     fill('name', _holder.nameController, name);
-    fill('mobile', _holder.mobileController, widget.crmPhone);
+    fill('mobile', _holder.mobileController, _plainPhone(widget.crmPhone));
     fill('email', _holder.emailController, widget.crmEmail);
   }
 
@@ -354,8 +420,13 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
   }
 
   Future<void> _pickSignaturePhoto({required bool isClient}) async {
+    final source = await showImageSourceSheet(
+      context,
+      title: 'Signature photo',
+    );
+    if (source == null || !mounted) return;
     final picked = await ImagePicker().pickImage(
-      source: ImageSource.gallery,
+      source: source,
       imageQuality: 80,
     );
     if (picked == null) return;
@@ -392,8 +463,13 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
     Applicant beneficiary,
     String documentPart,
   ) async {
+    final source = await showImageSourceSheet(
+      context,
+      title: documentPart == 'passport' ? 'Passport photo' : 'NRC photo',
+    );
+    if (source == null || !mounted) return;
     final picked = await ImagePicker().pickImage(
-      source: ImageSource.camera,
+      source: source,
       imageQuality: 80,
     );
     if (picked == null) return;
@@ -433,8 +509,16 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
     String targetPerson,
     String documentPart,
   ) async {
+    // Asked per slot, in a sheet: Camera or Upload, the same two choices
+    // the Sign step offers — an NRC photographed before the appointment is
+    // as good as one taken during it.
+    final source = await showImageSourceSheet(
+      context,
+      title: documentPart == 'passport' ? 'Passport photo' : 'NRC photo',
+    );
+    if (source == null || !mounted) return;
     final picked = await ImagePicker().pickImage(
-      source: ImageSource.camera,
+      source: source,
       imageQuality: 80,
     );
     if (picked == null) return;
@@ -498,7 +582,7 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
 
   bool get _partiesValid => _holder.isValid;
 
-  bool get _insuredValid => _insuredSameAsHolder || _insured.isValid;
+  bool get _insuredValid => _insured.isValid;
 
   bool get _beneficiariesValid {
     double totalPct = 0;
@@ -524,7 +608,7 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
     _EStep.policyHolder => _partiesValid,
     _EStep.insuredPerson => _insuredValid,
     _EStep.productInfo =>
-      ref.read(quoteFormProvider(_product).notifier).calculate() != null,
+      ref.read(eappQuoteFormProvider(_product).notifier).calculate() != null,
     _EStep.beneficiaries => _beneficiariesValid,
     _EStep.healthDeclaration => _healthDeclarationValid,
     _EStep.documentation => _documentsValid,
@@ -624,80 +708,200 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
       );
     }
 
-    return Scaffold(
-      backgroundColor: AppColors.cream,
-      appBar: AppBar(
-        title: const Text('e-Application'),
-        actions: [
-          TextButton(
-            onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Your changes have been saved successfully'),
+    // Leaving mid-application throws the draft away, and the wizard is
+    // eight steps deep — so both the app bar arrow and the system back
+    // gesture ask first, at every step.
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) async {
+        if (didPop) return;
+        final router = GoRouter.of(context);
+        if (!await _confirmLeave()) return;
+        if (router.canPop()) {
+          router.pop();
+        } else {
+          router.go('/home');
+        }
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.cream,
+        appBar: AppBar(
+          title: const Text('e-Application'),
+          leading: IconButton(
+            tooltip: 'Back',
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => Navigator.maybePop(context),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Your changes have been saved successfully'),
+                ),
+              ),
+              child: const Text('Save draft'),
+            ),
+          ],
+        ),
+        body: Column(
+          children: [
+            _ProgressHeader(
+              step: _step,
+              titles: _activeStepTitles,
+              complete: [for (final st in _activeSteps) _stepComplete(st)],
+              renewal: widget.renewalPolicyNo,
+              productName: _product.name,
+              onTapStep: (i) => setState(() => _step = i),
+            ),
+            if (_correctionNote != null)
+              _CorrectionBanner(
+                note: _correctionNote!,
+                onDismiss: () => setState(() => _correctionNote = null),
+              ),
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.all(16),
+                children: [_buildStep(context)],
               ),
             ),
-            child: const Text('Save draft'),
-          ),
-        ],
-      ),
-      body: Column(
-        children: [
-          _ProgressHeader(
-            step: _step,
-            titles: _activeStepTitles,
-            complete: [for (final st in _activeSteps) _stepComplete(st)],
-            renewal: widget.renewalPolicyNo,
-            productName: _product.name,
-            onTapStep: (i) => setState(() => _step = i),
-          ),
-          if (_correctionNote != null)
-            _CorrectionBanner(
-              note: _correctionNote!,
-              onDismiss: () => setState(() => _correctionNote = null),
-            ),
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.all(16),
-              children: [_buildStep(context)],
-            ),
-          ),
-          SafeArea(
-            top: false,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
-              child: Row(
-                children: [
-                  if (_step > 0)
+            SafeArea(
+              top: false,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+                child: Row(
+                  children: [
+                    if (_step > 0)
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: () => setState(() => _step--),
+                          child: const Text('Back'),
+                        ),
+                      ),
+                    if (_step > 0) const SizedBox(width: 10),
                     Expanded(
-                      child: OutlinedButton(
-                        onPressed: () => setState(() => _step--),
-                        child: const Text('Back'),
+                      flex: 2,
+                      child: ElevatedButton(
+                        onPressed: !_canContinue
+                            ? null
+                            : _step == _activeStepTitles.length - 1
+                            ? _submit
+                            : () => setState(() {
+                                if (_activeSteps[_step] ==
+                                        _EStep.policyHolder &&
+                                    _insuredSameAsHolder) {
+                                  _copyHolderToInsured();
+                                }
+                                _step++;
+                              }),
+                        child: Text(
+                          _step == _activeStepTitles.length - 1
+                              ? 'Submit application'
+                              : (!_canContinue
+                                    ? 'Waiting for client…'
+                                    : 'Continue'),
+                        ),
                       ),
                     ),
-                  if (_step > 0) const SizedBox(width: 10),
-                  Expanded(
-                    flex: 2,
-                    child: ElevatedButton(
-                      onPressed: !_canContinue
-                          ? null
-                          : _step == _activeStepTitles.length - 1
-                          ? _submit
-                          : () => setState(() => _step++),
-                      child: Text(
-                        _step == _activeStepTitles.length - 1
-                            ? 'Submit application'
-                            : (!_canContinue
-                                  ? 'Waiting for client…'
-                                  : 'Continue'),
-                      ),
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
+  }
+
+  /// "Discard" throws the draft away; "Save draft" is the non-destructive
+  /// way out, mirroring the app bar action the FA already knows. Stacked
+  /// buttons rather than a row of three text links: the destructive choice
+  /// should never sit a thumb-width from the safe one.
+  Future<bool> _confirmLeave() async {
+    final choice = await showDialog<String>(
+      context: context,
+      builder: (context) => Dialog(
+        backgroundColor: AppColors.paper,
+        insetPadding: const EdgeInsets.symmetric(horizontal: 28),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 22, 20, 16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Center(
+                child: Container(
+                  width: 46,
+                  height: 46,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: AppColors.warn.withValues(alpha: 0.14),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.exit_to_app_rounded,
+                    color: AppColors.warn,
+                    size: 22,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 14),
+              const Text(
+                'Leave this application?',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 15.5,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.deep,
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                'It has not been submitted yet. Save it as a draft to pick '
+                'it up later, or discard what you have filled in.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 12.5,
+                  height: 1.4,
+                  color: AppColors.deepAlpha(0.6),
+                ),
+              ),
+              const SizedBox(height: 18),
+              ElevatedButton.icon(
+                onPressed: () => Navigator.pop(context, 'draft'),
+                icon: const Icon(Icons.bookmark_outline, size: 17),
+                label: const Text('Save draft & leave'),
+              ),
+              const SizedBox(height: 8),
+              OutlinedButton.icon(
+                onPressed: () => Navigator.pop(context, 'discard'),
+                icon: const Icon(Icons.delete_outline, size: 17),
+                label: const Text('Discard'),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: AppColors.danger,
+                  side: BorderSide(
+                    color: AppColors.danger.withValues(alpha: 0.4),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 4),
+              TextButton(
+                onPressed: () => Navigator.pop(context, 'stay'),
+                child: const Text('Keep editing'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    if (choice == 'draft' && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Your changes have been saved successfully'),
+        ),
+      );
+    }
+    return choice == 'draft' || choice == 'discard';
   }
 
   static final _productInfoMoney = NumberFormat('#,##0.00', 'en_US');
@@ -719,10 +923,25 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const EappCardTitle('Proposal'),
-              const SizedBox(height: 8),
-              _Row('Proposal No', _proposalNo),
-              _Row('Proposal Date', _formatDate(_proposalDate)),
-              _Row('Branch Office', _branchOffice),
+              const SizedBox(height: 10),
+              // The branch is a choice, not a read-out — an FA attached to
+              // more than one office picks the one the proposal belongs to.
+              EappDropdownField(
+                label: 'Branch Office *',
+                value: _branchOffice,
+                options: kBranchOffices,
+                onChanged: (v) =>
+                    setState(() => _branchOffice = v ?? _branchOffice),
+              ),
+              const SizedBox(height: 10),
+              // Requested policy date sits with the proposal itself; it was
+              // buried under Optional details, where it read as an extra.
+              EappDobField(
+                label: 'Request Policy Date',
+                date: _requestPolicyDate,
+                onPick: (d) => setState(() => _requestPolicyDate = d),
+                notPast: true,
+              ),
             ],
           ),
         ),
@@ -810,13 +1029,6 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
             filledCount: _proposalOptionalCount,
             children: [
               const SizedBox(height: 4),
-              EappDobField(
-                label: 'Request Policy Date',
-                date: _requestPolicyDate,
-                onPick: (d) => setState(() => _requestPolicyDate = d),
-                notPast: true,
-              ),
-              const SizedBox(height: 10),
               AppTextField(
                 controller: _referralController,
                 onChanged: (_) => setState(() {}),
@@ -853,7 +1065,6 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
 
   int get _proposalOptionalCount {
     var n = 0;
-    if (_requestPolicyDate != null) n++;
     if (_referralController.text.trim().isNotEmpty) n++;
     if (_specialCase) n++;
     return n;
@@ -861,8 +1072,8 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
 
   Widget _buildProductInfoStep() {
     final product = _product;
-    final answers = ref.watch(quoteFormProvider(product));
-    final controller = ref.read(quoteFormProvider(product).notifier);
+    final answers = ref.watch(eappQuoteFormProvider(product));
+    final controller = ref.read(eappQuoteFormProvider(product).notifier);
     final result = controller.calculate();
     final error = controller.validate();
 
@@ -1028,6 +1239,68 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
           ),
           const SizedBox(height: 12),
         ],
+        // Asked before the card, not after it: the answer decides whether
+        // the FA is filling one party or two, so it belongs above the
+        // fields it governs rather than at the foot of a long form.
+        SoftCard(
+          padding: const EdgeInsets.fromLTRB(14, 10, 8, 10),
+          child: Row(
+            children: [
+              Container(
+                width: 30,
+                height: 30,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: _insuredSameAsHolder
+                      ? AppColors.mint
+                      : AppColors.deepAlpha(0.06),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  _insuredSameAsHolder ? Icons.check : Icons.person_outline,
+                  size: 16,
+                  color: _insuredSameAsHolder
+                      ? Colors.white
+                      : AppColors.primaryColor,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Insured is the policy holder',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.deep,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      _insuredSameAsHolder
+                          ? 'Step 3 is filled from this card'
+                          : 'Leave off to fill the insured separately',
+                      style: TextStyle(
+                        fontSize: 11.5,
+                        color: AppColors.deepAlpha(0.55),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Switch(
+                value: _insuredSameAsHolder,
+                onChanged: (v) => setState(() {
+                  _insuredSameAsHolder = v;
+                  if (v) _copyHolderToInsured();
+                }),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 12),
         ApplicantCard(
           title: 'Policy Holder',
           applicant: _holder,
@@ -1038,60 +1311,61 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
     );
   }
 
+  /// Doc 111 §4.1 — the "same as the policy holder" question is answered
+  /// once, on the Policy Holder step. Here the answer has already been
+  /// applied: the copied values sit in the fields, editable, so the FA can
+  /// correct the one thing that differs instead of re-typing the card.
   Widget _buildInsuredStep() {
-    // Doc 111 §4.1 — when the insured is the policy holder the entire step
-    // collapses to one switch; a whole step disappears for the common case.
-    final sameSwitch = SwitchListTile(
-      contentPadding: EdgeInsets.zero,
-      title: const Text(
-        'Same With Policy Holder',
-        style: TextStyle(
-          fontWeight: FontWeight.w700,
-          fontSize: 13,
-          color: AppColors.deep,
-        ),
-      ),
-      value: _insuredSameAsHolder,
-      onChanged: (v) => setState(() {
-        _insuredSameAsHolder = v;
-        if (v) _copyHolderToInsured();
-      }),
-    );
-
-    if (_insuredSameAsHolder) {
-      return SoftCard(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const EappCardTitle('Insured Person'),
-            sameSwitch,
-            const SizedBox(height: 4),
-            Text(
-              _holder.nameController.text.trim().isEmpty
-                  ? 'The policy holder is the insured person.'
-                  : '${_holder.nameController.text.trim()} is the insured person.',
-              style: TextStyle(fontSize: 12, color: AppColors.deepAlpha(0.55)),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (_insuredSameAsHolder) ...[
+          _CopiedFromHolderBanner(
+            name: _holder.nameController.text.trim(),
+            onEdit: () => setState(
+              () => _step = _activeSteps.indexOf(_EStep.policyHolder),
             ),
-          ],
+          ),
+          const SizedBox(height: 12),
+        ],
+        ApplicantCard(
+          title: 'Insured Person',
+          applicant: _insured,
+          onChanged: () => setState(() {}),
         ),
-      );
-    }
-
-    return ApplicantCard(
-      title: 'Insured Person',
-      applicant: _insured,
-      header: sameSwitch,
-      onChanged: () => setState(() {}),
+      ],
     );
   }
 
+  /// Mirrors the whole Policy Holder card onto the Insured record — the
+  /// switch is answered on the holder step, so this runs again on the way
+  /// out of it to pick up anything edited after the toggle.
   void _copyHolderToInsured() {
+    _insured.type = _holder.type;
     _insured.nameController.text = _holder.nameController.text;
     _insured.fatherNameController.text = _holder.fatherNameController.text;
     _insured.dob = _holder.dob;
+    _insured.gender = _holder.gender;
+    _insured.maritalStatus = _holder.maritalStatus;
     _insured.mobileController.text = _holder.mobileController.text;
     _insured.emailController.text = _holder.emailController.text;
+    _insured.idType = _holder.idType;
     _insured.idNoController.text = _holder.idNoController.text;
+    _insured.occupationController.text = _holder.occupationController.text;
+    _insured.weightController.text = _holder.weightController.text;
+    _insured.heightFtController.text = _holder.heightFtController.text;
+    _insured.heightInController.text = _holder.heightInController.text;
+    _insured.remarkController.text = _holder.remarkController.text;
+
+    _insured.roomNoController.text = _holder.roomNoController.text;
+    _insured.buildingNoController.text = _holder.buildingNoController.text;
+    _insured.houseNoController.text = _holder.houseNoController.text;
+    _insured.streetNoController.text = _holder.streetNoController.text;
+    _insured.wardNoController.text = _holder.wardNoController.text;
+    _insured.townController.text = _holder.townController.text;
+    _insured.townshipController.text = _holder.townshipController.text;
+    _insured.districtController.text = _holder.districtController.text;
+    _insured.stateRegionController.text = _holder.stateRegionController.text;
   }
 
   // --- Doc 112: the 100% share budget --------------------------------
@@ -1378,7 +1652,7 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
 
   List<_ReviewSection> _buildReviewSections() {
     final product = _product;
-    final controller = ref.read(quoteFormProvider(product).notifier);
+    final controller = ref.read(eappQuoteFormProvider(product).notifier);
     final result = controller.calculate();
 
     List<(String, String)> partyRows(Applicant a) {
@@ -1422,9 +1696,10 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
     }
 
     final holderRows = partyRows(_holder);
-    final insuredRows = _insuredSameAsHolder
-        ? <(String, String)>[('Same as Policy Holder', 'Yes')]
-        : partyRows(_insured);
+    final insuredRows = <(String, String)>[
+      if (_insuredSameAsHolder) ('Same as Policy Holder', 'Yes'),
+      ...partyRows(_insured),
+    ];
 
     final beneficiaryRows = <(String, String)>[
       // Doc 112 open question — the BRD only forbids >100%, so an
@@ -1643,6 +1918,55 @@ class _PrefillBanner extends StatelessWidget {
                 color: AppColors.deep,
               ),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Shown on the Insured step when the FA answered "same as the policy
+/// holder" a step earlier: it says where the values came from and offers
+/// the way back, since the switch itself no longer lives on this step.
+class _CopiedFromHolderBanner extends StatelessWidget {
+  const _CopiedFromHolderBanner({required this.name, required this.onEdit});
+  final String name;
+  final VoidCallback onEdit;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(12, 8, 8, 8),
+      decoration: BoxDecoration(
+        color: AppColors.mint.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.mint.withValues(alpha: 0.4)),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.copy_all_outlined, size: 16, color: AppColors.mint),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              name.isEmpty
+                  ? 'Copied from the Policy Holder — edit anything that '
+                        'differs.'
+                  : 'Copied from $name — edit anything that differs.',
+              style: const TextStyle(
+                fontSize: 11.5,
+                fontWeight: FontWeight.w700,
+                color: AppColors.deep,
+              ),
+            ),
+          ),
+          TextButton(
+            onPressed: onEdit,
+            style: TextButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              minimumSize: Size.zero,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
+            child: const Text('Change'),
           ),
         ],
       ),
@@ -1896,10 +2220,6 @@ class _EappStartStepState extends ConsumerState<_EappStartStep> {
   String? _customerId;
   late ProductCategory? _category;
 
-  /// A satisfied slot collapses; this reopens the calculator so the FA can
-  /// tweak inputs and watch the figure move.
-  bool _premiumOpen = false;
-
   @override
   void initState() {
     super.initState();
@@ -1912,9 +2232,33 @@ class _EappStartStepState extends ConsumerState<_EappStartStep> {
       ? null
       : MockData.products.where((p) => p.code == _productCode).firstOrNull;
 
-  Customer? get _customer => _customerId == null
-      ? null
-      : ref.read(crmControllerProvider.notifier).byId(_customerId!);
+  /// The linked contact as the slot shows it. Two stores feed this screen —
+  /// the Customer records and the CRM contact list, whose IDs do not overlap —
+  /// so a pick from either has to resolve here or the slot reads as empty.
+  ({String name, String tag})? get _customerDisplay {
+    final id = _customerId;
+    if (id == null) return null;
+
+    final controller = ref.read(crmControllerProvider.notifier);
+    final customer = controller.byId(id) ?? controller.byName(id);
+    if (customer != null) {
+      return (name: customer.name, tag: customer.isClient ? 'Client' : 'Lead');
+    }
+
+    final contacts = ref.watch(crmContactsProvider).value;
+    final contact = contacts
+        ?.where((c) => c.id == id || c.name == id)
+        .firstOrNull;
+    if (contact == null) return null;
+    return (
+      name: contact.name,
+      tag: switch (contact.contactType.name) {
+        'client' => 'Client',
+        'halfQualified' => 'Half-Qualified',
+        _ => 'Lead',
+      },
+    );
+  }
 
   Future<void> _pickCustomer() async {
     final contacts = await ref.read(crmContactsProvider.future);
@@ -1936,13 +2280,13 @@ class _EappStartStepState extends ConsumerState<_EappStartStep> {
     final product = _product;
     final controller = product == null
         ? null
-        : ref.read(quoteFormProvider(product).notifier);
+        : ref.read(eappQuoteFormProvider(product).notifier);
     final answers = product == null
         ? <String, dynamic>{}
-        : ref.watch(quoteFormProvider(product));
+        : ref.watch(eappQuoteFormProvider(product));
     final error = controller?.validate();
     final result = controller?.calculate();
-    final customer = _customer;
+    final customer = _customerDisplay;
 
     final categoryProducts = _category == null
         ? const <Product>[]
@@ -1973,8 +2317,8 @@ class _EappStartStepState extends ConsumerState<_EappStartStep> {
               Padding(
                 padding: const EdgeInsets.only(bottom: 8),
                 child: Text(
-                  'Calculate the premium before continuing — the figure '
-                  'carries into the application.',
+                  'Fill in the premium inputs for this product before '
+                  'continuing.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 11,
@@ -2013,9 +2357,7 @@ class _EappStartStepState extends ConsumerState<_EappStartStep> {
                   optional: true,
                   done: customer != null,
                   value: customer?.name,
-                  valueTag: customer == null
-                      ? null
-                      : (customer.isClient ? 'Client' : 'Lead'),
+                  valueTag: customer?.tag,
                   hint: 'Prefill from a lead or client · skip for a walk-in',
                   onTap: _pickCustomer,
                   onClear: customer == null
@@ -2082,39 +2424,37 @@ class _EappStartStepState extends ConsumerState<_EappStartStep> {
                   _StartSlotRow(
                     icon: Icons.calculate_outlined,
                     title: 'Premium',
-                    done: result != null && !_premiumOpen,
-                    value: result == null
-                        ? null
-                        : 'Estimated ${_startMoney.format(result.total)} MMK',
-                    hint: 'Enter the inputs to calculate',
-                    onTap: () => setState(() => _premiumOpen = true),
-                    expanded: (result != null && !_premiumOpen)
-                        ? null
-                        : Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              for (final field in product.calculatorFields)
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 12),
-                                  child: QuoteFieldRenderer(
-                                    field: field,
-                                    value: answers[field.key],
-                                    onChanged: (value) =>
-                                        controller!.setValue(field.key, value),
-                                    onToggleMulti: (value) => controller!
-                                        .toggleMulti(field.key, value),
-                                  ),
-                                ),
-                              if (error != null)
-                                Text(
-                                  error,
-                                  style: const TextStyle(
-                                    fontSize: 11,
-                                    color: AppColors.danger,
-                                  ),
-                                ),
-                            ],
+                    done: result != null,
+                    value: result == null ? null : 'Inputs completed',
+                    hint: 'Fill in the details for this product',
+                    // The inputs stay on screen after the figure lands: the
+                    // FA is still typing the customer's numbers in, and
+                    // collapsing them hid the field they were editing.
+                    expanded: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        for (final field in product.calculatorFields)
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 12),
+                            child: QuoteFieldRenderer(
+                              field: field,
+                              value: answers[field.key],
+                              onChanged: (value) =>
+                                  controller!.setValue(field.key, value),
+                              onToggleMulti: (value) =>
+                                  controller!.toggleMulti(field.key, value),
+                            ),
                           ),
+                        if (error != null)
+                          Text(
+                            error,
+                            style: const TextStyle(
+                              fontSize: 11,
+                              color: AppColors.danger,
+                            ),
+                          ),
+                      ],
+                    ),
                   ),
                 ],
               ],
@@ -2641,6 +2981,84 @@ class _ProductChoiceTile extends StatelessWidget {
   }
 }
 
+/// The Sign step's source switch, pulled out so the Documentation cards
+/// can wear the same control: one segmented row, the chosen half raised on
+/// white. Both places are answering the same question — draw/photograph it
+/// here, or pick a file the phone already holds.
+class _SourceSegments extends StatelessWidget {
+  const _SourceSegments({
+    required this.value,
+    required this.options,
+    required this.onChanged,
+  });
+
+  /// (value, label, icon) per segment.
+  final List<(String, String, IconData)> options;
+  final String value;
+  final ValueChanged<String>? onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.cream,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      padding: const EdgeInsets.all(4),
+      child: Row(
+        children: [
+          for (final (i, (v, label, icon)) in options.indexed) ...[
+            if (i > 0) const SizedBox(width: 4),
+            Expanded(
+              child: GestureDetector(
+                onTap: () => onChanged?.call(v),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  decoration: BoxDecoration(
+                    color: value == v ? Colors.white : Colors.transparent,
+                    borderRadius: BorderRadius.circular(6),
+                    boxShadow: value == v
+                        ? [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.08),
+                              blurRadius: 4,
+                            ),
+                          ]
+                        : null,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        icon,
+                        size: 14,
+                        color: value == v
+                            ? AppColors.primaryColor
+                            : AppColors.muted,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        label,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: value == v
+                              ? AppColors.primaryColor
+                              : AppColors.muted,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
 class _DocsStep extends StatelessWidget {
   const _DocsStep({
     required this.title,
@@ -2696,22 +3114,16 @@ class _DocsStep extends StatelessWidget {
             style: TextStyle(fontSize: 11.5, color: AppColors.deepAlpha(0.55)),
           ),
           const SizedBox(height: 10),
-          Row(
-            children: [
-              AppSelectionChip(
-                label: 'NRC',
-                selected: documentType == 'NRC',
-                onSelected: (_) => onTypeChanged('NRC'),
-                icon: Icons.badge_outlined,
-              ),
-              const SizedBox(width: 8),
-              AppSelectionChip(
-                label: 'Passport',
-                selected: documentType == 'Passport',
-                onSelected: (_) => onTypeChanged('Passport'),
-                icon: Icons.public_outlined,
-              ),
+          // NRC or Passport is one exclusive choice over the same slot, so
+          // it reads as a two-tab segment — the control the Sign step uses
+          // for the same kind of either/or — rather than two loose chips.
+          _SourceSegments(
+            value: documentType,
+            options: const [
+              ('NRC', 'NRC', Icons.badge_outlined),
+              ('Passport', 'Passport', Icons.public_outlined),
             ],
+            onChanged: onTypeChanged,
           ),
           const SizedBox(height: 12),
           // Doc 115 §1 — the NRC has two physical sides, so it gets two
@@ -2852,10 +3264,21 @@ class _DocumentCaptureTile extends StatelessWidget {
                             ),
                             const SizedBox(height: 6),
                             Text(
-                              'Tap to capture',
+                              'Tap to add',
                               style: TextStyle(
                                 fontSize: 10.5,
-                                color: AppColors.deepAlpha(0.5),
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.deepAlpha(0.6),
+                              ),
+                            ),
+                            const SizedBox(height: 2),
+                            // The sheet offers two ways in; say so here so
+                            // an FA who already has the photo knows.
+                            Text(
+                              'Camera or upload',
+                              style: TextStyle(
+                                fontSize: 9.5,
+                                color: AppColors.deepAlpha(0.42),
                               ),
                             ),
                           ],
@@ -3074,108 +3497,13 @@ class _SignaturePad extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           if (!locked) ...[
-            // Mode toggle
-            Container(
-              decoration: BoxDecoration(
-                color: AppColors.cream,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              padding: const EdgeInsets.all(4),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () => onModeChanged?.call('esign'),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        decoration: BoxDecoration(
-                          color: mode == 'esign'
-                              ? Colors.white
-                              : Colors.transparent,
-                          borderRadius: BorderRadius.circular(6),
-                          boxShadow: mode == 'esign'
-                              ? [
-                                  BoxShadow(
-                                    color: Colors.black.withValues(alpha: 0.08),
-                                    blurRadius: 4,
-                                  ),
-                                ]
-                              : null,
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.draw,
-                              size: 14,
-                              color: mode == 'esign'
-                                  ? AppColors.primaryColor
-                                  : AppColors.muted,
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              'E-Sign',
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                                color: mode == 'esign'
-                                    ? AppColors.primaryColor
-                                    : AppColors.muted,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 4),
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () => onModeChanged?.call('upload'),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        decoration: BoxDecoration(
-                          color: mode == 'upload'
-                              ? Colors.white
-                              : Colors.transparent,
-                          borderRadius: BorderRadius.circular(6),
-                          boxShadow: mode == 'upload'
-                              ? [
-                                  BoxShadow(
-                                    color: Colors.black.withValues(alpha: 0.08),
-                                    blurRadius: 4,
-                                  ),
-                                ]
-                              : null,
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.photo_camera_outlined,
-                              size: 14,
-                              color: mode == 'upload'
-                                  ? AppColors.primaryColor
-                                  : AppColors.muted,
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              'Upload',
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                                color: mode == 'upload'
-                                    ? AppColors.primaryColor
-                                    : AppColors.muted,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+            _SourceSegments(
+              value: mode,
+              options: const [
+                ('esign', 'E-Sign', Icons.draw),
+                ('upload', 'Upload', Icons.photo_camera_outlined),
+              ],
+              onChanged: onModeChanged,
             ),
             const SizedBox(height: 10),
           ],
