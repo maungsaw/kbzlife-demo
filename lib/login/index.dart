@@ -133,16 +133,18 @@ class _MobileLoginScreenState extends ConsumerState<MobileLoginScreen> {
                 children: [
                   const SizedBox(height: 40),
                   Center(
+                    // The supplied lockup already sets the wordmark, so the
+                    // heading below no longer repeats "KBZ LIFE".
                     child: Image.asset(
-                      'assets/brand-mark.png',
-                      width: 80,
-                      height: 80,
+                      'assets/icons/main-logo.png',
+                      width: 200,
+                      fit: BoxFit.contain,
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 20),
                   const Center(
                     child: Text(
-                      'KBZ LIFE Sales Digital Platfrom',
+                      'Sales Digital Platform',
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
