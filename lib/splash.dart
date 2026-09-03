@@ -65,47 +65,30 @@ class _AnimatedSplashScreenState extends State<AnimatedSplashScreen>
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Spacer(flex: 3),
+                // The supplied brand lockup — mark, wordmark and
+                // "Insurance" already set as one artwork, so the splash no
+                // longer re-types them in system fonts beneath the icon.
                 Image.asset(
-                  'assets/brand-mark.png',
-                  width: 120,
-                  height: 120,
+                  'assets/icons/splash-lockup.png',
+                  width: 260,
+                  fit: BoxFit.contain,
                   errorBuilder: (context, error, stackTrace) {
                     return Container(
-                      width: 120,
-                      height: 120,
+                      width: 200,
+                      height: 200,
                       decoration: BoxDecoration(
                         color: AppColors.primaryColor.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: const Icon(
                         Icons.business,
-                        size: 60,
+                        size: 90,
                         color: AppColors.primaryColor,
                       ),
                     );
                   },
                 ),
-                const SizedBox(height: 24),
-                const Text(
-                  'KBZ LIFE',
-                  style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.primaryColor,
-                    letterSpacing: 2.0,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                const Text(
-                  'Insurance',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.accentNavy,
-                    letterSpacing: 1.0,
-                  ),
-                ),
-                const SizedBox(height: 48),
+                const SizedBox(height: 40),
                 const Text(
                   'Agency Sales Digital Platform',
                   style: TextStyle(

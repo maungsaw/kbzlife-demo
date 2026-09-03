@@ -33,14 +33,17 @@ flutter:
   
   assets:
     - assets/brand-mark.png
+    - assets/icons/
     - assets/products/
 
 # --- Native Splash Configuration ---
 flutter_native_splash:
-  color: "#0B2545"               # Background color of the native screen
-  image: assets/brand-mark.png   # Your graphic icon logo
+  # White ground, blue mark — the native screen and the in-app splash now
+  # match, so the app does not flash navy before showing white.
+  color: "#FFFFFF"                      # Background color of the native screen
+  image: assets/icons/splash-lockup.png # Brand lockup, blue on white
   
   # Android 12+ specific settings
   android_12:
-    color: "#0B2545"
-    image: assets/brand-mark.png
+    color: "#FFFFFF"
+    image: assets/icons/splash-lockup.png

@@ -28,7 +28,7 @@ class _AuthorizedAgentScreenState extends ConsumerState<AuthorizedAgentScreen> {
       'description':
           'Earn up to 15% extra commission on Life & Health policies this month.',
       'buttonText': 'Join Campaign',
-      'imageUrl': 'assets/brand-mark.png',
+      'imageUrl': 'assets/icons/images.png',
     },
     {
       'tag': 'LIMITED TIME',
@@ -36,14 +36,14 @@ class _AuthorizedAgentScreenState extends ConsumerState<AuthorizedAgentScreen> {
       'description':
           'Double bonus points for every vehicle coverage issued this week.',
       'buttonText': 'Claim Bonus',
-      'imageUrl': 'assets/brand-mark.png',
+      'imageUrl': 'assets/icons/images.png',
     },
     {
       'tag': 'REFERRAL PROGRAM',
       'title': 'Agent Network Rewards',
       'description': 'Refer a new agent to receive 250,000 MMK cash reward.',
       'buttonText': 'Refer Agent',
-      'imageUrl': 'assets/brand-mark.png',
+      'imageUrl': 'assets/icons/images.png',
     },
   ];
 
@@ -93,7 +93,7 @@ class _AuthorizedAgentScreenState extends ConsumerState<AuthorizedAgentScreen> {
                 ),
                 child: ClipOval(
                   child: Image.asset(
-                    'assets/brand-mark.png',
+                    'assets/icons/brand-mark.png',
                     width: 32,
                     height: 32,
                     fit: BoxFit.cover,
