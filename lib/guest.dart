@@ -97,7 +97,7 @@ class _BeforeLoginDashboardScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.surfaceBg,
+      backgroundColor: AppColors.cream,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -156,7 +156,7 @@ class _BeforeLoginDashboardScreenState
                   ),
                 ),
                 child: const Text(
-                  'Explore Now',
+                  'Login',
                   style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
                 ),
               ),
@@ -413,6 +413,23 @@ class _BeforeLoginDashboardScreenState
       decoration: BoxDecoration(
         color: bgColor,
         borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: title.startsWith('Life & Savings')
+                ? AppColors.primaryColor.withValues(alpha: 0.04)
+                : AppColors.mint.withValues(alpha: 0.04),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+          BoxShadow(
+            color: title.startsWith('Life & Savings')
+                ? AppColors.primaryColor.withValues(alpha: 0.04)
+                : AppColors.mint.withValues(alpha: 0.04),
+            blurRadius: 28,
+            spreadRadius: -4,
+            offset: const Offset(0, 14),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

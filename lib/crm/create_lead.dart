@@ -59,11 +59,10 @@ class _CreateLeadScreenState extends ConsumerState<CreateLeadScreen> {
   final _tagsController = TextEditingController();
 
   final List<ProductModel> _availableProducts = MockProducts.all
-      .map((p) => ProductModel(
-            id: p.code,
-            name: p.name,
-            category: p.category.name,
-          ))
+      .map(
+        (p) =>
+            ProductModel(id: p.code, name: p.name, category: p.category.name),
+      )
       .toList();
 
   bool get _isIndividual => _leadType == LeadType.individual;
@@ -71,7 +70,8 @@ class _CreateLeadScreenState extends ConsumerState<CreateLeadScreen> {
   String? get _addressSummary {
     final parts = [
       if (_roomController.text.isNotEmpty) 'Room ${_roomController.text}',
-      if (_buildingController.text.isNotEmpty) 'Bldg ${_buildingController.text}',
+      if (_buildingController.text.isNotEmpty)
+        'Bldg ${_buildingController.text}',
       if (_houseController.text.isNotEmpty) 'No.${_houseController.text}',
       if (_streetController.text.isNotEmpty) '${_streetController.text} St',
       if (_wardController.text.isNotEmpty) 'Ward ${_wardController.text}',
@@ -209,12 +209,11 @@ class _CreateLeadScreenState extends ConsumerState<CreateLeadScreen> {
                 label: 'Township *',
               ),
               const SizedBox(height: 10),
-              _buildDropdownField(
-                'State/Region *',
-                'Select',
-                ['Yangon', 'Mandalay', 'Naypyidaw'],
-                (val) => setState(() => _stateRegion = val),
-              ),
+              _buildDropdownField('State/Region *', 'Select', [
+                'Yangon',
+                'Mandalay',
+                'Naypyidaw',
+              ], (val) => setState(() => _stateRegion = val)),
               const SizedBox(height: 18),
               SizedBox(
                 width: double.infinity,
@@ -233,7 +232,7 @@ class _CreateLeadScreenState extends ConsumerState<CreateLeadScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.surfaceBg,
+      backgroundColor: AppColors.cream,
       appBar: AppBar(
         automaticallyImplyActions: true,
         backgroundColor: Colors.white,
@@ -341,12 +340,11 @@ class _CreateLeadScreenState extends ConsumerState<CreateLeadScreen> {
                     ),
                     if (_isIndividual) ...[
                       const SizedBox(height: 14),
-                      _buildDropdownField(
-                        'MARITAL STATUS',
-                        'Select',
-                        ['Single', 'Married', 'Divorced'],
-                        (val) => setState(() => _maritalStatus = val),
-                      ),
+                      _buildDropdownField('MARITAL STATUS', 'Select', [
+                        'Single',
+                        'Married',
+                        'Divorced',
+                      ], (val) => setState(() => _maritalStatus = val)),
                       const SizedBox(height: 14),
                       _buildTextField(
                         'JOB TITLE',
@@ -364,7 +362,9 @@ class _CreateLeadScreenState extends ConsumerState<CreateLeadScreen> {
                       label: 'Address',
                       hint: 'Tap to enter address',
                       readOnly: true,
-                      controller: TextEditingController(text: _addressSummary ?? ''),
+                      controller: TextEditingController(
+                        text: _addressSummary ?? '',
+                      ),
                       suffixIcon: const Icon(Icons.chevron_right),
                       onTap: () => _showAddressSheet(),
                     ),
@@ -961,7 +961,7 @@ class _CRMContactsScreenState extends ConsumerState<CRMContactsScreen> {
         .length;
 
     return Scaffold(
-      backgroundColor: AppColors.surfaceBg,
+      backgroundColor: AppColors.cream,
       appBar: AppBar(
         backgroundColor: Colors.white,
         automaticallyImplyLeading: true,

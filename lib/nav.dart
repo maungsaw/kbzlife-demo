@@ -29,7 +29,9 @@ class BottomApp extends ConsumerWidget {
         : ref.watch(currentTabProvider);
     const double barHeight = 56.0;
 
-    final tabs = isGuest ? _guestTabs(context, ref, currentTab) : _authTabs(context, ref, currentTab);
+    final tabs = isGuest
+        ? _guestTabs(context, ref, currentTab)
+        : _authTabs(context, ref, currentTab);
 
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -76,21 +78,33 @@ class BottomApp extends ConsumerWidget {
       _tooltip(
         message: 'Home',
         child: IconButton(
-          icon: FaIcon(FontAwesomeIcons.solidHouse, color: currentTab == 0 ? AppColors.primaryColor : Colors.grey, size: 18),
+          icon: FaIcon(
+            FontAwesomeIcons.solidHouse,
+            color: currentTab == 0 ? AppColors.primaryColor : Colors.grey,
+            size: 18,
+          ),
           onPressed: () => onTabChanged?.call(0),
         ),
       ),
       _tooltip(
         message: 'Products',
         child: IconButton(
-          icon: FaIcon(FontAwesomeIcons.boxOpen, color: currentTab == 1 ? AppColors.primaryColor : Colors.grey, size: 18),
+          icon: FaIcon(
+            FontAwesomeIcons.boxOpen,
+            color: currentTab == 1 ? AppColors.primaryColor : Colors.grey,
+            size: 18,
+          ),
           onPressed: () => onTabChanged?.call(1),
         ),
       ),
       _tooltip(
         message: 'Profile',
         child: IconButton(
-          icon: FaIcon(FontAwesomeIcons.solidUser, color: currentTab == 2 ? AppColors.primaryColor : Colors.grey, size: 18),
+          icon: FaIcon(
+            FontAwesomeIcons.solidUser,
+            color: currentTab == 2 ? AppColors.primaryColor : Colors.grey,
+            size: 18,
+          ),
           onPressed: () => onTabChanged?.call(2),
         ),
       ),
@@ -102,21 +116,33 @@ class BottomApp extends ConsumerWidget {
       _tooltip(
         message: 'Home',
         child: IconButton(
-          icon: FaIcon(FontAwesomeIcons.solidHouse, color: currentTab == 0 ? AppColors.primaryColor : Colors.grey, size: 18),
+          icon: FaIcon(
+            FontAwesomeIcons.solidHouse,
+            color: currentTab == 0 ? AppColors.primaryColor : Colors.grey,
+            size: 18,
+          ),
           onPressed: () => onTabChanged?.call(0),
         ),
       ),
       _tooltip(
         message: 'CRM',
         child: IconButton(
-          icon: FaIcon(FontAwesomeIcons.users, color: currentTab == 1 ? AppColors.primaryColor : Colors.grey, size: 18),
+          icon: FaIcon(
+            FontAwesomeIcons.users,
+            color: currentTab == 1 ? AppColors.primaryColor : Colors.grey,
+            size: 18,
+          ),
           onPressed: () => onTabChanged?.call(1),
         ),
       ),
       _tooltip(
         message: 'Products',
         child: IconButton(
-          icon: FaIcon(FontAwesomeIcons.boxOpen, color: currentTab == 2 ? AppColors.primaryColor : Colors.grey, size: 18),
+          icon: FaIcon(
+            FontAwesomeIcons.boxOpen,
+            color: currentTab == 2 ? AppColors.primaryColor : Colors.grey,
+            size: 18,
+          ),
           onPressed: () => onTabChanged?.call(2),
         ),
       ),
@@ -377,7 +403,7 @@ class _NavShellState extends ConsumerState<NavShell> {
         : ['/home', '/crm', '/products', '/profile'];
 
     return Scaffold(
-      backgroundColor: AppColors.surfaceBg,
+      backgroundColor: AppColors.cream,
       body: widget.navigationShell,
       bottomNavigationBar: BottomApp(
         isGuest: widget.isGuest,

@@ -316,7 +316,10 @@ class _ProductList extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 8),
-          FaIcon(FontAwesomeIcons.chevronRight, color: AppColors.deepAlpha(0.3)),
+          FaIcon(
+            FontAwesomeIcons.chevronRight,
+            color: AppColors.deepAlpha(0.3),
+          ),
         ],
       ),
     ),

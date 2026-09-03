@@ -126,7 +126,7 @@ class _ApplicationTrackerDetailScreenState
     );
 
     return Scaffold(
-      backgroundColor: AppColors.surfaceBg,
+      backgroundColor: AppColors.cream,
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 18),

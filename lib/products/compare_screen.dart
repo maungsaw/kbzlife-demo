@@ -198,7 +198,11 @@ class _CompareHeader extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                FaIcon(FontAwesomeIcons.handPointer, size: 11, color: AppColors.primaryColor),
+                FaIcon(
+                  FontAwesomeIcons.handPointer,
+                  size: 11,
+                  color: AppColors.primaryColor,
+                ),
                 const SizedBox(width: 4),
                 Text(
                   'Tap to change',
@@ -226,7 +230,9 @@ class _CompareHeader extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   FaIcon(
-                    pinned ? FontAwesomeIcons.thumbtack : FontAwesomeIcons.thumbtack,
+                    pinned
+                        ? FontAwesomeIcons.thumbtack
+                        : FontAwesomeIcons.thumbtack,
                     size: 10,
                     color: pinned ? Colors.white : AppColors.deepAlpha(0.5),
                   ),
@@ -354,7 +360,10 @@ class _ChangeSheet extends StatelessWidget {
                       ),
                     ),
                     trailing: p.code == currentCode
-                        ? const FaIcon(FontAwesomeIcons.solidCircleCheck, color: AppColors.mint)
+                        ? const FaIcon(
+                            FontAwesomeIcons.solidCircleCheck,
+                            color: AppColors.mint,
+                          )
                         : null,
                     onTap: () => Navigator.pop(context, p.code),
                   ),

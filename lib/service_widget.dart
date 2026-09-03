@@ -136,9 +136,15 @@ class ServicesCard extends StatelessWidget {
         borderRadius: .circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
-            blurRadius: 24,
-            offset: const Offset(0, 8),
+            color: AppColors.baltic.withValues(alpha: 0.04),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+          BoxShadow(
+            color: AppColors.baltic.withValues(alpha: 0.04),
+            blurRadius: 28,
+            spreadRadius: -4,
+            offset: const Offset(0, 14),
           ),
         ],
       ),
@@ -317,21 +323,21 @@ class _ServiceTileState extends ConsumerState<_ServiceTile> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(
-                width: 52,
-                height: 52,
+                width: 56,
+                height: 56,
                 child: Stack(
                   clipBehavior: Clip.none,
                   children: [
                     Positioned.fill(
                       child: Container(
                         decoration: BoxDecoration(
-                          color: AppColors.primaryColor.withValues(alpha: 0.09),
+                          color: AppColors.baltic.withValues(alpha: 0.04),
                           borderRadius: BorderRadius.circular(14),
                         ),
                         child: Center(
                           child: FaIcon(
                             widget.service.icon,
-                            size: 32,
+                            size: 40,
                             color: AppColors.primaryColor,
                           ),
                         ),

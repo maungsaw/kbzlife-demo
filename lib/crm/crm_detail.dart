@@ -73,7 +73,7 @@ class _CRMDetailViewScreenState extends ConsumerState<CRMDetailViewScreen>
     final stageColor = _getStageColor(effectiveStageLabel);
 
     return Scaffold(
-      backgroundColor: AppColors.surfaceBg,
+      backgroundColor: AppColors.cream,
       appBar: AppBar(
         automaticallyImplyActions: true,
         title: const Text(

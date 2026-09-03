@@ -18,7 +18,8 @@ class PerformanceDashboardPage extends ConsumerStatefulWidget {
       _PerformanceDashboardPageState();
 }
 
-class _PerformanceDashboardPageState extends ConsumerState<PerformanceDashboardPage> {
+class _PerformanceDashboardPageState
+    extends ConsumerState<PerformanceDashboardPage> {
   late List<HierarchyNodeModel> _breadcrumbs;
   int _tabIndex = 0;
   String _selectedChannel = 'All';
@@ -60,7 +61,7 @@ class _PerformanceDashboardPageState extends ConsumerState<PerformanceDashboardP
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.surfaceBg,
+      backgroundColor: AppColors.cream,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -93,10 +94,7 @@ class _PerformanceDashboardPageState extends ConsumerState<PerformanceDashboardP
         actions: [
           if (_currentNode.isLeader)
             IconButton(
-              icon: const Icon(
-                Icons.tune_rounded,
-                color: AppColors.muted,
-              ),
+              icon: const Icon(Icons.tune_rounded, color: AppColors.muted),
               onPressed: _showFiltersSheet,
             ),
           IconButton(
@@ -122,8 +120,7 @@ class _PerformanceDashboardPageState extends ConsumerState<PerformanceDashboardP
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: _buildTabs(),
             ),
-          if (_currentNode.isLeader)
-            const SizedBox(height: 8),
+          if (_currentNode.isLeader) const SizedBox(height: 8),
           Expanded(
             child: IndexedStack(
               index: _tabIndex,
@@ -251,7 +248,10 @@ class _PerformanceDashboardPageState extends ConsumerState<PerformanceDashboardP
               ),
               if (metrics.isRedFlag)
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: const Color(0xFFFFEBEE),
                     borderRadius: BorderRadius.circular(8),
@@ -278,7 +278,10 @@ class _PerformanceDashboardPageState extends ConsumerState<PerformanceDashboardP
                 )
               else
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.white.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
@@ -314,7 +317,10 @@ class _PerformanceDashboardPageState extends ConsumerState<PerformanceDashboardP
                 _heroDivider(),
                 _heroStat('Policies', '${metrics.policyCount.totalCount}'),
                 _heroDivider(),
-                _heroStat('Commission', '${metrics.commission.totalCommission}M'),
+                _heroStat(
+                  'Commission',
+                  '${metrics.commission.totalCommission}M',
+                ),
               ],
             ),
           ),
@@ -549,12 +555,17 @@ class _PerformanceDashboardPageState extends ConsumerState<PerformanceDashboardP
             return GestureDetector(
               onTap: () => onChanged(option),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 10,
+                ),
                 decoration: BoxDecoration(
                   color: isSelected ? AppColors.primaryColor : Colors.white,
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                    color: isSelected ? AppColors.primaryColor : const Color(0xFFE2E8F0),
+                    color: isSelected
+                        ? AppColors.primaryColor
+                        : const Color(0xFFE2E8F0),
                   ),
                 ),
                 child: Text(

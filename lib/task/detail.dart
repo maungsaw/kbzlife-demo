@@ -61,7 +61,10 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.edit_outlined, color: AppColors.primaryColor),
+            icon: const Icon(
+              Icons.edit_outlined,
+              color: AppColors.primaryColor,
+            ),
             onPressed: () {
               // Navigate back to Edit/Create view
             },
@@ -208,7 +211,7 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
                         ),
                       ),
                       label: Text(user, style: const TextStyle(fontSize: 12)),
-                      backgroundColor: AppColors.surfaceBg,
+                      backgroundColor: AppColors.cream,
                       side: const BorderSide(color: AppColors.border),
                       visualDensity: VisualDensity.compact,
                     ),

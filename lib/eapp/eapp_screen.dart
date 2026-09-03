@@ -727,7 +727,6 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
         }
       },
       child: Scaffold(
-        backgroundColor: AppColors.cream,
         appBar: AppBar(
           title: const Text('e-Application'),
           leading: IconButton(

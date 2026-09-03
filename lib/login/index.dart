@@ -122,7 +122,7 @@ class _MobileLoginScreenState extends ConsumerState<MobileLoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.surfaceBg,
+      backgroundColor: AppColors.cream,
       body: SafeArea(
         child: Stack(
           children: [
