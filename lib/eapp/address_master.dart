@@ -29,17 +29,6 @@ const kTownMaster = <TownEntry>[
   TownEntry('Monywa', 'Monywa', 'Monywa', 'Sagaing Region'),
 ];
 
-/// Sales masters (mock) — Proposal tab dropdowns are all "selected from a
-/// master list" in the sheet; there is no Core in this prototype.
-const kSaleChannels = ['Agency', 'Bancassurance', 'Direct', 'Broker'];
-const kSaleGroups = ['ADM1', 'ADM2', 'AADM1', 'SADM1', 'SAM1', 'AM1'];
-const kSalePersons = [
-  'Aung Kyaw Moe (FA-1042)',
-  'Su Su Hlaing (FA-2210)',
-  'Nay Lin Tun (FA-3388)',
-];
-const kSaleAttachments = ['Direct', 'Referral Partner', 'Roadshow', 'Branch'];
-
 /// An FA can be attached to more than one branch, so the Proposal tab picks
 /// one rather than showing a single Core-sourced read-out.
 const kBranchOffices = [

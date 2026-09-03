@@ -369,8 +369,10 @@ class ApplicantCard extends StatelessWidget {
   /// (doc 111 §3). Gate the control rather than failing at validation.
   bool get _canBeEntity => applicant.role != ApplicantRole.insured;
 
-  String? _helper(String key) =>
-      prefilledKeys.contains(key) ? 'From lead record' : null;
+  /// Prefilled fields carry no per-field note: the banner at the top of
+  /// the step already says where the values came from, and a line under
+  /// every second field made the card twice as tall for no new information.
+  String? _helper(String key) => null;
 
   @override
   Widget build(BuildContext context) {
@@ -591,7 +593,12 @@ class ApplicantCard extends StatelessWidget {
               initial: applicant.idNoController.text,
             );
             if (result != null) {
-              applicant.idNoController.text = result;
+              final (display, type) = result;
+              applicant.idNoController.text = display;
+              applicant.idType = type;
+              // The Documentation step photographs whatever was chosen
+              // here — an NRC has two sides, a passport one page.
+              applicant.documentType = type == 'Passport' ? 'Passport' : 'NRC';
               onChanged();
             }
           },
@@ -726,7 +733,6 @@ class _AddressRow extends StatelessWidget {
     // rest instead of a bare InputDecorator.
     return AppTextField(
       label: 'Address',
-      helperText: prefilled ? 'From lead record' : null,
       suffixIcon: const Icon(Icons.chevron_right),
       onTap: () async {
         if (await showAddressSheet(context, applicant)) onChanged();

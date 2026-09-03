@@ -115,11 +115,14 @@ class _SourceTile extends StatelessWidget {
   }
 }
 
-Future<String?> showIdentificationPickerSheet(
+/// Returns the display value *and* the identification type the FA picked
+/// ('NRC' / 'Old NRC' / 'Passport' / 'No ID'). The Documentation step keys
+/// off that type, so losing it here left the two steps free to disagree.
+Future<(String, String)?> showIdentificationPickerSheet(
   BuildContext context, {
   String? initial,
 }) {
-  return showModalBottomSheet<String>(
+  return showModalBottomSheet<(String, String)>(
     context: context,
     showDragHandle: true,
     isScrollControlled: true,
@@ -135,6 +138,17 @@ class _IdSheet extends ConsumerStatefulWidget {
   @override
   ConsumerState<_IdSheet> createState() => _IdSheetState();
 }
+
+/// NRC masters (mock). A prefilled record can carry a code outside these
+/// lists — a CRM lead from Mandalay, say — so the parsed value is folded
+/// into the options rather than dropped, which is what crashed the sheet:
+/// DropdownButton asserts its value is one of its items.
+const _kNrcStates = ['1', '5', '9', '12', '13'];
+const _kNrcTownships = ['KaMaNa', 'PaZaTa', 'LaMaNa', 'MaBaNa', 'MaHaMa'];
+const _kNrcTypes = ['N', 'P', 'E'];
+
+List<String> _withValue(List<String> options, String value) =>
+    options.contains(value) ? options : [value, ...options];
 
 class _IdSheetState extends ConsumerState<_IdSheet> {
   late String _type;
@@ -231,7 +245,7 @@ class _IdSheetState extends ConsumerState<_IdSheet> {
                           child: EappDropdownField(
                             label: 'State',
                             value: _state,
-                            options: const ['12', '9', '1'],
+                            options: _withValue(_kNrcStates, _state),
                             onChanged: (v) =>
                                 setState(() => _state = v ?? _state),
                           ),
@@ -241,7 +255,7 @@ class _IdSheetState extends ConsumerState<_IdSheet> {
                           child: EappDropdownField(
                             label: 'Township',
                             value: _township,
-                            options: const ['KaMaNa', 'PaZaTa', 'LaMaNa'],
+                            options: _withValue(_kNrcTownships, _township),
                             onChanged: (v) =>
                                 setState(() => _township = v ?? _township),
                           ),
@@ -251,7 +265,7 @@ class _IdSheetState extends ConsumerState<_IdSheet> {
                           child: EappDropdownField(
                             label: 'Type',
                             value: _idType,
-                            options: const ['N', 'P', 'E'],
+                            options: _withValue(_kNrcTypes, _idType),
                             onChanged: (v) =>
                                 setState(() => _idType = v ?? _idType),
                           ),
@@ -306,7 +320,7 @@ class _IdSheetState extends ConsumerState<_IdSheet> {
                   'Passport' => _numberController.text,
                   _ => 'No ID',
                 };
-                Navigator.pop(context, display);
+                Navigator.pop(context, (display, _type));
               },
               child: const Text('Done'),
             ),

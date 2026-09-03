@@ -73,7 +73,10 @@ class _OtpBottomSheetState extends ConsumerState<OtpBottomSheet> {
   @override
   void initState() {
     super.initState();
-    _controllers = List.generate(widget.maxLength, (_) => TextEditingController());
+    _controllers = List.generate(
+      widget.maxLength,
+      (_) => TextEditingController(),
+    );
     _focusNodes = List.generate(widget.maxLength, (_) => FocusNode());
     _startTimer();
   }
@@ -250,9 +253,7 @@ class _OtpBottomSheetState extends ConsumerState<OtpBottomSheet> {
                         fontWeight: FontWeight.bold,
                         color: AppColors.accentNavy,
                       ),
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                      ],
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       decoration: InputDecoration(
                         counterText: '',
                         contentPadding: EdgeInsets.zero,
@@ -292,10 +293,7 @@ class _OtpBottomSheetState extends ConsumerState<OtpBottomSheet> {
                   _canResend
                       ? "Didn't receive the code?"
                       : 'Resend code in ${_startSeconds.toString().padLeft(2, '0')}s',
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: AppColors.muted,
-                  ),
+                  style: const TextStyle(fontSize: 12, color: AppColors.muted),
                 ),
                 GestureDetector(
                   onTap: _canResend ? _resendOtp : null,
