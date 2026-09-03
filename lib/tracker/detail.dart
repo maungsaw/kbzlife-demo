@@ -126,10 +126,10 @@ class _ApplicationTrackerDetailScreenState
     );
 
     return Scaffold(
-      backgroundColor: AppColors.cream,
+      backgroundColor: context.colors.cream,
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 18),
+          icon: Icon(Icons.arrow_back_ios_new_rounded, size: context.iconLg),
           onPressed: () => Navigator.maybePop(context),
         ),
         title: const Text('Application Details'),
@@ -150,12 +150,12 @@ class _ApplicationTrackerDetailScreenState
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Text(
+                            Text(
                               'APP-2026-00821',
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
-                                color: AppColors.accentNavy,
+                                color: context.colors.accentNavy,
                               ),
                             ),
                             Container(
@@ -164,14 +164,14 @@ class _ApplicationTrackerDetailScreenState
                                 vertical: 3,
                               ),
                               decoration: BoxDecoration(
-                                color: AppColors.border.withValues(alpha: 0.5),
+                                color: context.colors.border.withValues(alpha: 0.5),
                                 borderRadius: BorderRadius.circular(4),
                               ),
-                              child: const Text(
+                              child: Text(
                                 'Universal Life',
                                 style: TextStyle(
                                   fontSize: 10,
-                                  color: AppColors.muted,
+                                  color: context.colors.muted,
                                 ),
                               ),
                             ),
@@ -182,12 +182,12 @@ class _ApplicationTrackerDetailScreenState
                         const SizedBox(height: 16),
                         _buildSummaryCard(),
                         const SizedBox(height: 20),
-                        const Text(
+                        Text(
                           'Application Progress',
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.bold,
-                            color: AppColors.accentNavy,
+                            color: context.colors.accentNavy,
                           ),
                         ),
                         const SizedBox(height: 14),
@@ -231,17 +231,17 @@ class _ApplicationTrackerDetailScreenState
         node.status == ApplicationStatus.markForCorrection;
     final bool isRejected = node.status == ApplicationStatus.rejected;
 
-    Color iconColor = AppColors.border;
+    Color iconColor = context.colors.border;
     IconData icon = Icons.radio_button_unchecked;
 
     if (isCorrection) {
-      iconColor = AppColors.statusCorrection;
+      iconColor = context.colors.statusCorrection;
       icon = Icons.warning_rounded;
     } else if (isRejected) {
-      iconColor = AppColors.primaryColor;
+      iconColor = context.colors.primaryColor;
       icon = Icons.cancel_rounded;
     } else if (isCompleted) {
-      iconColor = AppColors.statusApproved;
+      iconColor = context.colors.statusApproved;
       icon = Icons.check_circle_rounded;
     }
 
@@ -250,10 +250,10 @@ class _ApplicationTrackerDetailScreenState
         : null;
 
     final Color themeColor = isCorrection
-        ? AppColors.statusCorrection
+        ? context.colors.statusCorrection
         : isRejected
-        ? AppColors.primaryColor
-        : AppColors.statusSubmitted;
+        ? context.colors.primaryColor
+        : context.colors.statusSubmitted;
 
     return Row(
       crossAxisAlignment: .start,
@@ -271,14 +271,14 @@ class _ApplicationTrackerDetailScreenState
                 ),
               )
             else
-              Icon(icon, size: 18, color: iconColor),
+              Icon(icon, size: context.iconLg, color: iconColor),
             if (!isLast)
               Container(
                 width: 2,
                 height: 48,
                 color: isCompleted
-                    ? AppColors.statusApproved
-                    : AppColors.border,
+                    ? context.colors.statusApproved
+                    : context.colors.border,
               ),
           ],
         ),
@@ -297,7 +297,7 @@ class _ApplicationTrackerDetailScreenState
                       fontWeight: isCurrent || isCorrection
                           ? FontWeight.bold
                           : FontWeight.w500,
-                      color: isCurrent ? themeColor : AppColors.accentNavy,
+                      color: isCurrent ? themeColor : context.colors.accentNavy,
                     ),
                   ),
                   if (isCurrent && durationText != null)
@@ -346,14 +346,14 @@ class _ApplicationTrackerDetailScreenState
                   '${node.timestamp!.day} Aug ${node.timestamp!.year}, '
                   '${node.timestamp!.hour.toString().padLeft(2, '0')}:'
                   '${node.timestamp!.minute.toString().padLeft(2, '0')}',
-                  style: const TextStyle(fontSize: 10, color: AppColors.muted),
+                  style: TextStyle(fontSize: 10, color: context.colors.muted),
                 ),
               ],
               if (node.subtitle.isNotEmpty) ...[
                 const SizedBox(height: 2),
                 Text(
                   node.subtitle,
-                  style: const TextStyle(fontSize: 10, color: AppColors.muted),
+                  style: TextStyle(fontSize: 10, color: context.colors.muted),
                 ),
               ],
               const SizedBox(height: 14),
@@ -372,27 +372,27 @@ class _ApplicationTrackerDetailScreenState
 
     switch (status) {
       case ApplicationStatus.markForCorrection:
-        bannerColor = AppColors.statusCorrection;
+        bannerColor = context.colors.statusCorrection;
         bannerIcon = Icons.warning_amber_rounded;
         bannerTitle = 'MARK FOR CORRECTION';
         bannerMessage =
             'Action required\nPlease review the requested corrections and resubmit the application.';
         break;
       case ApplicationStatus.approved:
-        bannerColor = AppColors.statusApproved;
+        bannerColor = context.colors.statusApproved;
         bannerIcon = Icons.check_circle_rounded;
         bannerTitle = 'APPROVED';
         bannerMessage = 'Congratulations! The application has been approved.';
         break;
       case ApplicationStatus.rejected:
-        bannerColor = AppColors.primaryColor;
+        bannerColor = context.colors.primaryColor;
         bannerIcon = Icons.cancel_rounded;
         bannerTitle = 'REJECTED';
         bannerMessage =
             'Application was rejected. Please view documents for details.';
         break;
       case ApplicationStatus.underwriting:
-        bannerColor = AppColors.statusSubmitted;
+        bannerColor = context.colors.statusSubmitted;
         bannerIcon = Icons.hourglass_top_rounded;
         bannerTitle = 'UNDERWRITING';
         bannerMessage =
@@ -400,7 +400,7 @@ class _ApplicationTrackerDetailScreenState
         break;
       case ApplicationStatus.submitted:
       default:
-        bannerColor = AppColors.statusApproved;
+        bannerColor = context.colors.statusApproved;
         bannerIcon = Icons.check_circle_rounded;
         bannerTitle = 'SUBMITTED';
         bannerMessage =
@@ -420,7 +420,7 @@ class _ApplicationTrackerDetailScreenState
         children: [
           Row(
             children: [
-              Icon(bannerIcon, color: bannerColor, size: 18),
+              Icon(bannerIcon, color: bannerColor, size: context.iconLg),
               const SizedBox(width: 8),
               Text(
                 bannerTitle,
@@ -435,10 +435,10 @@ class _ApplicationTrackerDetailScreenState
           const SizedBox(height: 6),
           Text(
             bannerMessage,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 11,
               height: 1.4,
-              color: AppColors.accentNavy,
+              color: context.colors.accentNavy,
             ),
           ),
         ],
@@ -452,10 +452,10 @@ class _ApplicationTrackerDetailScreenState
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.colors.border),
       ),
-      child: Column(
-        children: const [
+        child: Column(
+        children: [
           Row(
             children: [
               Expanded(
@@ -493,9 +493,9 @@ class _ApplicationTrackerDetailScreenState
 
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: Colors.white,
-        border: Border(top: BorderSide(color: AppColors.border)),
+        border: Border(top: BorderSide(color: context.colors.border)),
       ),
       child: Row(
         children: [
@@ -503,20 +503,20 @@ class _ApplicationTrackerDetailScreenState
             child: OutlinedButton.icon(
               style: OutlinedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 12),
-                side: const BorderSide(color: AppColors.border),
+                side: BorderSide(color: context.colors.border),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
               ),
               onPressed: () {},
-              icon: const Icon(
+              icon: Icon(
                 Icons.description_outlined,
-                size: 16,
-                color: AppColors.accentNavy,
+                size: context.iconBase,
+                color: context.colors.accentNavy,
               ),
-              label: const Text(
+              label: Text(
                 'View Documents',
-                style: TextStyle(color: AppColors.accentNavy, fontSize: 12),
+                style: TextStyle(color: context.colors.accentNavy, fontSize: 12),
               ),
             ),
           ),
@@ -525,7 +525,7 @@ class _ApplicationTrackerDetailScreenState
             child: isCorrection
                 ? ElevatedButton.icon(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primaryColor,
+                      backgroundColor: context.colors.primaryColor,
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       elevation: 0,
                       shape: RoundedRectangleBorder(
@@ -533,7 +533,7 @@ class _ApplicationTrackerDetailScreenState
                       ),
                     ),
                     onPressed: () {},
-                    icon: const Icon(Icons.edit, size: 16, color: Colors.white),
+                    icon: Icon(Icons.edit, size: context.iconBase, color: Colors.white),
                     label: const Text(
                       'View Corrections',
                       style: TextStyle(
@@ -546,21 +546,21 @@ class _ApplicationTrackerDetailScreenState
                 : OutlinedButton.icon(
                     style: OutlinedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 12),
-                      side: const BorderSide(color: AppColors.border),
+                      side: BorderSide(color: context.colors.border),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
                     onPressed: () {},
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.share_outlined,
-                      size: 16,
-                      color: AppColors.accentNavy,
+                      size: context.iconBase,
+                      color: context.colors.accentNavy,
                     ),
-                    label: const Text(
+                    label: Text(
                       'Share',
                       style: TextStyle(
-                        color: AppColors.accentNavy,
+                        color: context.colors.accentNavy,
                         fontSize: 12,
                       ),
                     ),
@@ -584,15 +584,15 @@ class _MetaField extends StatelessWidget {
       children: [
         Text(
           label,
-          style: const TextStyle(fontSize: 10, color: AppColors.muted),
+          style: TextStyle(fontSize: 10, color: context.colors.muted),
         ),
         const SizedBox(height: 2),
         Text(
           value,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.bold,
-            color: AppColors.accentNavy,
+            color: context.colors.accentNavy,
           ),
         ),
       ],

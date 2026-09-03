@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+import '../const.dart';
+
 enum AnnouncementPriority { low, medium, high, urgent }
 
 extension PriorityExtension on AnnouncementPriority {
@@ -7,13 +9,13 @@ extension PriorityExtension on AnnouncementPriority {
   Color get color {
     switch (this) {
       case AnnouncementPriority.urgent:
-        return const Color(0xFFEF4444);
+        return kAppColors.danger;
       case AnnouncementPriority.high:
-        return const Color(0xFFF97316);
+        return kAppColors.warningText;
       case AnnouncementPriority.medium:
-        return const Color(0xFF3B82F6);
+        return kAppColors.infoText;
       case AnnouncementPriority.low:
-        return const Color(0xFF6B7280);
+        return kAppColors.muted;
     }
   }
 }

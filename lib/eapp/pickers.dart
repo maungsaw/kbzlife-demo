@@ -93,7 +93,7 @@ class _SourceTile extends StatelessWidget {
         ),
         child: Column(
           children: [
-            Icon(icon, size: 22, color: AppColors.primaryColor),
+            Icon(icon, size: context.iconXxl, color: AppColors.primaryColor),
             const SizedBox(height: 8),
             Text(
               label,
@@ -423,7 +423,7 @@ Future<String?> showWeightPickerSheet(
       rightLabel: '.',
       leftRange: List.generate(181, (i) => '${i + 70}'),
       rightRange: List.generate(10, (i) => '$i'),
-      formatPreview: (l, r) => '$l.$r lb',
+      formatPreview: (l, r) => '$l.$r',
     ),
   );
 }

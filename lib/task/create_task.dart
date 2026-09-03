@@ -50,13 +50,13 @@ class _CreateTaskScreenState extends ConsumerState<CreateTaskScreen> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.accentNavy),
+          icon: Icon(Icons.arrow_back, color: context.colors.accentNavy),
           onPressed: () => Navigator.maybePop(context),
         ),
-        title: const Text(
+        title: Text(
           'Create Task',
           style: TextStyle(
-            color: AppColors.accentNavy,
+            color: context.colors.accentNavy,
             fontWeight: FontWeight.bold,
             fontSize: 18,
           ),
@@ -124,7 +124,7 @@ class _CreateTaskScreenState extends ConsumerState<CreateTaskScreen> {
                       width: 24,
                       child: Checkbox(
                         value: _isAllDay,
-                        activeColor: AppColors.primaryColor,
+                        activeColor: context.colors.primaryColor,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(4),
                         ),
@@ -133,11 +133,11 @@ class _CreateTaskScreenState extends ConsumerState<CreateTaskScreen> {
                       ),
                     ),
                     const SizedBox(width: 8),
-                    const Text(
+                    Text(
                       'All Day',
                       style: TextStyle(
                         fontSize: 14,
-                        color: AppColors.accentNavy,
+                        color: context.colors.accentNavy,
                       ),
                     ),
                   ],
@@ -227,7 +227,7 @@ class _CreateTaskScreenState extends ConsumerState<CreateTaskScreen> {
               height: 50,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primaryColor,
+                  backgroundColor: context.colors.primaryColor,
                   elevation: 0,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -274,10 +274,10 @@ class _CreateTaskScreenState extends ConsumerState<CreateTaskScreen> {
         children: [
           Text(
             title,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: AppColors.primaryColor,
+              color: context.colors.primaryColor,
             ),
           ),
           const SizedBox(height: 16),
@@ -291,10 +291,10 @@ class _CreateTaskScreenState extends ConsumerState<CreateTaskScreen> {
     return RichText(
       text: TextSpan(
         text: label,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 13,
           fontWeight: FontWeight.w500,
-          color: AppColors.accentNavy,
+          color: context.colors.accentNavy,
         ),
         children: [
           if (isRequired)
@@ -318,19 +318,19 @@ class _CreateTaskScreenState extends ConsumerState<CreateTaskScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
         decoration: BoxDecoration(
-          color: AppColors.surfaceBg,
+          color: context.colors.surfaceBg,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Row(
           children: [
-            Icon(icon, size: 18, color: AppColors.muted),
+            Icon(icon, size: context.iconLg, color: context.colors.muted),
             const SizedBox(width: 8),
             Expanded(
               child: Text(
                 text,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14,
-                  color: AppColors.accentNavy,
+                  color: context.colors.accentNavy,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -363,16 +363,16 @@ class _CreateTaskScreenState extends ConsumerState<CreateTaskScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12),
       decoration: BoxDecoration(
-        color: AppColors.surfaceBg,
+        color: context.colors.surfaceBg,
         borderRadius: BorderRadius.circular(10),
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
           value: value,
           isExpanded: true,
-          icon: const Icon(
+          icon: Icon(
             Icons.keyboard_arrow_down_rounded,
-            color: AppColors.muted,
+            color: context.colors.muted,
           ),
           items: items
               .map(
@@ -392,16 +392,16 @@ class _CreateTaskScreenState extends ConsumerState<CreateTaskScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12),
       decoration: BoxDecoration(
-        color: AppColors.surfaceBg,
+        color: context.colors.surfaceBg,
         borderRadius: BorderRadius.circular(10),
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
           value: _priority,
           isExpanded: true,
-          icon: const Icon(
+          icon: Icon(
             Icons.keyboard_arrow_down_rounded,
-            color: AppColors.muted,
+            color: context.colors.muted,
           ),
           items: ['Low', 'Medium', 'High', 'Urgent'].map((e) {
             Color dotColor = Colors.green;
@@ -440,7 +440,7 @@ class _CreateTaskScreenState extends ConsumerState<CreateTaskScreen> {
         width: double.infinity,
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: AppColors.surfaceBg,
+          color: context.colors.surfaceBg,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Wrap(
@@ -450,27 +450,27 @@ class _CreateTaskScreenState extends ConsumerState<CreateTaskScreen> {
             ..._selectedAssignees.map(
               (user) => Chip(
                 avatar: CircleAvatar(
-                  backgroundColor: AppColors.primaryColor,
+                  backgroundColor: context.colors.primaryColor,
                   child: Text(
                     user[0],
                     style: const TextStyle(color: Colors.white, fontSize: 10),
                   ),
                 ),
                 label: Text(user, style: const TextStyle(fontSize: 12)),
-                deleteIcon: const Icon(Icons.close, size: 14),
+                deleteIcon: Icon(Icons.close, size: context.iconMd),
                 onDeleted: () {
                   if (_selectedAssignees.length > 1) {
                     setState(() => _selectedAssignees.remove(user));
                   }
                 },
                 backgroundColor: Colors.white,
-                side: const BorderSide(color: AppColors.border),
+                side: BorderSide(color: context.colors.border),
                 visualDensity: VisualDensity.compact,
               ),
             ),
-            const Padding(
+            Padding(
               padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-              child: Icon(Icons.add, size: 18, color: AppColors.primaryColor),
+              child: Icon(Icons.add, size: context.iconLg, color: context.colors.primaryColor),
             ),
           ],
         ),
@@ -503,7 +503,7 @@ class _CreateTaskScreenState extends ConsumerState<CreateTaskScreen> {
                   ..._availableUsers.map((user) {
                     final isSelected = _selectedAssignees.contains(user);
                     return CheckboxListTile(
-                      activeColor: AppColors.primaryColor,
+                      activeColor: context.colors.primaryColor,
                       title: Text(user, style: const TextStyle(fontSize: 14)),
                       value: isSelected,
                       onChanged: (bool? value) {

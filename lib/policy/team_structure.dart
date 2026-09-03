@@ -160,9 +160,9 @@ class _TeamStructurePageState extends State<TeamStructurePage> {
             ),
             leading: CircleAvatar(
               backgroundColor: Colors.deepOrange.withValues(alpha: 0.1),
-              child: const FaIcon(
+              child: FaIcon(
                 FontAwesomeIcons.users,
-                size: 14,
+                size: context.iconMd,
                 color: Colors.deepOrange,
               ),
             ),
@@ -222,9 +222,9 @@ class _TeamStructurePageState extends State<TeamStructurePage> {
               ),
             ),
             trailing: IconButton(
-              icon: const Icon(
+              icon: Icon(
                 Icons.arrow_forward_ios,
-                size: 14,
+                size: context.iconMd,
                 color: Colors.deepOrange,
               ),
               onPressed: () => widget.onPushUser(manager),
@@ -240,21 +240,21 @@ class _TeamStructurePageState extends State<TeamStructurePage> {
 
   Widget _buildSubUserGroup(BuildContext context, _TeamNode node) {
     return Container(
-      color: const Color(0xFFF8F9FA),
+            color: context.colors.sectionBg,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Divider(height: 1),
           Material(
-            color: const Color(0xFFF8F9FA),
+      color: context.colors.sectionBg,
             child: ListTile(
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 20,
                 vertical: 4,
               ),
-              leading: const Icon(
+              leading: Icon(
                 Icons.subdirectory_arrow_right,
-                size: 18,
+                size: context.iconLg,
                 color: Colors.grey,
               ),
               title: Text.rich(
@@ -276,8 +276,8 @@ class _TeamStructurePageState extends State<TeamStructurePage> {
                   children: [
                     TextSpan(
                       text: 'Own: ${node.ownPolicyCount} Policies',
-                      style: const TextStyle(
-                        color: AppColors.primaryColor,
+                      style: TextStyle(
+                        color: context.colors.primaryColor,
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
                       ),
@@ -300,7 +300,7 @@ class _TeamStructurePageState extends State<TeamStructurePage> {
                 ),
               ),
             ),
-            trailing: const Icon(Icons.chevron_right, size: 16),
+            trailing: Icon(Icons.chevron_right, size: context.iconBase),
             onTap: () => widget.onPushUser(node.user),
           ),
           ),

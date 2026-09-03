@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../const.dart';
 import '../models/agent.dart';
 import '../models/announcement.dart';
 import '../models/notification_item.dart';
@@ -24,13 +25,13 @@ class MockData {
 
   static const products = MockProducts.all;
 
-  static const promos = <Promo>[
+  static final promos = <Promo>[
     Promo(
       id: 'incentive',
       badge: 'Incentive',
       title: 'Earn more with every milestone',
       description: 'Hit your monthly target and unlock bonus rewards.',
-      gradient: [Color(0xFF00A6FB), Color(0xFF0582CA)],
+      gradient: [kAppColors.primaryColor, kAppColors.secondaryColor],
       icon: Icons.star_rounded,
       body: [
         'Every proposal you close counts toward your monthly milestone tiers.',
@@ -43,7 +44,7 @@ class MockData {
       badge: 'This month',
       title: 'Special incentives for top closers',
       description: 'Limited-time campaign for Personal Accident sales.',
-      gradient: [Color(0xFF006494), Color(0xFF003554)],
+      gradient: [kAppColors.baltic, kAppColors.deep],
       icon: Icons.shield_rounded,
       body: [
         'This month\'s campaign rewards agents who close the most Personal Accident policies.',
@@ -56,7 +57,7 @@ class MockData {
       badge: 'Training',
       title: 'New product training drop',
       description: 'Short modules + brochures in Resource Library.',
-      gradient: [Color(0xFF0582CA), Color(0xFF003554)],
+      gradient: [kAppColors.secondaryColor, kAppColors.deep],
       icon: Icons.menu_book_rounded,
       body: [
         'Fresh short-form training modules just landed for the newest product line.',

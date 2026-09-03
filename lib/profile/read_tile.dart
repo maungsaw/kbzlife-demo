@@ -20,7 +20,7 @@ class ReadOnlyProfileTile extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       child: Row(
         children: [
-          Icon(icon, size: 20, color: AppColors.muted),
+          Icon(icon, size: context.iconXl, color: context.colors.muted),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -28,24 +28,24 @@ class ReadOnlyProfileTile extends StatelessWidget {
               children: [
                 Text(
                   label,
-                  style: const TextStyle(fontSize: 10, color: AppColors.muted),
+                  style: TextStyle(fontSize: 10, color: context.colors.muted),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   value,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.accentNavy,
+                    color: context.colors.accentNavy,
                   ),
                 ),
               ],
             ),
           ),
-          const Icon(
+          Icon(
             Icons.lock_clock_outlined,
-            size: 14,
-            color: AppColors.border,
+            size: context.iconMd,
+            color: context.colors.border,
           ),
         ],
       ),

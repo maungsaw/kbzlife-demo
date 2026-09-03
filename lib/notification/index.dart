@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../const.dart';
 import '../providers/router_provider.dart';
 import '../widgets/app_selection_chip.dart';
 import 'model.dart';
@@ -73,12 +74,12 @@ class _NotificationInboxScreenState
     final list = _filteredList;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: context.colors.cream,
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Announcements',
           style: TextStyle(
-            color: Color(0xFF0F172A),
+            color: context.colors.textPrimary,
             fontSize: 18,
             fontWeight: FontWeight.w700,
           ),
@@ -87,10 +88,10 @@ class _NotificationInboxScreenState
           if (_unreadCount > 0)
             TextButton(
               onPressed: _markAllAsRead,
-              child: const Text(
+              child: Text(
                 'Mark all read',
                 style: TextStyle(
-                  color: Color(0xFF2563EB),
+                  color: context.colors.infoText,
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
                 ),
@@ -99,8 +100,8 @@ class _NotificationInboxScreenState
         ],
         backgroundColor: Colors.white,
         elevation: 0,
-        scrolledUnderElevation: 0.5,
-        iconTheme: const IconThemeData(color: Color(0xFF0F172A)),
+        scrolledUnderElevation: 0,
+        iconTheme: IconThemeData(color: context.colors.textPrimary),
       ),
       body: Column(
         children: [
@@ -135,10 +136,10 @@ class _NotificationInboxScreenState
           ),
           Expanded(
             child: list.isEmpty
-                ? const Center(
+                ? Center(
                     child: Text(
                       'No announcements available.',
-                      style: TextStyle(color: Color(0xFF94A3B8)),
+                      style: TextStyle(color: context.colors.textMuted),
                     ),
                   )
                 : ListView.builder(
@@ -159,17 +160,10 @@ class _NotificationInboxScreenState
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: isUnread ? const Color(0xFFF0F9FF) : Colors.white,
+        color: isUnread ? context.colors.infoLight : Colors.white,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
         border: Border.all(
-          color: isUnread ? const Color(0xFFBAE6FD) : const Color(0xFFE2E8F0),
+          color: isUnread ? context.colors.infoBorder : context.colors.border,
           width: isUnread ? 1.5 : 1,
         ),
       ),
@@ -190,8 +184,8 @@ class _NotificationInboxScreenState
                       Container(
                         width: 8,
                         height: 8,
-                        decoration: const BoxDecoration(
-                          color: Color(0xFF0284C7),
+                        decoration: BoxDecoration(
+                          color: context.colors.infoText,
                           shape: BoxShape.circle,
                         ),
                       ),
@@ -199,8 +193,8 @@ class _NotificationInboxScreenState
                     ],
                     _buildPill(
                       item.type,
-                      const Color(0xFFF1F5F9),
-                      const Color(0xFF334155),
+                      context.colors.chipBg,
+                      context.colors.textSecondary,
                     ),
                     const SizedBox(width: 8),
                     _buildPill(
@@ -210,10 +204,10 @@ class _NotificationInboxScreenState
                     ),
                     const Spacer(),
                     if (item.isPrivate)
-                      const Icon(
+                      Icon(
                         Icons.lock_outline,
-                        size: 14,
-                        color: Color(0xFFF97316),
+                        size: context.iconMd,
+                        color: context.colors.warningText,
                       ),
                   ],
                 ),
@@ -225,7 +219,7 @@ class _NotificationInboxScreenState
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: isUnread ? FontWeight.w800 : FontWeight.w500,
-                    color: const Color(0xFF0F172A),
+                    color: context.colors.textPrimary,
                     height: 1.3,
                   ),
                 ),
@@ -238,16 +232,16 @@ class _NotificationInboxScreenState
                       style: TextStyle(
                         fontSize: 12,
                         color: isUnread
-                            ? const Color(0xFF0369A1)
-                            : const Color(0xFF64748B),
+                            ? context.colors.infoText
+                            : context.colors.muted,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                     Text(
                       item.publishDate,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 12,
-                        color: Color(0xFF94A3B8),
+                        color: context.colors.textMuted,
                       ),
                     ),
                   ],

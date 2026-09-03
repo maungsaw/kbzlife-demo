@@ -79,9 +79,9 @@ class _PolicyListScreenState extends ConsumerState<PolicyListScreen>
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return const Scaffold(
+      return Scaffold(
         body: Center(
-          child: CircularProgressIndicator(color: AppColors.primaryColor),
+          child: CircularProgressIndicator(color: context.colors.primaryColor),
         ),
       );
     }
@@ -97,7 +97,7 @@ class _PolicyListScreenState extends ConsumerState<PolicyListScreen>
         }
       },
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: context.colors.cream,
         appBar: AppBar(
           backgroundColor: Colors.white,
           elevation: 0,
@@ -190,7 +190,7 @@ class _PolicyListScreenState extends ConsumerState<PolicyListScreen>
                     child: Text(
                       user.name,
                       style: TextStyle(
-                        color: isLast ? AppColors.primaryColor : Colors.grey,
+                        color: isLast ? context.colors.primaryColor : Colors.grey,
                         fontSize: 11,
                         fontWeight: isLast ? FontWeight.bold : FontWeight.w500,
                       ),
@@ -198,10 +198,10 @@ class _PolicyListScreenState extends ConsumerState<PolicyListScreen>
                   ),
                 ),
                 if (!isLast)
-                  const Icon(
+                  Icon(
                     Icons.chevron_right_rounded,
                     color: Colors.grey,
-                    size: 16,
+                    size: context.iconBase,
                   ),
               ],
             );

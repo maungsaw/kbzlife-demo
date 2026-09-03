@@ -24,7 +24,7 @@ import '../widgets/app_text_field.dart';
 import '../widgets/app_selection_chip.dart';
 import '../widgets/chip.dart';
 import '../widgets/quote_field.dart';
-import '../widgets/app_segmented_tabs.dart';
+import '../widgets/pill_tabs.dart';
 import '../widgets/soft_card.dart';
 import 'address_master.dart';
 import 'applicant.dart';
@@ -766,49 +766,48 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
                 children: [_buildStep(context)],
               ),
             ),
-            SafeArea(
-              top: false,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
-                child: Row(
-                  children: [
-                    if (_step > 0)
-                      Expanded(
-                        child: OutlinedButton(
-                          onPressed: () => setState(() => _step--),
-                          child: const Text('Back'),
-                        ),
-                      ),
-                    if (_step > 0) const SizedBox(width: 10),
-                    Expanded(
-                      flex: 2,
-                      child: ElevatedButton(
-                        onPressed: !_canContinue
-                            ? null
-                            : _step == _activeStepTitles.length - 1
-                            ? _submit
-                            : () => setState(() {
-                                if (_activeSteps[_step] ==
-                                        _EStep.policyHolder &&
-                                    _insuredSameAsHolder) {
-                                  _copyHolderToInsured();
-                                }
-                                _step++;
-                              }),
-                        child: Text(
-                          _step == _activeStepTitles.length - 1
-                              ? 'Submit application'
-                              : (!_canContinue
-                                    ? 'Waiting for client…'
-                                    : 'Continue'),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+          ],
+        ),
+        bottomNavigationBar: SafeArea(
+          child: Container(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border(
+                top: BorderSide(color: context.colors.border, width: 1),
               ),
             ),
-          ],
+            child: Row(
+              children: [
+                if (_step > 0)
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => setState(() => _step--),
+                      child: const Text('Back'),
+                    ),
+                  ),
+                if (_step > 0) const SizedBox(width: 10),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: !_canContinue
+                        ? null
+                        : _step == _activeStepTitles.length - 1
+                        ? _submit
+                        : () => setState(() {
+                            if (_activeSteps[_step] == _EStep.policyHolder &&
+                                _insuredSameAsHolder) {
+                              _copyHolderToInsured();
+                            }
+                            _step++;
+                          }),
+                    child: Text(
+                      _step == _activeStepTitles.length - 1 ? 'Submit' : 'Next',
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -840,10 +839,10 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
                     color: AppColors.warn.withValues(alpha: 0.14),
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.exit_to_app_rounded,
                     color: AppColors.warn,
-                    size: 22,
+                    size: context.iconXxl,
                   ),
                 ),
               ),
@@ -871,13 +870,13 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
               const SizedBox(height: 18),
               ElevatedButton.icon(
                 onPressed: () => Navigator.pop(context, 'draft'),
-                icon: const Icon(Icons.bookmark_outline, size: 17),
+                icon: Icon(Icons.bookmark_outline, size: context.iconMd),
                 label: const Text('Save draft & leave'),
               ),
               const SizedBox(height: 8),
               OutlinedButton.icon(
                 onPressed: () => Navigator.pop(context, 'discard'),
-                icon: const Icon(Icons.delete_outline, size: 17),
+                icon: Icon(Icons.delete_outline, size: context.iconMd),
                 label: const Text('Discard'),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: AppColors.danger,
@@ -955,17 +954,17 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
             children: [
               const EappCardTitle('Notification'),
               const SizedBox(height: 10),
-              AppSegmentedTabs<String>(
-                value: _notifyType,
-                options: const [
-                  ('SMS', 'SMS', Icons.sms_outlined),
-                  (
-                    'Not Notify',
-                    'Not Notify',
-                    Icons.notifications_off_outlined,
+              PillTabs(
+                initialIndex: _notifyType == 'SMS' ? 0 : 1,
+                onPageChanged: (i) =>
+                    setState(() => _notifyType = i == 0 ? 'SMS' : 'Not Notify'),
+                tabs: const [
+                  PillTab(label: 'SMS', icon: Icons.sms_outlined),
+                  PillTab(
+                    label: 'Not Notify',
+                    icon: Icons.notifications_off_outlined,
                   ),
                 ],
-                onChanged: (v) => setState(() => _notifyType = v),
               ),
               if (_notifyType == 'SMS') ...[
                 const SizedBox(height: 12),
@@ -1047,7 +1046,11 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
           children: [
             Row(
               children: [
-                const Icon(Icons.info_outline, size: 18, color: AppColors.warn),
+                Icon(
+                  Icons.info_outline,
+                  size: context.iconLg,
+                  color: AppColors.warn,
+                ),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(
@@ -1063,7 +1066,7 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
             const SizedBox(height: 10),
             OutlinedButton.icon(
               onPressed: _editPremiumInputs,
-              icon: const Icon(Icons.calculate_outlined, size: 16),
+              icon: Icon(Icons.calculate_outlined, size: context.iconBase),
               label: const Text('Edit premium inputs'),
             ),
           ],
@@ -1177,7 +1180,7 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
               alignment: Alignment.centerLeft,
               child: TextButton.icon(
                 onPressed: _editPremiumInputs,
-                icon: const Icon(Icons.tune, size: 16),
+                icon: Icon(Icons.tune, size: context.iconBase),
                 label: const Text('Edit premium inputs'),
               ),
             ),
@@ -1195,13 +1198,13 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (_prefilledFrom != null) ...[
-          _PrefillBanner(
-            customerName: _prefilledFrom!,
-            count: _prefilledKeys.length,
-          ),
-          const SizedBox(height: 12),
-        ],
+        // if (_prefilledFrom != null) ...[
+        //   _PrefillBanner(
+        //     customerName: _prefilledFrom!,
+        //     count: _prefilledKeys.length,
+        //   ),
+        //   const SizedBox(height: 12),
+        // ],
         // Asked before the card, not after it: the answer decides whether
         // the FA is filling one party or two, so it belongs above the
         // fields it governs rather than at the foot of a long form.
@@ -1221,7 +1224,7 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
                 ),
                 child: Icon(
                   _insuredSameAsHolder ? Icons.check : Icons.person_outline,
-                  size: 16,
+                  size: context.iconBase,
                   color: _insuredSameAsHolder
                       ? Colors.white
                       : AppColors.primaryColor,
@@ -1241,15 +1244,15 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
                       ),
                     ),
                     const SizedBox(height: 2),
-                    Text(
-                      _insuredSameAsHolder
-                          ? 'Step 3 is filled from this card'
-                          : 'Leave off to fill the insured separately',
-                      style: TextStyle(
-                        fontSize: 11.5,
-                        color: AppColors.deepAlpha(0.55),
-                      ),
-                    ),
+                    // Text(
+                    //   _insuredSameAsHolder
+                    //       ? 'Step 3 is filled from this card'
+                    //       : 'Leave off to fill the insured separately',
+                    //   style: TextStyle(
+                    //     fontSize: 11.5,
+                    //     color: AppColors.deepAlpha(0.55),
+                    //   ),
+                    // ),
                   ],
                 ),
               ),
@@ -1282,15 +1285,15 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (_insuredSameAsHolder) ...[
-          _CopiedFromHolderBanner(
-            name: _holder.nameController.text.trim(),
-            onEdit: () => setState(
-              () => _step = _activeSteps.indexOf(_EStep.policyHolder),
-            ),
-          ),
-          const SizedBox(height: 12),
-        ],
+        // if (_insuredSameAsHolder) ...[
+        //   _CopiedFromHolderBanner(
+        //     name: _holder.nameController.text.trim(),
+        //     onEdit: () => setState(
+        //       () => _step = _activeSteps.indexOf(_EStep.policyHolder),
+        //     ),
+        //   ),
+        //   const SizedBox(height: 12),
+        // ],
         ApplicantCard(
           title: 'Insured Person',
           applicant: _insured,
@@ -1382,7 +1385,7 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
                   if (remaining > 0) b.percentController.text = '$remaining';
                   _beneficiaries.add(b);
                 }),
-                icon: const Icon(Icons.add, size: 16),
+                icon: Icon(Icons.add, size: context.iconBase),
                 label: const Text('Add'),
               ),
             ],
@@ -1911,7 +1914,11 @@ class _PrefillBanner extends StatelessWidget {
       ),
       child: Row(
         children: [
-          const Icon(Icons.auto_awesome, size: 16, color: AppColors.mint),
+          Icon(
+            Icons.auto_awesome,
+            size: context.iconBase,
+            color: AppColors.mint,
+          ),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
@@ -1951,7 +1958,11 @@ class _CopiedFromHolderBanner extends StatelessWidget {
       ),
       child: Row(
         children: [
-          const Icon(Icons.copy_all_outlined, size: 16, color: AppColors.mint),
+          Icon(
+            Icons.copy_all_outlined,
+            size: context.iconBase,
+            color: AppColors.mint,
+          ),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
@@ -1999,7 +2010,11 @@ class _CorrectionBanner extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.flag_outlined, color: AppColors.warn, size: 18),
+          Icon(
+            Icons.flag_outlined,
+            color: AppColors.warn,
+            size: context.iconLg,
+          ),
           const SizedBox(width: 8),
           Expanded(
             child: Column(
@@ -2026,7 +2041,11 @@ class _CorrectionBanner extends StatelessWidget {
           ),
           InkWell(
             onTap: onDismiss,
-            child: Icon(Icons.close, size: 16, color: AppColors.deepAlpha(0.4)),
+            child: Icon(
+              Icons.close,
+              size: context.iconBase,
+              color: AppColors.deepAlpha(0.4),
+            ),
           ),
         ],
       ),
@@ -2339,7 +2358,7 @@ class _EappStartStepState extends ConsumerState<_EappStartStep> {
                 onPressed: ready
                     ? () => widget.onContinue(product.code, _customerId)
                     : null,
-                icon: const Icon(Icons.arrow_forward, size: 18),
+                icon: Icon(Icons.arrow_forward, size: context.iconLg),
                 label: const Text('Continue to e-Application'),
               ),
             ),
@@ -2515,7 +2534,7 @@ class _StartSlotRow extends StatelessWidget {
           ),
           child: Icon(
             done ? Icons.check : icon,
-            size: 15,
+            size: context.iconBase,
             color: done ? Colors.white : AppColors.primaryColor,
           ),
         ),
@@ -2604,13 +2623,21 @@ class _StartSlotRow extends StatelessWidget {
             child: const Text('Change'),
           )
         else if (!done && expanded == null)
-          Icon(Icons.chevron_right, size: 20, color: AppColors.deepAlpha(0.3)),
+          Icon(
+            Icons.chevron_right,
+            size: context.iconXl,
+            color: AppColors.deepAlpha(0.3),
+          ),
         if (done && onClear != null)
           IconButton(
             tooltip: 'Remove',
             visualDensity: VisualDensity.compact,
             onPressed: onClear,
-            icon: Icon(Icons.close, size: 16, color: AppColors.deepAlpha(0.4)),
+            icon: Icon(
+              Icons.close,
+              size: context.iconBase,
+              color: AppColors.deepAlpha(0.4),
+            ),
           ),
       ],
     );
@@ -2753,7 +2780,7 @@ class _CustomerPickerSheetState extends State<_CustomerPickerSheet> {
                       children: [
                         Icon(
                           Icons.person_off_outlined,
-                          size: 32,
+                          size: context.icon5xl,
                           color: AppColors.deepAlpha(0.25),
                         ),
                         const SizedBox(height: 12),
@@ -2904,7 +2931,7 @@ class _CategoryTile extends StatelessWidget {
             children: [
               FaIcon(
                 ProductVisuals.categoryIcon(category),
-                size: 20,
+                size: context.iconXl,
                 color: selected
                     ? Colors.white
                     : ProductVisuals.colorFor(category),
@@ -2977,7 +3004,7 @@ class _ProductChoiceTile extends StatelessWidget {
                 color: selected
                     ? AppColors.primaryColor
                     : AppColors.deepAlpha(0.3),
-                size: 20,
+                size: context.iconXl,
               ),
             ],
           ),
@@ -3041,7 +3068,7 @@ class _DocsStep extends StatelessWidget {
                 documentType == 'Passport'
                     ? Icons.public_outlined
                     : Icons.badge_outlined,
-                size: 15,
+                size: context.iconBase,
                 color: AppColors.primaryColor,
               ),
               const SizedBox(width: 6),
@@ -3120,7 +3147,7 @@ class _NoDocsCard extends StatelessWidget {
         children: [
           Icon(
             Icons.business_outlined,
-            size: 18,
+            size: context.iconLg,
             color: AppColors.deepAlpha(0.45),
           ),
           const SizedBox(width: 10),
@@ -3193,7 +3220,7 @@ class _DocumentCaptureTile extends StatelessWidget {
                             Icon(
                               Icons.add_a_photo_outlined,
                               color: AppColors.primaryColor,
-                              size: 22,
+                              size: context.iconXxl,
                             ),
                             const SizedBox(height: 6),
                             Text(
@@ -3237,12 +3264,12 @@ class _DocumentCaptureTile extends StatelessWidget {
                         onTap: onRemove,
                         // 32dp of tappable area inside a small badge, so
                         // the corner target is not a 16dp pinprick.
-                        child: const SizedBox(
+                        child: SizedBox(
                           width: 32,
                           height: 32,
                           child: Icon(
                             Icons.close,
-                            size: 16,
+                            size: context.iconBase,
                             color: Colors.white,
                           ),
                         ),
@@ -3258,7 +3285,7 @@ class _DocumentCaptureTile extends StatelessWidget {
           children: [
             Icon(
               captured ? Icons.check_circle : Icons.circle_outlined,
-              size: 13,
+              size: context.iconSm,
               color: captured ? AppColors.mint : AppColors.deepAlpha(0.25),
             ),
             const SizedBox(width: 5),
@@ -3296,7 +3323,11 @@ class _DocumentCaptureTile extends StatelessWidget {
               child: CircleAvatar(
                 backgroundColor: Colors.black54,
                 child: IconButton(
-                  icon: const Icon(Icons.close, color: Colors.white, size: 18),
+                  icon: Icon(
+                    Icons.close,
+                    color: Colors.white,
+                    size: context.iconLg,
+                  ),
                   onPressed: () => Navigator.pop(dialogContext),
                 ),
               ),
@@ -3423,24 +3454,29 @@ class _SignaturePad extends StatelessWidget {
               EappCardTitle(title),
               const Spacer(),
               if (hasValue)
-                const Icon(Icons.check_circle, color: AppColors.mint, size: 16),
+                Icon(
+                  Icons.check_circle,
+                  color: AppColors.mint,
+                  size: context.iconBase,
+                ),
               if (locked)
                 Icon(
                   Icons.lock_outline,
-                  size: 14,
+                  size: context.iconMd,
                   color: AppColors.deepAlpha(0.4),
                 ),
             ],
           ),
           const SizedBox(height: 10),
           if (!locked) ...[
-            AppSegmentedTabs<String>(
-              value: mode,
-              options: const [
-                ('esign', 'E-Sign', Icons.draw),
-                ('upload', 'Upload', Icons.photo_camera_outlined),
+            PillTabs(
+              initialIndex: mode == 'esign' ? 0 : 1,
+              onPageChanged: (i) =>
+                  onModeChanged?.call(i == 0 ? 'esign' : 'upload'),
+              tabs: const [
+                PillTab(label: 'E-Sign', icon: Icons.draw),
+                PillTab(label: 'Upload', icon: Icons.photo_camera_outlined),
               ],
-              onChanged: onModeChanged,
             ),
             const SizedBox(height: 10),
           ],
@@ -3500,10 +3536,10 @@ class _SignaturePad extends StatelessWidget {
                                     Image.file(
                                       File(photo.path),
                                       fit: BoxFit.cover,
-                                      errorBuilder: (_, _, _) => const Center(
+                                      errorBuilder: (_, _, _) => Center(
                                         child: Icon(
                                           Icons.image,
-                                          size: 40,
+                                          size: context.icon6xl,
                                           color: AppColors.muted,
                                         ),
                                       ),
@@ -3521,9 +3557,9 @@ class _SignaturePad extends StatelessWidget {
                                             ),
                                             shape: BoxShape.circle,
                                           ),
-                                          child: const Icon(
+                                          child: Icon(
                                             Icons.close,
-                                            size: 14,
+                                            size: context.iconMd,
                                             color: Colors.white,
                                           ),
                                         ),
@@ -3537,7 +3573,7 @@ class _SignaturePad extends StatelessWidget {
                                     children: [
                                       Icon(
                                         Icons.add_a_photo_outlined,
-                                        size: 32,
+                                        size: context.icon5xl,
                                         color: AppColors.deepAlpha(0.3),
                                       ),
                                       const SizedBox(height: 8),
@@ -3668,7 +3704,11 @@ class _SignatureProofBlock extends StatelessWidget {
             ),
             const SizedBox(width: 6),
             if (proof.captured)
-              const Icon(Icons.check_circle, size: 13, color: AppColors.mint),
+              Icon(
+                Icons.check_circle,
+                size: context.iconSm,
+                color: AppColors.mint,
+              ),
           ],
         ),
         const SizedBox(height: 6),
@@ -3769,7 +3809,7 @@ class _DocGroupBlock extends StatelessWidget {
           children: [
             Icon(
               group.isEntity ? Icons.business_outlined : Icons.person_outline,
-              size: 15,
+              size: context.iconBase,
               color: AppColors.primaryColor,
             ),
             const SizedBox(width: 7),
@@ -3810,8 +3850,8 @@ class _DocGroupBlock extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(
-                    ok ? Icons.check : Icons.error_outline,
-                    size: 11,
+                    Icons.check_circle,
+                    size: context.iconSm,
                     color: ok ? AppColors.mint : AppColors.warn,
                   ),
                   const SizedBox(width: 4),
@@ -3872,7 +3912,11 @@ class _ReviewImageThumb extends StatelessWidget {
               child: CircleAvatar(
                 backgroundColor: Colors.black54,
                 child: IconButton(
-                  icon: const Icon(Icons.close, color: Colors.white, size: 18),
+                  icon: Icon(
+                    Icons.close,
+                    color: Colors.white,
+                    size: context.iconLg,
+                  ),
                   onPressed: () => Navigator.pop(dialogContext),
                 ),
               ),
@@ -4376,7 +4420,7 @@ class _ProposalNoPill extends StatelessWidget {
               const SizedBox(width: 10),
               Icon(
                 Icons.copy_outlined,
-                size: 15,
+                size: context.iconBase,
                 color: AppColors.primaryColor.withValues(alpha: 0.8),
               ),
             ],
@@ -4498,7 +4542,7 @@ class _JourneyDot extends StatelessWidget {
             : null,
       ),
       child: done
-          ? const Icon(Icons.check, size: 15, color: Colors.white)
+          ? Icon(Icons.check, size: context.iconBase, color: Colors.white)
           : Text(
               '${index + 1}',
               style: TextStyle(
@@ -4587,7 +4631,11 @@ class _CircleIconButton extends StatelessWidget {
           child: SizedBox(
             width: 48,
             height: 48,
-            child: Icon(icon, size: 19, color: AppColors.primaryColor),
+            child: Icon(
+              icon,
+              size: context.iconBase,
+              color: AppColors.primaryColor,
+            ),
           ),
         ),
       ),

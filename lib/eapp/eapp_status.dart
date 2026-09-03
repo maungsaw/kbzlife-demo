@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../const.dart';
+
 /// Doc 26 — Layer B: workflow status after Submit. Never mixed with the
 /// wizard's own step progress (Layer A), which lives only inside the
 /// wizard while a Draft is being filled.
@@ -26,11 +28,11 @@ extension EappStatusX on EappStatus {
   /// Doc 26 §3 status dictionary pill colors (bg, fg) — matches the
   /// existing status-pill palette used by policies/tasks in this app.
   (Color, Color) get pillColors => switch (this) {
-    EappStatus.draft => (const Color(0xFFE5E7EB), const Color(0xFF4B5563)),
-    EappStatus.submitted => (const Color(0xFFDCEEFB), const Color(0xFF075985)),
-    EappStatus.correction => (const Color(0xFFFEF3C7), const Color(0xFF92400E)),
-    EappStatus.approved => (const Color(0xFFD1FAE5), const Color(0xFF065F46)),
-    EappStatus.rejected => (const Color(0xFFFFE4E6), const Color(0xFFBE123C)),
+    EappStatus.draft => (kAppColors.border, kAppColors.textSecondary),
+    EappStatus.submitted => (kAppColors.infoLight, kAppColors.infoText),
+    EappStatus.correction => (kAppColors.warningLight, kAppColors.warningText),
+    EappStatus.approved => (kAppColors.successLight, kAppColors.successText),
+    EappStatus.rejected => (kAppColors.roseLight, kAppColors.roseAccent),
   };
 
   IconData get icon => switch (this) {

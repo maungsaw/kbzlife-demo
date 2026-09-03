@@ -4,64 +4,41 @@ import 'package:go_router/go_router.dart';
 import '../const.dart';
 import '../providers/router_provider.dart';
 import 'model.dart';
-import '../widgets/tab_view.dart';
+import '../widgets/pill_tabs.dart';
 
-class UniversalLifeDetailScreen extends StatefulWidget {
+class UniversalLifeDetailScreen extends StatelessWidget {
   final ProductItem product;
 
   const UniversalLifeDetailScreen({super.key, required this.product});
 
   @override
-  State<UniversalLifeDetailScreen> createState() =>
-      _UniversalLifeDetailScreenState();
-}
-
-class _UniversalLifeDetailScreenState extends State<UniversalLifeDetailScreen>
-    with SingleTickerProviderStateMixin {
-  late TabController _tabController;
-
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 3, vsync: this);
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final product = widget.product;
-
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.colors.cream,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(
+          icon: Icon(
             Icons.arrow_back_ios,
-            size: 20,
+            size: context.iconXl,
             color: Colors.black87,
           ),
           onPressed: () => context.pop(),
         ),
-        title: const Text(
+        title: Text(
           'Product Details',
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
-            color: Color(0xFF0F172A),
+            color: context.colors.textPrimary,
           ),
         ),
         actions: [
           IconButton(
-            icon: const Icon(
+            icon: Icon(
               Icons.share_outlined,
-              size: 22,
+              size: context.iconXxl,
               color: Colors.black87,
             ),
             onPressed: () {},
@@ -70,37 +47,26 @@ class _UniversalLifeDetailScreenState extends State<UniversalLifeDetailScreen>
       ),
       body: Column(
         children: [
-          // Product Header
-          _buildProductHeader(product),
-
-          // Tabs - Wrapped in Expanded to prevent unbounded height layout crashes
+          _buildProductHeader(context, product),
           Expanded(
-            child: CustomTabView(
-              controller: _tabController,
-              indicatorColor: AppColors.primaryColor,
-              labelColor: AppColors.primaryColor,
-              unselectedLabelColor: Colors.grey.shade600,
-              tabs: const [
-                TabItemData(label: 'About'),
-                TabItemData(label: 'Coverage'),
-                TabItemData(label: 'Eligibility'),
-              ],
-              tabViews: [
-                _buildAboutTab(product),
-                _buildCoverageTab(product),
-                _buildEligibleTab(product),
-              ],
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: PillTabs(
+                tabs: [
+                  PillTab(label: 'About', child: _buildAboutTab(context, product)),
+                  PillTab(label: 'Coverage', child: _buildCoverageTab(context, product)),
+                  PillTab(label: 'Eligibility', child: _buildEligibleTab(context, product)),
+                ],
+              ),
             ),
           ),
-
-          // Bottom CTA Button
-          _buildBottomButton(),
+          _buildBottomButton(context),
         ],
       ),
     );
   }
 
-  Widget _buildProductHeader(ProductItem product) {
+  Widget _buildProductHeader(BuildContext context, ProductItem product) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       child: Row(
@@ -109,14 +75,14 @@ class _UniversalLifeDetailScreenState extends State<UniversalLifeDetailScreen>
             width: 56,
             height: 56,
             decoration: BoxDecoration(
-              color: const Color(0xFFE0F7FA),
+              color: context.colors.cyanAccent,
               borderRadius: BorderRadius.circular(16),
             ),
             child: Center(
               child: Icon(
                 product.icon,
-                size: 28,
-                color: AppColors.primaryColor,
+                size: context.icon4xl,
+                color: context.colors.primaryColor,
               ),
             ),
           ),
@@ -127,10 +93,10 @@ class _UniversalLifeDetailScreenState extends State<UniversalLifeDetailScreen>
               children: [
                 Text(
                   product.title,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF0F172A),
+                    color: context.colors.textPrimary,
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -146,30 +112,27 @@ class _UniversalLifeDetailScreenState extends State<UniversalLifeDetailScreen>
     );
   }
 
-  Widget _buildAboutTab(ProductItem product) {
+  Widget _buildAboutTab(BuildContext context, ProductItem product) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Description
           Text(
             product.fullDescription,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 14,
-              color: Color(0xFF334155),
+              color: context.colors.textSecondary,
               height: 1.5,
             ),
           ),
           const SizedBox(height: 24),
-
-          // This Policy Is Designed For
-          const Text(
+          Text(
             'This Policy Is Designed For',
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF0F172A),
+              color: context.colors.textPrimary,
             ),
           ),
           const SizedBox(height: 14),
@@ -177,6 +140,7 @@ class _UniversalLifeDetailScreenState extends State<UniversalLifeDetailScreen>
             (item) => Padding(
               padding: const EdgeInsets.only(bottom: 12),
               child: _buildDesignedForItem(
+                context: context,
                 icon: item.icon,
                 title: item.title,
                 description: item.description,
@@ -184,21 +148,19 @@ class _UniversalLifeDetailScreenState extends State<UniversalLifeDetailScreen>
             ),
           ),
           const SizedBox(height: 28),
-
-          // Why Should You Buy This Policy?
-          const Text(
+          Text(
             'Why Should You Buy This Policy?',
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF0F172A),
+              color: context.colors.textPrimary,
             ),
           ),
           const SizedBox(height: 14),
           ...product.whyBuy.map(
             (item) => Padding(
               padding: const EdgeInsets.only(bottom: 10),
-              child: _buildWhyBuyItem(item),
+              child: _buildWhyBuyItem(context, item),
             ),
           ),
           const SizedBox(height: 24),
@@ -208,6 +170,7 @@ class _UniversalLifeDetailScreenState extends State<UniversalLifeDetailScreen>
   }
 
   Widget _buildDesignedForItem({
+    required BuildContext context,
     required IconData icon,
     required String title,
     required String description,
@@ -219,11 +182,11 @@ class _UniversalLifeDetailScreenState extends State<UniversalLifeDetailScreen>
           width: 40,
           height: 40,
           decoration: BoxDecoration(
-            color: const Color(0xFFE0F7FA),
+            color: context.colors.cyanAccent,
             borderRadius: BorderRadius.circular(10),
           ),
           child: Center(
-            child: Icon(icon, size: 20, color: AppColors.primaryColor),
+            child: Icon(icon, size: context.iconXl, color: context.colors.primaryColor),
           ),
         ),
         const SizedBox(width: 12),
@@ -233,10 +196,10 @@ class _UniversalLifeDetailScreenState extends State<UniversalLifeDetailScreen>
             children: [
               Text(
                 title,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF0F172A),
+                  color: context.colors.textPrimary,
                 ),
               ),
               const SizedBox(height: 4),
@@ -255,31 +218,31 @@ class _UniversalLifeDetailScreenState extends State<UniversalLifeDetailScreen>
     );
   }
 
-  Widget _buildWhyBuyItem(String text) {
+  Widget _buildWhyBuyItem(BuildContext context, String text) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
           width: 22,
           height: 22,
-          decoration: const BoxDecoration(
-            color: AppColors.primaryColor,
+          decoration: BoxDecoration(
+            color: context.colors.primaryColor,
             shape: BoxShape.circle,
           ),
-          child: const Icon(Icons.check, size: 14, color: Colors.white),
+          child: Icon(Icons.check, size: context.iconMd, color: Colors.white),
         ),
         const SizedBox(width: 10),
         Expanded(
           child: Text(
             text,
-            style: const TextStyle(fontSize: 14, color: Color(0xFF334155)),
+            style: TextStyle(fontSize: 14, color: context.colors.textSecondary),
           ),
         ),
       ],
     );
   }
 
-  Widget _buildCoverageTab(ProductItem product) {
+  Widget _buildCoverageTab(BuildContext context, ProductItem product) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -289,6 +252,7 @@ class _UniversalLifeDetailScreenState extends State<UniversalLifeDetailScreen>
             (benefit) => Padding(
               padding: const EdgeInsets.only(bottom: 16),
               child: _buildCoverageSection(
+                context: context,
                 title: benefit,
                 icon: Icons.check_circle_outline,
               ),
@@ -300,27 +264,28 @@ class _UniversalLifeDetailScreenState extends State<UniversalLifeDetailScreen>
   }
 
   Widget _buildCoverageSection({
+    required BuildContext context,
     required String title,
     required IconData icon,
   }) {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: const Color(0xFFF8FAFC),
+        color: context.colors.surfaceBg,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        border: Border.all(color: context.colors.border),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 22, color: AppColors.primaryColor),
+          Icon(icon, size: context.iconXxl, color: context.colors.primaryColor),
           const SizedBox(width: 12),
           Expanded(
             child: Text(
               title,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 14,
-                color: Color(0xFF0F172A),
+                color: context.colors.textPrimary,
                 height: 1.4,
               ),
             ),
@@ -330,29 +295,29 @@ class _UniversalLifeDetailScreenState extends State<UniversalLifeDetailScreen>
     );
   }
 
-  Widget _buildEligibleTab(ProductItem product) {
+  Widget _buildEligibleTab(BuildContext context, ProductItem product) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildEligibilityRow('Minimum Entry Age', product.minAge),
-          _buildEligibilityRow('Maximum Entry Age', product.maxAge),
-          _buildEligibilityRow('Policy Term', product.policyTerm),
-          _buildEligibilityRow('Minimum Premium', product.minPremium),
+          _buildEligibilityRow(context, 'Minimum Entry Age', product.minAge),
+          _buildEligibilityRow(context, 'Maximum Entry Age', product.maxAge),
+          _buildEligibilityRow(context, 'Policy Term', product.policyTerm),
+          _buildEligibilityRow(context, 'Minimum Premium', product.minPremium),
           const SizedBox(height: 20),
           Container(
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
-              color: const Color(0xFFE0F7FA),
+              color: context.colors.cyanAccent,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Row(
               children: [
-                const Icon(
+                Icon(
                   Icons.info_outline,
-                  size: 20,
-                  color: AppColors.primaryColor,
+                  size: context.iconXl,
+                  color: context.colors.primaryColor,
                 ),
                 const SizedBox(width: 10),
                 Expanded(
@@ -369,11 +334,11 @@ class _UniversalLifeDetailScreenState extends State<UniversalLifeDetailScreen>
     );
   }
 
-  Widget _buildEligibilityRow(String label, String value) {
+  Widget _buildEligibilityRow(BuildContext context, String label, String value) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
-      decoration: const BoxDecoration(
-        border: Border(bottom: BorderSide(color: Color(0xFFE2E8F0), width: 1)),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: context.colors.border, width: 1)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -384,10 +349,10 @@ class _UniversalLifeDetailScreenState extends State<UniversalLifeDetailScreen>
           ),
           Text(
             value,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
-              color: Color(0xFF0F172A),
+              color: context.colors.textPrimary,
             ),
           ),
         ],
@@ -395,22 +360,22 @@ class _UniversalLifeDetailScreenState extends State<UniversalLifeDetailScreen>
     );
   }
 
-  Widget _buildBottomButton() {
+  Widget _buildBottomButton(BuildContext context) {
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: Colors.white,
-        border: Border(top: BorderSide(color: Color(0xFFE2E8F0), width: 1)),
+        border: Border(top: BorderSide(color: context.colors.border, width: 1)),
       ),
       child: SizedBox(
         width: double.infinity,
         height: 50,
         child: ElevatedButton(
           onPressed: () {
-            context.push('${RoutePaths.calculator}?product=${Uri.encodeComponent(widget.product.title)}');
+            context.push('${RoutePaths.calculator}?product=${Uri.encodeComponent(product.title)}');
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.primaryColor,
+            backgroundColor: context.colors.primaryColor,
             foregroundColor: Colors.white,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),

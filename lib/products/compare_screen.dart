@@ -60,7 +60,7 @@ class _CompareScreenState extends ConsumerState<CompareScreen> {
     final left = _byCode(_left);
     final right = _byCode(_right);
     return Scaffold(
-      backgroundColor: AppColors.cream,
+      backgroundColor: context.colors.cream,
       appBar: AppBar(title: const Text('Compare')),
       body: ListView(
         padding: const EdgeInsets.all(16),
@@ -171,10 +171,10 @@ class _CompareHeader extends StatelessWidget {
               Expanded(
                 child: Text(
                   product.name,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.w800,
                     fontSize: 13,
-                    color: AppColors.deep,
+                    color: context.colors.deep,
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
@@ -183,8 +183,8 @@ class _CompareHeader extends StatelessWidget {
               const SizedBox(width: 4),
               FaIcon(
                 FontAwesomeIcons.rightLeft,
-                size: 14,
-                color: AppColors.primaryColor,
+                size: context.iconMd,
+                color: context.colors.primaryColor,
               ),
             ],
           ),
@@ -192,7 +192,7 @@ class _CompareHeader extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
-              color: AppColors.primaryColor.withValues(alpha: 0.08),
+              color: context.colors.primaryColor.withValues(alpha: 0.08),
               borderRadius: BorderRadius.circular(6),
             ),
             child: Row(
@@ -200,8 +200,8 @@ class _CompareHeader extends StatelessWidget {
               children: [
                 FaIcon(
                   FontAwesomeIcons.handPointer,
-                  size: 11,
-                  color: AppColors.primaryColor,
+                  size: context.iconXs,
+                  color: context.colors.primaryColor,
                 ),
                 const SizedBox(width: 4),
                 Text(
@@ -209,7 +209,7 @@ class _CompareHeader extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.w700,
-                    color: AppColors.primaryColor,
+                    color: context.colors.primaryColor,
                   ),
                 ),
               ],
@@ -222,8 +222,8 @@ class _CompareHeader extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
                 color: pinned
-                    ? AppColors.primaryColor
-                    : AppColors.deepAlpha(0.06),
+                    ? context.colors.primaryColor
+                    : context.colors.deepAlpha(0.06),
                 borderRadius: BorderRadius.circular(999),
               ),
               child: Row(
@@ -233,8 +233,8 @@ class _CompareHeader extends StatelessWidget {
                     pinned
                         ? FontAwesomeIcons.thumbtack
                         : FontAwesomeIcons.thumbtack,
-                    size: 10,
-                    color: pinned ? Colors.white : AppColors.deepAlpha(0.5),
+                    size: context.iconXs,
+                    color: pinned ? Colors.white : context.colors.deepAlpha(0.5),
                   ),
                   const SizedBox(width: 4),
                   Text(
@@ -242,7 +242,7 @@ class _CompareHeader extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 10,
                       fontWeight: FontWeight.w800,
-                      color: pinned ? Colors.white : AppColors.deepAlpha(0.5),
+                      color: pinned ? Colors.white : context.colors.deepAlpha(0.5),
                     ),
                   ),
                 ],
@@ -277,7 +277,7 @@ class _CompareRow extends StatelessWidget {
             style: TextStyle(
               fontSize: 9.5,
               fontWeight: FontWeight.w800,
-              color: AppColors.deepAlpha(0.4),
+              color: context.colors.deepAlpha(0.4),
               letterSpacing: 0.6,
             ),
           ),
@@ -288,14 +288,14 @@ class _CompareRow extends StatelessWidget {
               Expanded(
                 child: Text(
                   left,
-                  style: const TextStyle(fontSize: 12, color: AppColors.deep),
+                  style: TextStyle(fontSize: 12, color: context.colors.deep),
                 ),
               ),
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
                   right,
-                  style: const TextStyle(fontSize: 12, color: AppColors.deep),
+                  style: TextStyle(fontSize: 12, color: context.colors.deep),
                 ),
               ),
             ],
@@ -320,12 +320,12 @@ class _ChangeSheet extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Replace product',
             style: TextStyle(
               fontWeight: FontWeight.w800,
               fontSize: 15,
-              color: AppColors.deep,
+              color: context.colors.deep,
             ),
           ),
           const SizedBox(height: 8),
@@ -342,27 +342,27 @@ class _ChangeSheet extends StatelessWidget {
                     contentPadding: EdgeInsets.zero,
                     leading: FaIcon(
                       FontAwesomeIcons.hexagon,
-                      color: AppColors.primaryColor,
+                      color: context.colors.primaryColor,
                     ),
                     title: Text(
                       p.name,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontWeight: FontWeight.w700,
                         fontSize: 13,
-                        color: AppColors.deep,
+                        color: context.colors.deep,
                       ),
                     ),
                     subtitle: Text(
                       '${p.category.name.toUpperCase()} · ${p.code}${p.code == otherCode ? ' · On the other side · tap to swap' : ''}',
                       style: TextStyle(
                         fontSize: 10.5,
-                        color: AppColors.deepAlpha(0.5),
+                        color: context.colors.deepAlpha(0.5),
                       ),
                     ),
                     trailing: p.code == currentCode
-                        ? const FaIcon(
+                        ? FaIcon(
                             FontAwesomeIcons.solidCircleCheck,
-                            color: AppColors.mint,
+                            color: context.colors.mint,
                           )
                         : null,
                     onTap: () => Navigator.pop(context, p.code),

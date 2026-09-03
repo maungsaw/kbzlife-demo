@@ -58,7 +58,7 @@ class _QuoteScreenState extends ConsumerState<QuoteScreen> {
         if (!didPop) goBack();
       },
       child: Scaffold(
-        backgroundColor: AppColors.cream,
+        backgroundColor: context.colors.cream,
         appBar: AppBar(
           leading: IconButton(
             tooltip: 'Back',
@@ -104,18 +104,18 @@ class _QuoteScreenState extends ConsumerState<QuoteScreen> {
                     const SizedBox(height: 10),
                     Row(
                       children: [
-                        const Icon(
-                          Icons.info_outline,
-                          size: 16,
-                          color: AppColors.warn,
-                        ),
+                      Icon(
+                        Icons.info_outline,
+                        size: context.iconBase,
+                        color: context.colors.warn,
+                      ),
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
                             error,
                             style: TextStyle(
                               fontSize: 12,
-                              color: AppColors.deepAlpha(0.6),
+                              color: context.colors.deepAlpha(0.6),
                             ),
                           ),
                         ),
@@ -249,19 +249,19 @@ class _QuoteSavedSheet extends StatelessWidget {
                 height: 40,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: AppColors.mint.withValues(alpha: 0.18),
+                  color: context.colors.mint.withValues(alpha: 0.18),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.check, color: AppColors.mint),
+                child: Icon(Icons.check, color: context.colors.mint),
               ),
               const SizedBox(width: 12),
-              const Expanded(
+              Expanded(
                 child: Text(
                   'Quote saved',
                   style: TextStyle(
                     fontWeight: FontWeight.w800,
                     fontSize: 15,
-                    color: AppColors.deep,
+                    color: context.colors.deep,
                   ),
                 ),
               ),
@@ -323,7 +323,7 @@ class _ProductPickerState extends ConsumerState<_ProductPicker> {
         onTap: () async {
           final chosen = await showModalBottomSheet<Product>(
             context: context,
-            backgroundColor: AppColors.paper,
+            backgroundColor: context.colors.paper,
             isScrollControlled: true,
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
@@ -338,20 +338,13 @@ class _ProductPickerState extends ConsumerState<_ProductPicker> {
           width: double.infinity,
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
           decoration: BoxDecoration(
-            color: AppColors.paper,
+            color: context.colors.paper,
             borderRadius: BorderRadius.circular(16),
             // Doc 130 §3 — brand blue, not the category colour.
             border: Border.all(
-              color: AppColors.primaryColor.withValues(alpha: 0.35),
+              color: context.colors.primaryColor.withValues(alpha: 0.35),
               width: 1.4,
             ),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.deepAlpha(0.06),
-                blurRadius: 10,
-                offset: const Offset(0, 3),
-              ),
-            ],
           ),
           child: Row(
             children: [
@@ -368,16 +361,16 @@ class _ProductPickerState extends ConsumerState<_ProductPicker> {
                         fontSize: 9.5,
                         fontWeight: FontWeight.w800,
                         letterSpacing: 1,
-                        color: AppColors.deepAlpha(0.45),
+                        color: context.colors.deepAlpha(0.45),
                       ),
                     ),
                     const SizedBox(height: 2),
                     Text(
                       selected.name,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w800,
-                        color: AppColors.deep,
+                        color: context.colors.deep,
                       ),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
@@ -391,13 +384,13 @@ class _ProductPickerState extends ConsumerState<_ProductPicker> {
                 height: 30,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: AppColors.primaryColor.withValues(alpha: 0.12),
+                  color: context.colors.primaryColor.withValues(alpha: 0.12),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.expand_more,
-                  size: 20,
-                  color: AppColors.primaryColor,
+                  size: context.iconXl,
+                  color: context.colors.primaryColor,
                 ),
               ),
             ],
@@ -421,12 +414,12 @@ class _ProductPickerSheet extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               'Select product',
               style: TextStyle(
                 fontWeight: FontWeight.w800,
                 fontSize: 16,
-                color: AppColors.deep,
+                color: context.colors.deep,
               ),
             ),
             const SizedBox(height: 8),
@@ -443,17 +436,17 @@ class _ProductPickerSheet extends StatelessWidget {
                       child: ListTile(
                         title: Text(
                           p.name,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 13.5,
                             fontWeight: FontWeight.w600,
-                            color: AppColors.deep,
+                            color: context.colors.deep,
                           ),
                         ),
                         trailing: p.code == selected.code
-                            ? const Icon(
+                            ? Icon(
                                 Icons.check,
-                                color: AppColors.primaryColor,
-                                size: 18,
+                                color: context.colors.primaryColor,
+                                size: context.iconLg,
                               )
                             : null,
                         onTap: () => Navigator.pop(context, p),
@@ -517,12 +510,12 @@ class _PremiumHero extends StatelessWidget {
       return SoftCard(
         child: Row(
           children: [
-            const Icon(Icons.info_outline, size: 18, color: AppColors.warn),
+            Icon(Icons.info_outline, size: context.iconLg, color: context.colors.warn),
             const SizedBox(width: 10),
             Expanded(
               child: Text(
                 error ?? 'Enter details to see a premium',
-                style: TextStyle(fontSize: 13, color: AppColors.deepAlpha(0.6)),
+                style: TextStyle(fontSize: 13, color: context.colors.deepAlpha(0.6)),
               ),
             ),
           ],
@@ -543,10 +536,10 @@ class _PremiumHero extends StatelessWidget {
                 Expanded(
                   child: Text(
                     product.name,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 15.5,
                       fontWeight: FontWeight.w800,
-                      color: AppColors.deep,
+                      color: context.colors.deep,
                     ),
                   ),
                 ),
@@ -558,13 +551,13 @@ class _PremiumHero extends StatelessWidget {
                     height: 34,
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
-                      color: AppColors.primaryColor.withValues(alpha: 0.14),
+                      color: context.colors.primaryColor.withValues(alpha: 0.14),
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.bookmark_border,
-                      size: 18,
-                      color: AppColors.primaryColor,
+                      size: context.iconLg,
+                      color: context.colors.primaryColor,
                     ),
                   ),
                 ),
@@ -574,24 +567,24 @@ class _PremiumHero extends StatelessWidget {
           Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            color: AppColors.primaryColor.withValues(alpha: 0.10),
+            color: context.colors.primaryColor.withValues(alpha: 0.10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   _premiumLabel(),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 12.5,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.deep,
+                    color: context.colors.deep,
                   ),
                 ),
                 Text(
                   _money.format(r.premium),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.primaryColor,
+                    color: context.colors.primaryColor,
                   ),
                 ),
               ],
@@ -616,20 +609,20 @@ class _PremiumHero extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
+                Text(
                   'Total Amount',
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.deep,
+                    color: context.colors.deep,
                   ),
                 ),
                 Text(
                   _money.format(r.total),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 15.5,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.deep,
+                    color: context.colors.deep,
                   ),
                 ),
               ],
@@ -658,17 +651,17 @@ class _Row extends StatelessWidget {
               label,
               style: TextStyle(
                 fontSize: 12.5,
-                color: AppColors.deepAlpha(0.55),
+                color: context.colors.deepAlpha(0.55),
               ),
             ),
           ),
           const SizedBox(width: 10),
           Text(
             value,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 12.5,
               fontWeight: FontWeight.w700,
-              color: AppColors.deep,
+              color: context.colors.deep,
             ),
           ),
         ],

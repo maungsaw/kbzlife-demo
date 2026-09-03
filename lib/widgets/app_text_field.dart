@@ -74,10 +74,10 @@ class _AppTextFieldState extends ConsumerState<AppTextField> {
       children: [
         Text(
           widget.label,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.bold,
-            color: AppColors.accentNavy,
+            color: context.colors.accentNavy,
           ),
         ),
         const SizedBox(height: 6),
@@ -101,7 +101,7 @@ class _AppTextFieldState extends ConsumerState<AppTextField> {
             onChanged: widget.onChanged,
             inputFormatters: widget.inputFormatters,
             onTap: widget.onTap,
-            style: const TextStyle(fontSize: 13, color: AppColors.accentNavy),
+            style: TextStyle(fontSize: 13, color: context.colors.accentNavy),
             validator: widget.validator,
             decoration: _inputDecoration(),
           ),
@@ -120,31 +120,31 @@ class _AppTextFieldState extends ConsumerState<AppTextField> {
       helperText: widget.helperText,
       helperMaxLines: 2,
       errorText: widget.errorText,
-      hintStyle: const TextStyle(fontSize: 12, color: AppColors.muted),
+      hintStyle: TextStyle(fontSize: 12, color: context.colors.muted),
       contentPadding:
           widget.contentPadding ??
           const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       filled: true,
-      fillColor: widget.enabled ? Colors.white : AppColors.surfaceBg,
+      fillColor: widget.enabled ? Colors.white : context.colors.surfaceBg,
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: const BorderSide(color: AppColors.border),
+        borderSide: BorderSide(color: context.colors.border),
       ),
       disabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: const BorderSide(color: AppColors.border),
+        borderSide: BorderSide(color: context.colors.border),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: const BorderSide(color: AppColors.primaryColor),
+        borderSide: BorderSide(color: context.colors.primaryColor),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: const BorderSide(color: AppColors.danger),
+        borderSide: BorderSide(color: context.colors.danger),
       ),
       focusedErrorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: const BorderSide(color: AppColors.danger),
+        borderSide: BorderSide(color: context.colors.danger),
       ),
     );
   }
@@ -158,16 +158,16 @@ class _AppTextFieldState extends ConsumerState<AppTextField> {
           children: [
             const Text('🇲🇲', style: TextStyle(fontSize: 18)),
             const SizedBox(width: 6),
-            const Text(
+            Text(
               '+95',
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
-                color: AppColors.accentNavy,
+                color: context.colors.accentNavy,
               ),
             ),
             const SizedBox(width: 8),
-            Container(height: 20, width: 1, color: AppColors.border),
+            Container(height: 20, width: 1, color: context.colors.border),
           ],
         ),
       );
@@ -182,8 +182,8 @@ class _AppTextFieldState extends ConsumerState<AppTextField> {
           widget.obscureText
               ? Icons.visibility_off_outlined
               : Icons.visibility_outlined,
-          size: 18,
-          color: AppColors.muted,
+          size: context.iconLg,
+          color: context.colors.muted,
         ),
         onPressed: widget.onToggleVisibility,
       );

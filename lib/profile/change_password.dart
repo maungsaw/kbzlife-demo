@@ -52,9 +52,9 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
       onVerified: () {
         Navigator.pop(context); // Close the bottom sheet
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Password updated successfully!'),
-            backgroundColor: AppColors.accentNavy,
+          SnackBar(
+            content: const Text('Password updated successfully!'),
+            backgroundColor: context.colors.accentNavy,
           ),
         );
       },
@@ -72,12 +72,12 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.cream,
+      backgroundColor: context.colors.cream,
       appBar: AppBar(
         title: const Text('Change Password'),
         centerTitle: true,
         backgroundColor: Colors.white,
-        foregroundColor: AppColors.accentNavy,
+        foregroundColor: context.colors.accentNavy,
         elevation: 0,
         scrolledUnderElevation: 0,
         leading: IconButton(
@@ -86,7 +86,7 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
         ),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
-          child: Container(color: AppColors.border, height: 1),
+          child: Container(color: context.colors.border, height: 1),
         ),
       ),
       body: SafeArea(
@@ -97,11 +97,11 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
             child: Column(
               crossAxisAlignment: .start,
               children: [
-                const Text(
+                Text(
                   'Create a new password that is at least 8 characters long and includes numbers or special characters.',
                   style: TextStyle(
                     fontSize: 12,
-                    color: AppColors.muted,
+                    color: context.colors.muted,
                     height: 1.4,
                   ),
                 ),
@@ -167,7 +167,7 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
                   height: 48,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primaryColor,
+                      backgroundColor: context.colors.primaryColor,
                       elevation: 0,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),

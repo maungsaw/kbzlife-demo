@@ -35,7 +35,7 @@ class _PolicyDetailScreenState extends ConsumerState<PolicyDetailScreen>
   void _showMoreActions(BuildContext context) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.white,
+      backgroundColor: context.colors.cream,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
@@ -130,16 +130,16 @@ class _PolicyDetailScreenState extends ConsumerState<PolicyDetailScreen>
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
-        color: const Color(0xFFF8F9FA),
+        color: context.colors.sectionBg,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Material(
-        color: const Color(0xFFF8F9FA),
+        color: context.colors.sectionBg,
         child: ListTile(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
-          leading: Icon(icon, color: Colors.black, size: 22),
+          leading: Icon(icon, color: Colors.black, size: context.iconXxl),
           title: Text(
             title,
             style: const TextStyle(
@@ -148,9 +148,9 @@ class _PolicyDetailScreenState extends ConsumerState<PolicyDetailScreen>
               color: Colors.black,
             ),
           ),
-          trailing: const Icon(
+          trailing: Icon(
             Icons.chevron_right,
-            size: 18,
+            size: context.iconLg,
             color: Colors.grey,
           ),
           onTap: onTap,
@@ -162,16 +162,16 @@ class _PolicyDetailScreenState extends ConsumerState<PolicyDetailScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F6F8),
+      backgroundColor: context.colors.cream,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
         scrolledUnderElevation: 0,
         leading: IconButton(
-          icon: const Icon(
+          icon: Icon(
             Icons.arrow_back_ios_new,
             color: Colors.black,
-            size: 20,
+            size: context.iconXl,
           ),
           onPressed: () => context.pop(),
         ),
@@ -187,7 +187,7 @@ class _PolicyDetailScreenState extends ConsumerState<PolicyDetailScreen>
         centerTitle: true,
         actions: [
           IconButton(
-            icon: const Icon(Icons.more_horiz, color: Colors.black, size: 24),
+            icon: Icon(Icons.more_horiz, color: Colors.black, size: context.iconXxxl),
             onPressed: () => _showMoreActions(context),
           ),
         ],
@@ -198,13 +198,6 @@ class _PolicyDetailScreenState extends ConsumerState<PolicyDetailScreen>
             width: double.infinity,
             decoration: BoxDecoration(
               color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.03),
-                  blurRadius: 10,
-                  offset: const Offset(0, 4),
-                ),
-              ],
             ),
             padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
             child: Column(
@@ -227,7 +220,7 @@ class _PolicyDetailScreenState extends ConsumerState<PolicyDetailScreen>
                         vertical: 4,
                       ),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFE8F5E9),
+                        color: context.colors.successLight,
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Row(
@@ -269,7 +262,7 @@ class _PolicyDetailScreenState extends ConsumerState<PolicyDetailScreen>
                       vertical: 8,
                     ),
                     decoration: BoxDecoration(
-                      color: AppColors.primaryColor.withValues(alpha: 0.08),
+                      color: context.colors.primaryColor.withValues(alpha: 0.08),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Row(
@@ -277,14 +270,14 @@ class _PolicyDetailScreenState extends ConsumerState<PolicyDetailScreen>
                       children: [
                         Icon(
                           Icons.picture_as_pdf_rounded,
-                          size: 16,
-                          color: AppColors.primaryColor,
+                          size: context.iconBase,
+                          color: context.colors.primaryColor,
                         ),
                         const SizedBox(width: 8),
                         Text(
                           'View Policy Document',
                           style: TextStyle(
-                            color: AppColors.primaryColor,
+                            color: context.colors.primaryColor,
                             fontWeight: FontWeight.w700,
                             fontSize: 13,
                           ),
@@ -362,15 +355,15 @@ class _PolicyDetailScreenState extends ConsumerState<PolicyDetailScreen>
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            AppColors.primaryColor.withValues(alpha: 0.12),
-            AppColors.primaryColor.withValues(alpha: 0.04),
+            context.colors.primaryColor.withValues(alpha: 0.12),
+            context.colors.primaryColor.withValues(alpha: 0.04),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: AppColors.primaryColor.withValues(alpha: 0.2),
+          color: context.colors.primaryColor.withValues(alpha: 0.2),
         ),
       ),
       child: Row(
@@ -378,13 +371,13 @@ class _PolicyDetailScreenState extends ConsumerState<PolicyDetailScreen>
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: AppColors.primaryColor,
+              color: context.colors.primaryColor,
               shape: BoxShape.circle,
             ),
-            child: const Icon(
+            child: Icon(
               Icons.event_repeat,
               color: Colors.white,
-              size: 20,
+              size: context.iconXl,
             ),
           ),
           const SizedBox(width: 12),
@@ -406,7 +399,7 @@ class _PolicyDetailScreenState extends ConsumerState<PolicyDetailScreen>
                   style: TextStyle(
                     fontWeight: FontWeight.w800,
                     fontSize: 16,
-                    color: AppColors.primaryColor,
+                    color: context.colors.primaryColor,
                   ),
                 ),
               ],
@@ -461,7 +454,7 @@ class _PolicyDetailScreenState extends ConsumerState<PolicyDetailScreen>
           _buildDetailRow(
             'Next Premium Due',
             '15 Sep 2025',
-            highlightColor: AppColors.primaryColor,
+            highlightColor: context.colors.primaryColor,
           ),
           _buildDetailRow('Grace Period End Date', '15 Oct 2025', isLast: true),
         ]),
@@ -479,7 +472,7 @@ class _PolicyDetailScreenState extends ConsumerState<PolicyDetailScreen>
               child: Text(
                 'View All',
                 style: TextStyle(
-                  color: AppColors.primaryColor,
+                  color: context.colors.primaryColor,
                   fontWeight: FontWeight.w700,
                   fontSize: 13,
                 ),
@@ -554,13 +547,6 @@ class _PolicyDetailScreenState extends ConsumerState<PolicyDetailScreen>
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.02),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
         border: Border.all(color: Colors.grey.shade200),
       ),
       child: Column(children: children),
@@ -589,7 +575,7 @@ class _PolicyDetailScreenState extends ConsumerState<PolicyDetailScreen>
               color: Colors.grey.shade100,
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Icon(icon, size: 18, color: Colors.grey.shade700),
+            child: Icon(icon, size: context.iconLg, color: Colors.grey.shade700),
           ),
           const SizedBox(width: 12),
           Text(
@@ -673,23 +659,16 @@ class _PolicyDetailScreenState extends ConsumerState<PolicyDetailScreen>
         color: Colors.white,
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: Colors.grey.shade200),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.02),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
-          ),
-        ],
       ),
       child: Row(
         children: [
           Container(
             padding: const EdgeInsets.all(8),
-            decoration: const BoxDecoration(
-              color: Color(0xFFE8F5E9),
+            decoration: BoxDecoration(
+              color: context.colors.successLight,
               shape: BoxShape.circle,
             ),
-            child: const Icon(Icons.check, color: Colors.green, size: 18),
+            child: Icon(Icons.check, color: Colors.green, size: context.iconLg),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -749,13 +728,6 @@ class _PolicyDetailScreenState extends ConsumerState<PolicyDetailScreen>
         color: Colors.white,
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: Colors.grey.shade200),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.02),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
-          ),
-        ],
       ),
       child: Row(
         children: [
@@ -780,7 +752,7 @@ class _PolicyDetailScreenState extends ConsumerState<PolicyDetailScreen>
                       ),
                       decoration: BoxDecoration(
                         color: isPrimary
-                            ? AppColors.primaryColor.withValues(alpha: 0.1)
+                            ? context.colors.primaryColor.withValues(alpha: 0.1)
                             : Colors.grey.shade100,
                         borderRadius: BorderRadius.circular(6),
                       ),
@@ -788,7 +760,7 @@ class _PolicyDetailScreenState extends ConsumerState<PolicyDetailScreen>
                         isPrimary ? 'Primary' : 'Contingent',
                         style: TextStyle(
                           color: isPrimary
-                              ? AppColors.primaryColor
+                              ? context.colors.primaryColor
                               : Colors.grey.shade700,
                           fontSize: 10,
                           fontWeight: FontWeight.w700,
@@ -833,16 +805,16 @@ class PolicyTimelineScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F6F8),
+      backgroundColor: context.colors.cream,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
         scrolledUnderElevation: 0,
         leading: IconButton(
-          icon: const Icon(
+          icon: Icon(
             Icons.arrow_back_ios_new,
             color: Colors.black,
-            size: 20,
+            size: context.iconXl,
           ),
           onPressed: () => context.pop(),
         ),
@@ -864,7 +836,7 @@ class PolicyTimelineScreen extends StatelessWidget {
             title: 'Policy Issued',
             description: 'Policy has been successfully issued.',
             icon: Icons.assignment_turned_in_rounded,
-            iconColor: AppColors.primaryColor,
+            iconColor: context.colors.primaryColor,
           ),
           _buildTimelineTile(
             date: '15 Jun 2024',

@@ -34,13 +34,13 @@ class _AppSelectionChipState extends ConsumerState<AppSelectionChip> {
         onSelected: widget.onSelected,
         showCheckmark: true,
         checkmarkColor: Colors.white,
-        avatar: widget.icon == null ? null : Icon(widget.icon, size: 16),
-        selectedColor: AppColors.primaryColor,
-        backgroundColor: AppColors.paper,
+        avatar: widget.icon == null ? null : Icon(widget.icon, size: context.iconBase),
+        selectedColor: context.colors.primaryColor,
+        backgroundColor: context.colors.paper,
         side: BorderSide(
           color: widget.selected
-              ? AppColors.primaryColor
-              : AppColors.primaryColor.withValues(alpha: 0.10),
+              ? context.colors.primaryColor
+              : context.colors.primaryColor.withValues(alpha: 0.10),
           width: 1,
         ),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
@@ -48,7 +48,7 @@ class _AppSelectionChipState extends ConsumerState<AppSelectionChip> {
         labelStyle: TextStyle(
           color: widget.selected
               ? Colors.white
-              : AppColors.primaryColor.withValues(alpha: 0.68),
+              : context.colors.primaryColor.withValues(alpha: 0.68),
           fontWeight: FontWeight.w700,
           fontSize: 12,
         ),

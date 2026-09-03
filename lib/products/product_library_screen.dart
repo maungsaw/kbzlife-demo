@@ -33,7 +33,7 @@ class _ProductLibraryScreenState extends ConsumerState<ProductsLibraryScreen> {
     final isGrid = ref.watch(productGridViewProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.cream,
+      backgroundColor: context.colors.cream,
       appBar: AppBar(
         title: const Text('Products'),
         actions: [
@@ -42,7 +42,7 @@ class _ProductLibraryScreenState extends ConsumerState<ProductsLibraryScreen> {
             children: [
               IconButton(
                 tooltip: 'Saved quotes',
-                color: AppColors.primaryColor,
+                color: context.colors.primaryColor,
                 onPressed: () => context.push('/quote/drafts'),
                 icon: const FaIcon(FontAwesomeIcons.fileLines),
               ),
@@ -56,7 +56,7 @@ class _ProductLibraryScreenState extends ConsumerState<ProductsLibraryScreen> {
                       vertical: 1,
                     ),
                     decoration: BoxDecoration(
-                      color: AppColors.danger,
+                      color: context.colors.danger,
                       borderRadius: BorderRadius.circular(999),
                     ),
                     child: Text(
@@ -114,7 +114,7 @@ class _ProductLibraryScreenState extends ConsumerState<ProductsLibraryScreen> {
                   // a shape switch: rich one-per-row cards, or a compact
                   // list. There is no two-up grid any more.
                   tooltip: isGrid ? 'Compact list' : 'Product cards',
-                  color: AppColors.primaryColor,
+                  color: context.colors.primaryColor,
                   onPressed: () => ref
                       .read(productGridViewProvider.notifier)
                       .setGridView(!isGrid),
@@ -122,7 +122,7 @@ class _ProductLibraryScreenState extends ConsumerState<ProductsLibraryScreen> {
                     isGrid
                         ? FontAwesomeIcons.list
                         : FontAwesomeIcons.tableColumns,
-                    size: 18,
+                    size: context.iconLg,
                   ),
                 ),
               ],
@@ -204,7 +204,7 @@ class _ProductRowCard extends StatelessWidget {
                         vertical: 2,
                       ),
                       decoration: BoxDecoration(
-                        color: AppColors.deepAlpha(0.05),
+                        color: context.colors.deepAlpha(0.05),
                         borderRadius: BorderRadius.circular(999),
                       ),
                       child: Text(
@@ -213,7 +213,7 @@ class _ProductRowCard extends StatelessWidget {
                           fontSize: 9,
                           letterSpacing: 0.3,
                           fontWeight: FontWeight.w800,
-                          color: AppColors.deepAlpha(0.5),
+                          color: context.colors.deepAlpha(0.5),
                         ),
                       ),
                     ),
@@ -222,11 +222,11 @@ class _ProductRowCard extends StatelessWidget {
                       product.name,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontWeight: FontWeight.w800,
                         fontSize: 15,
                         height: 1.25,
-                        color: AppColors.deep,
+                        color: context.colors.deep,
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -237,25 +237,25 @@ class _ProductRowCard extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 11.5,
                         height: 1.35,
-                        color: AppColors.deepAlpha(0.55),
+                        color: context.colors.deepAlpha(0.55),
                       ),
                     ),
                     const SizedBox(height: 8),
                     Row(
                       children: [
-                        const Text(
+                        Text(
                           'View details',
                           style: TextStyle(
                             fontSize: 11.5,
                             fontWeight: FontWeight.w800,
-                            color: AppColors.primaryColor,
+                            color: context.colors.primaryColor,
                           ),
                         ),
                         const SizedBox(width: 3),
                         FaIcon(
                           FontAwesomeIcons.arrowRight,
-                          size: 12,
-                          color: AppColors.primaryColor.withValues(alpha: 0.8),
+                          size: context.iconSm,
+                          color: context.colors.primaryColor.withValues(alpha: 0.8),
                         ),
                       ],
                     ),
@@ -296,10 +296,10 @@ class _ProductList extends StatelessWidget {
                   products[i].name,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.w800,
                     fontSize: 13.5,
-                    color: AppColors.deep,
+                    color: context.colors.deep,
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -309,7 +309,7 @@ class _ProductList extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontSize: 11,
-                    color: AppColors.deepAlpha(0.55),
+                    color: context.colors.deepAlpha(0.55),
                   ),
                 ),
               ],
@@ -318,7 +318,7 @@ class _ProductList extends StatelessWidget {
           const SizedBox(width: 8),
           FaIcon(
             FontAwesomeIcons.chevronRight,
-            color: AppColors.deepAlpha(0.3),
+            color: context.colors.deepAlpha(0.3),
           ),
         ],
       ),

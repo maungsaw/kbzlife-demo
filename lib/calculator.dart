@@ -21,7 +21,7 @@ class _PremiumCalculatorScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.cream,
+      backgroundColor: context.colors.cream,
       appBar: AppBar(title: Text('${widget.productName} Calculator')),
       body: const Center(child: Text('Calculator coming soon')),
     );

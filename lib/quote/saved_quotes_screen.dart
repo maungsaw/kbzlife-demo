@@ -14,14 +14,14 @@ class SavedQuotesScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final drafts = ref.watch(savedQuotesProvider);
     return Scaffold(
-      backgroundColor: AppColors.cream,
+      backgroundColor: context.colors.cream,
       appBar: AppBar(title: const Text('Saved quotes')),
       body: drafts.isEmpty
           ? Center(
               child: Text(
                 'No saved quotes yet',
                 style: TextStyle(
-                  color: AppColors.deepAlpha(0.4),
+                  color: context.colors.deepAlpha(0.4),
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -41,12 +41,12 @@ class SavedQuotesScreen extends ConsumerWidget {
                         height: 40,
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
-                          color: AppColors.primaryColor.withValues(alpha: 0.12),
+                          color: context.colors.primaryColor.withValues(alpha: 0.12),
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: const Icon(
+                        child: Icon(
                           Icons.calculate_outlined,
-                          color: AppColors.primaryColor,
+                          color: context.colors.primaryColor,
                         ),
                       ),
                       const SizedBox(width: 10),
@@ -56,10 +56,10 @@ class SavedQuotesScreen extends ConsumerWidget {
                           children: [
                             Text(
                               d.productName,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontWeight: FontWeight.w800,
                                 fontSize: 13,
-                                color: AppColors.deep,
+                                color: context.colors.deep,
                               ),
                             ),
                             const SizedBox(height: 2),
@@ -67,7 +67,7 @@ class SavedQuotesScreen extends ConsumerWidget {
                               'Saved ${DateFormat('dd-MMM-yyyy').format(d.savedAt)} · valid 30 days',
                               style: TextStyle(
                                 fontSize: 10.5,
-                                color: AppColors.deepAlpha(0.45),
+                                color: context.colors.deepAlpha(0.45),
                               ),
                             ),
                           ],
@@ -75,10 +75,10 @@ class SavedQuotesScreen extends ConsumerWidget {
                       ),
                       Text(
                         '${NumberFormat.decimalPattern('en_US').format(d.premium)} MMK',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontWeight: FontWeight.w800,
                           fontSize: 12.5,
-                          color: AppColors.primaryColor,
+                          color: context.colors.primaryColor,
                         ),
                       ),
                     ],

@@ -22,7 +22,7 @@ class TeamStructureTabPage extends StatelessWidget {
     final teamList = rawTeamList.where((m) => m.role != UserRole.dm).toList();
 
     return ListView(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const .only(top: 16),
       children: [
         if (teamList.isEmpty)
           _buildEmptyTeamState()
@@ -43,14 +43,7 @@ class TeamStructureTabPage extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        border: Border.all(color: kAppColors.border),
       ),
       child: Column(
         children: [
@@ -70,12 +63,12 @@ class TeamStructureTabPage extends StatelessWidget {
                     width: 46,
                     height: 46,
                     decoration: BoxDecoration(
-                      color: AppColors.primaryColor.withValues(alpha: 0.1),
+                      color: kAppColors.primaryColor.withValues(alpha: 0.1),
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.groups_rounded,
-                      color: AppColors.primaryColor,
+                      color: kAppColors.primaryColor,
                       size: 22,
                     ),
                   ),
@@ -89,8 +82,8 @@ class TeamStructureTabPage extends StatelessWidget {
                             Flexible(
                               child: Text(
                                 manager.name,
-                                style: const TextStyle(
-                                  color: Color(0xFF0F172A),
+                                style: TextStyle(
+                                  color: kAppColors.textPrimary,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16,
                                 ),
@@ -100,8 +93,8 @@ class TeamStructureTabPage extends StatelessWidget {
                             const SizedBox(width: 8),
                             _buildRoleBadge(
                               manager.designation,
-                              badgeColor: const Color(0xFFE3F2FD),
-                              textColor: AppColors.primaryColor,
+                              badgeColor: kAppColors.infoLight,
+                              textColor: kAppColors.primaryColor,
                             ),
                             if (manager.metrics.isRedFlag) ...[
                               const SizedBox(width: 8),
@@ -120,9 +113,9 @@ class TeamStructureTabPage extends StatelessWidget {
                       ],
                     ),
                   ),
-                  const Icon(
+                  Icon(
                     Icons.chevron_right_rounded,
-                    color: AppColors.primaryColor,
+                    color: kAppColors.primaryColor,
                     size: 22,
                   ),
                 ],
@@ -131,7 +124,7 @@ class TeamStructureTabPage extends StatelessWidget {
           ),
 
           if (subordinates.isNotEmpty)
-            const Divider(height: 1, thickness: 1, color: Color(0xFFF0F0F0)),
+            Divider(height: 1, thickness: 1, color: kAppColors.divider),
 
           ...subordinates.map((sub) => _buildSubordinateTile(sub)),
         ],
@@ -164,8 +157,8 @@ class TeamStructureTabPage extends StatelessWidget {
                       Flexible(
                         child: Text(
                           member.name,
-                          style: const TextStyle(
-                            color: Color(0xFF0F172A),
+                          style: TextStyle(
+                            color: kAppColors.textPrimary,
                             fontWeight: FontWeight.bold,
                             fontSize: 14,
                           ),
@@ -175,8 +168,8 @@ class TeamStructureTabPage extends StatelessWidget {
                       const SizedBox(width: 8),
                       _buildRoleBadge(
                         member.designation,
-                        badgeColor: const Color(0xFFE8F5E9),
-                        textColor: const Color(0xFF2E7D32),
+                        badgeColor: kAppColors.successLight,
+                        textColor: kAppColors.successText,
                       ),
                       if (member.metrics.isRedFlag) ...[
                         const SizedBox(width: 8),
@@ -200,10 +193,10 @@ class TeamStructureTabPage extends StatelessWidget {
                 ],
               ),
             ),
-            const Icon(
+            Icon(
               Icons.chevron_right_rounded,
               size: 18,
-              color: AppColors.primaryColor,
+              color: kAppColors.primaryColor,
             ),
           ],
         ),
@@ -248,20 +241,24 @@ class TeamStructureTabPage extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFEBEE),
+        color: kAppColors.errorLight,
         borderRadius: BorderRadius.circular(6),
       ),
-      child: const Row(
+      child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.warning_amber_rounded, size: 12, color: Color(0xFFC62828)),
+          Icon(
+            Icons.warning_amber_rounded,
+            size: 12,
+            color: kAppColors.errorText,
+          ),
           SizedBox(width: 2),
           Text(
             'RED FLAG',
             style: TextStyle(
               fontSize: 9,
               fontWeight: FontWeight.bold,
-              color: Color(0xFFC62828),
+              color: kAppColors.errorText,
             ),
           ),
         ],
@@ -270,16 +267,16 @@ class TeamStructureTabPage extends StatelessWidget {
   }
 
   Widget _buildEmptyTeamState() {
-    return const Padding(
+    return Padding(
       padding: EdgeInsets.symmetric(vertical: 60),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.groups_outlined, size: 48, color: Color(0xFFE0E0E0)),
+          Icon(Icons.groups_outlined, size: 48, color: kAppColors.divider),
           SizedBox(height: 12),
           Text(
             'No team members found',
-            style: TextStyle(color: Color(0xFF9E9E9E), fontSize: 13),
+            style: TextStyle(color: kAppColors.muted, fontSize: 13),
           ),
         ],
       ),

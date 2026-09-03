@@ -28,7 +28,7 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
 
   Widget _buildFAOverview(AgentPerformanceData metrics) {
     return ListView(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: .symmetric(horizontal: 16),
       children: [
         _buildPersonalPerformanceCard(metrics),
         const SizedBox(height: 16),
@@ -48,24 +48,17 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
 
   Widget _buildPersonalPerformanceCard(AgentPerformanceData metrics) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const .all(10),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [AppColors.accentNavy, AppColors.primaryColor],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+        gradient: LinearGradient(
+          colors: [context.colors.accentNavy, context.colors.primaryColor],
+          begin: .topLeft,
+          end: .bottomRight,
         ),
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.accentNavy.withValues(alpha: 0.15),
-            blurRadius: 12,
-            offset: const Offset(0, 6),
-          ),
-        ],
+        borderRadius: .circular(16),
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: .start,
         children: [
           const Text(
             'Personal Performance',
@@ -106,12 +99,12 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'First Year Premium (FYP)',
           style: TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.bold,
-            color: Color(0xFF0F172A),
+            color: context.colors.textPrimary,
           ),
         ),
         const SizedBox(height: 12),
@@ -121,7 +114,7 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
               child: _buildMetricCard(
                 'Initial FYP',
                 '${metrics.fyp.initialFyp}M',
-                AppColors.primaryColor,
+                context.colors.primaryColor,
               ),
             ),
             const SizedBox(width: 12),
@@ -129,7 +122,7 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
               child: _buildMetricCard(
                 'Subsequent FYP',
                 '${metrics.fyp.subsequentFyp}M',
-                const Color(0xFF2E7D32),
+                context.colors.successText,
               ),
             ),
           ],
@@ -140,7 +133,7 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: const Color(0xFFE2E8F0)),
+            border: Border.all(color: context.colors.border),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -153,8 +146,8 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
                   color: metrics.fyp.momGrowth >= 0
-                      ? const Color(0xFFE8F5E9)
-                      : const Color(0xFFFFEBEE),
+                      ? context.colors.successLight
+                      : context.colors.errorLight,
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
@@ -163,8 +156,8 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
                     color: metrics.fyp.momGrowth >= 0
-                        ? const Color(0xFF2E7D32)
-                        : const Color(0xFFC62828),
+                        ? context.colors.successText
+                        : context.colors.errorText,
                   ),
                 ),
               ),
@@ -182,17 +175,17 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        border: Border.all(color: context.colors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Due vs Collected Premium',
             style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF0F172A),
+              color: context.colors.textPrimary,
             ),
           ),
           const SizedBox(height: 12),
@@ -212,9 +205,9 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
             borderRadius: BorderRadius.circular(4),
             child: LinearProgressIndicator(
               value: dc.collectionRatio / 100,
-              backgroundColor: const Color(0xFFE2E8F0),
-              valueColor: const AlwaysStoppedAnimation<Color>(
-                AppColors.primaryColor,
+              backgroundColor: context.colors.border,
+              valueColor: AlwaysStoppedAnimation<Color>(
+                context.colors.primaryColor,
               ),
               minHeight: 8,
             ),
@@ -236,17 +229,17 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        border: Border.all(color: context.colors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Commission',
             style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF0F172A),
+              color: context.colors.textPrimary,
             ),
           ),
           const SizedBox(height: 12),
@@ -276,14 +269,14 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
 
   Widget _buildPersistencySection(AgentPerformanceData metrics) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: .start,
       children: [
-        const Text(
+        Text(
           'Persistency',
           style: TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.bold,
-            color: Color(0xFF0F172A),
+            color: context.colors.textPrimary,
           ),
         ),
         const SizedBox(height: 12),
@@ -314,26 +307,26 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        border: Border.all(color: context.colors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             title,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w600,
-              color: Color(0xFF0F172A),
+              color: context.colors.textPrimary,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             '${metric.policyRetentionRate}%',
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.bold,
-              color: AppColors.primaryColor,
+              color: context.colors.primaryColor,
             ),
           ),
           const SizedBox(height: 4),
@@ -360,10 +353,10 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
         ),
         Text(
           '$value%',
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 11,
             fontWeight: FontWeight.w600,
-            color: Color(0xFF0F172A),
+            color: context.colors.textPrimary,
           ),
         ),
       ],
@@ -377,7 +370,7 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        border: Border.all(color: context.colors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -385,20 +378,20 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
+              Text(
                 'Road to MDRT',
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF0F172A),
+                  color: context.colors.textPrimary,
                 ),
               ),
               Text(
                 '${(mdrt.progressPercentage * 100).toInt()}%',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.primaryColor,
+                  color: context.colors.primaryColor,
                 ),
               ),
             ],
@@ -408,9 +401,9 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
             borderRadius: BorderRadius.circular(6),
             child: LinearProgressIndicator(
               value: mdrt.progressPercentage,
-              backgroundColor: const Color(0xFFE2E8F0),
-              valueColor: const AlwaysStoppedAnimation<Color>(
-                AppColors.primaryColor,
+              backgroundColor: context.colors.border,
+              valueColor: AlwaysStoppedAnimation<Color>(
+                context.colors.primaryColor,
               ),
               minHeight: 10,
             ),
@@ -445,7 +438,7 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
     HierarchyNodeModel node,
   ) {
     return ListView(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: .only(top: 16),
       children: [
         _buildMyPerformanceLink(metrics),
         const SizedBox(height: 16),
@@ -469,7 +462,7 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: const Color(0xFFE2E8F0)),
+          border: Border.all(color: context.colors.border),
         ),
         child: Row(
           children: [
@@ -477,13 +470,13 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: AppColors.primaryColor.withValues(alpha: 0.1),
+                color: context.colors.primaryColor.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.analytics_outlined,
-                size: 20,
-                color: AppColors.primaryColor,
+                size: context.iconXl,
+                color: context.colors.primaryColor,
               ),
             ),
             const SizedBox(width: 12),
@@ -491,12 +484,12 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     'My performance',
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
-                      color: Color(0xFF0F172A),
+                      color: context.colors.textPrimary,
                     ),
                   ),
                   const SizedBox(height: 2),
@@ -507,10 +500,10 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
                 ],
               ),
             ),
-            const Icon(
+            Icon(
               Icons.arrow_forward_ios,
-              size: 16,
-              color: AppColors.primaryColor,
+              size: context.iconBase,
+              color: context.colors.primaryColor,
             ),
           ],
         ),
@@ -527,13 +520,6 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
       ),
       child: Row(
         children: [
@@ -549,9 +535,9 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
                   child: CircularProgressIndicator(
                     value: displayProgress,
                     strokeWidth: 10,
-                    backgroundColor: const Color(0xFFE2E8F0),
-                    valueColor: const AlwaysStoppedAnimation<Color>(
-                      AppColors.primaryColor,
+                    backgroundColor: context.colors.border,
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      context.colors.primaryColor,
                     ),
                   ),
                 ),
@@ -560,10 +546,10 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
                   children: [
                     Text(
                       '${(displayProgress * 100).toInt()}%',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
-                        color: AppColors.primaryColor,
+                        color: context.colors.primaryColor,
                       ),
                     ),
                   ],
@@ -583,10 +569,10 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
                 const SizedBox(height: 4),
                 Text(
                   'Actual  ${metrics.actual}M',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF0F172A),
+                    color: context.colors.textPrimary,
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -602,8 +588,8 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
                   ),
                   decoration: BoxDecoration(
                     color: metrics.apeMomGrowth >= 0
-                        ? const Color(0xFFE8F5E9)
-                        : const Color(0xFFFFEBEE),
+                        ? context.colors.successLight
+                        : context.colors.errorLight,
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: Text(
@@ -612,8 +598,8 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
                       color: metrics.apeMomGrowth >= 0
-                          ? const Color(0xFF2E7D32)
-                          : const Color(0xFFC62828),
+                          ? context.colors.successText
+                          : context.colors.errorText,
                     ),
                   ),
                 ),
@@ -624,13 +610,13 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: const Color(0xFFFFEBEE),
+                color: context.colors.errorLight,
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.warning_amber_rounded,
-                color: Color(0xFFC62828),
-                size: 20,
+                color: context.colors.errorText,
+                size: context.iconXl,
               ),
             ),
         ],
@@ -642,12 +628,12 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'Key performance',
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
-            color: Color(0xFF0F172A),
+            color: context.colors.textPrimary,
           ),
         ),
         const SizedBox(height: 12),
@@ -698,11 +684,6 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
             ),
           ],
         ),
-        const SizedBox(height: 12),
-        Text(
-          'Weighting is applied by Core. This app displays the result.',
-          style: TextStyle(fontSize: 11, color: Colors.grey.shade500),
-        ),
       ],
     );
   }
@@ -721,7 +702,7 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        border: Border.all(color: context.colors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -731,18 +712,18 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
             children: [
               Text(
                 title,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF0F172A),
+                  color: context.colors.textPrimary,
                 ),
               ),
               Text(
                 percentage,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.primaryColor,
+                  color: context.colors.primaryColor,
                 ),
               ),
             ],
@@ -750,10 +731,10 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
           const SizedBox(height: 8),
           Text(
             actual,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF0F172A),
+              color: context.colors.textPrimary,
             ),
           ),
           const SizedBox(height: 2),
@@ -766,9 +747,9 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
             borderRadius: BorderRadius.circular(4),
             child: LinearProgressIndicator(
               value: displayProgress,
-              backgroundColor: const Color(0xFFE2E8F0),
-              valueColor: const AlwaysStoppedAnimation<Color>(
-                AppColors.primaryColor,
+              backgroundColor: context.colors.border,
+              valueColor: AlwaysStoppedAnimation<Color>(
+                context.colors.primaryColor,
               ),
               minHeight: 6,
             ),
@@ -795,20 +776,20 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(
+            Text(
               'Road to MDRT',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF0F172A),
+                color: context.colors.textPrimary,
               ),
             ),
             Text(
               '$mdrtCount / $totalFAs qualified',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
-                color: AppColors.primaryColor,
+                color: context.colors.primaryColor,
               ),
             ),
           ],
@@ -819,17 +800,17 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: const Color(0xFFE2E8F0)),
+            border: Border.all(color: context.colors.border),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+              Text(
                 'Personal',
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF0F172A),
+                  color: context.colors.textPrimary,
                 ),
               ),
               const SizedBox(height: 10),
@@ -838,10 +819,10 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
                 children: [
                   Text(
                     '${metrics.mdrt.eligiblePremium}M',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: AppColors.primaryColor,
+                      color: context.colors.primaryColor,
                     ),
                   ),
                   Text(
@@ -855,11 +836,11 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
                 borderRadius: BorderRadius.circular(6),
                 child: LinearProgressIndicator(
                   value: metrics.mdrt.progressPercentage,
-                  backgroundColor: const Color(0xFFE2E8F0),
+                  backgroundColor: context.colors.border,
                   valueColor: AlwaysStoppedAnimation<Color>(
                     metrics.mdrt.progressPercentage >= 1.0
-                        ? const Color(0xFF2E7D32)
-                        : AppColors.primaryColor,
+                        ? context.colors.successText
+                        : context.colors.primaryColor,
                   ),
                   minHeight: 10,
                 ),
@@ -887,17 +868,17 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: const Color(0xFFE2E8F0)),
+            border: Border.all(color: context.colors.border),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+              Text(
                 'Team Progress',
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF0F172A),
+                  color: context.colors.textPrimary,
                 ),
               ),
               const SizedBox(height: 10),
@@ -906,13 +887,13 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
                   _buildMDRTSummaryItem(
                     'Qualified',
                     '$mdrtCount',
-                    const Color(0xFF2E7D32),
+                    context.colors.successText,
                   ),
                   const SizedBox(width: 16),
                   _buildMDRTSummaryItem(
                     'In Progress',
                     '${totalFAs - mdrtCount}',
-                    AppColors.primaryColor,
+                    context.colors.primaryColor,
                   ),
                 ],
               ),
@@ -937,10 +918,10 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
         const SizedBox(width: 8),
         Text(
           '$label: $count',
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.w500,
-            color: Color(0xFF0F172A),
+            color: context.colors.textPrimary,
           ),
         ),
       ],
@@ -953,7 +934,7 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        border: Border.all(color: context.colors.border),
       ),
       child: Row(
         children: [
@@ -961,30 +942,30 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: AppColors.primaryColor.withValues(alpha: 0.1),
+              color: context.colors.primaryColor.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: const Icon(
+            child: Icon(
               Icons.people_outline,
-              size: 20,
-              color: AppColors.primaryColor,
+              size: context.iconXl,
+              color: context.colors.primaryColor,
             ),
           ),
           const SizedBox(width: 12),
           Expanded(
             child: Text(
               'Direct reports (${node.directTeam.length})',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
-                color: Color(0xFF0F172A),
+                color: context.colors.textPrimary,
               ),
             ),
           ),
-          const Icon(
+          Icon(
             Icons.arrow_forward_ios,
-            size: 16,
-            color: AppColors.primaryColor,
+            size: context.iconBase,
+            color: context.colors.primaryColor,
           ),
         ],
       ),
@@ -1004,8 +985,8 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
         maxChildSize: 0.95,
         expand: false,
         builder: (context, scrollController) => Container(
-          decoration: const BoxDecoration(
-            color: AppColors.surfaceBg,
+          decoration: BoxDecoration(
+            color: context.colors.surfaceBg,
             borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
           ),
           child: Column(
@@ -1035,12 +1016,12 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
                   vertical: 12,
                 ),
                 color: Colors.white,
-                child: const Text(
+                child: Text(
                   'Personal Performance',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF0F172A),
+                    color: context.colors.textPrimary,
                   ),
                 ),
               ),
@@ -1079,19 +1060,12 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [AppColors.accentNavy, AppColors.primaryColor],
+        gradient: LinearGradient(
+          colors: [context.colors.accentNavy, context.colors.primaryColor],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.accentNavy.withValues(alpha: 0.15),
-            blurRadius: 12,
-            offset: const Offset(0, 6),
-          ),
-        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1135,12 +1109,12 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'First Year Premium (FYP)',
           style: TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.bold,
-            color: Color(0xFF0F172A),
+            color: context.colors.textPrimary,
           ),
         ),
         const SizedBox(height: 12),
@@ -1150,7 +1124,7 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
               child: _buildMetricCard(
                 'Initial FYP',
                 '${metrics.fyp.initialFyp}M',
-                AppColors.primaryColor,
+                context.colors.primaryColor,
               ),
             ),
             const SizedBox(width: 12),
@@ -1158,7 +1132,7 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
               child: _buildMetricCard(
                 'Subsequent FYP',
                 '${metrics.fyp.subsequentFyp}M',
-                const Color(0xFF2E7D32),
+                context.colors.successText,
               ),
             ),
           ],
@@ -1169,7 +1143,7 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: const Color(0xFFE2E8F0)),
+            border: Border.all(color: context.colors.border),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1182,8 +1156,8 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
                   color: metrics.fyp.momGrowth >= 0
-                      ? const Color(0xFFE8F5E9)
-                      : const Color(0xFFFFEBEE),
+                      ? context.colors.successLight
+                      : context.colors.errorLight,
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
@@ -1192,8 +1166,8 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
                     color: metrics.fyp.momGrowth >= 0
-                        ? const Color(0xFF2E7D32)
-                        : const Color(0xFFC62828),
+                        ? context.colors.successText
+                        : context.colors.errorText,
                   ),
                 ),
               ),
@@ -1211,17 +1185,17 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        border: Border.all(color: context.colors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Due vs Collected Premium',
             style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF0F172A),
+              color: context.colors.textPrimary,
             ),
           ),
           const SizedBox(height: 12),
@@ -1241,9 +1215,9 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
             borderRadius: BorderRadius.circular(4),
             child: LinearProgressIndicator(
               value: dc.collectionRatio / 100,
-              backgroundColor: const Color(0xFFE2E8F0),
-              valueColor: const AlwaysStoppedAnimation<Color>(
-                AppColors.primaryColor,
+              backgroundColor: context.colors.border,
+              valueColor: AlwaysStoppedAnimation<Color>(
+                context.colors.primaryColor,
               ),
               minHeight: 8,
             ),
@@ -1265,17 +1239,17 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        border: Border.all(color: context.colors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Commission',
             style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF0F172A),
+              color: context.colors.textPrimary,
             ),
           ),
           const SizedBox(height: 12),
@@ -1299,12 +1273,12 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'Persistency',
           style: TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.bold,
-            color: Color(0xFF0F172A),
+            color: context.colors.textPrimary,
           ),
         ),
         const SizedBox(height: 12),
@@ -1335,26 +1309,26 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        border: Border.all(color: context.colors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             title,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w600,
-              color: Color(0xFF0F172A),
+              color: context.colors.textPrimary,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             '${metric.policyRetentionRate}%',
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.bold,
-              color: AppColors.primaryColor,
+              color: context.colors.primaryColor,
             ),
           ),
           const SizedBox(height: 4),
@@ -1381,10 +1355,10 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
         ),
         Text(
           '$value%',
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 11,
             fontWeight: FontWeight.w600,
-            color: Color(0xFF0F172A),
+            color: context.colors.textPrimary,
           ),
         ),
       ],
@@ -1398,7 +1372,7 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        border: Border.all(color: context.colors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1406,20 +1380,20 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
+              Text(
                 'Road to MDRT',
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF0F172A),
+                  color: context.colors.textPrimary,
                 ),
               ),
               Text(
                 '${(mdrt.progressPercentage * 100).toInt()}%',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.primaryColor,
+                  color: context.colors.primaryColor,
                 ),
               ),
             ],
@@ -1429,9 +1403,9 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
             borderRadius: BorderRadius.circular(6),
             child: LinearProgressIndicator(
               value: mdrt.progressPercentage,
-              backgroundColor: const Color(0xFFE2E8F0),
-              valueColor: const AlwaysStoppedAnimation<Color>(
-                AppColors.primaryColor,
+              backgroundColor: context.colors.border,
+              valueColor: AlwaysStoppedAnimation<Color>(
+                context.colors.primaryColor,
               ),
               minHeight: 10,
             ),
@@ -1509,10 +1483,10 @@ class _OverviewTabPageState extends ConsumerState<OverviewTabPage> {
       children: [
         Text(
           value,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.bold,
-            color: Color(0xFF0F172A),
+            color: context.colors.textPrimary,
           ),
         ),
         const SizedBox(height: 2),

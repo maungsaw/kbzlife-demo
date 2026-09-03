@@ -34,13 +34,15 @@ class QuoteFieldRenderer extends StatelessWidget {
             );
             if (picked != null) onChanged(picked);
           },
-          suffixIcon: const Icon(Icons.calendar_today_outlined, size: 18),
+          suffixIcon: Icon(Icons.calendar_today_outlined, size: context.iconLg),
           child: Text(
             value == null ? 'Select date' : AppDate.dMy(value as DateTime),
             style: TextStyle(
               fontSize: 13,
               fontWeight: value == null ? FontWeight.normal : FontWeight.w600,
-              color: value == null ? AppColors.muted : AppColors.accentNavy,
+              color: value == null
+                  ? context.colors.muted
+                  : context.colors.accentNavy,
             ),
           ),
         );
@@ -52,17 +54,17 @@ class QuoteFieldRenderer extends StatelessWidget {
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
             decoration: BoxDecoration(
-              color: AppColors.deepAlpha(0.06),
+              color: context.colors.deepAlpha(0.06),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Text(
               value == null
                   ? '—'
                   : '$value${field.suffix != null ? ' ${field.suffix}' : ''}',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w700,
-                color: AppColors.deep,
+                color: context.colors.deep,
               ),
             ),
           ),
@@ -97,18 +99,18 @@ class QuoteFieldRenderer extends StatelessWidget {
                       label: Text(option.label),
                       selected: value == option.value,
                       onSelected: (_) => onChanged(option.value),
-                      selectedColor: AppColors.deep,
+                      selectedColor: context.colors.primaryColor,
                       labelStyle: TextStyle(
                         fontSize: 11.5,
                         fontWeight: FontWeight.w700,
                         color: value == option.value
                             ? Colors.white
-                            : AppColors.deepAlpha(0.6),
+                            : context.colors.deepAlpha(0.6),
                       ),
-                      backgroundColor: AppColors.cream,
+                      backgroundColor: context.colors.cream,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(999),
-                        side: BorderSide(color: AppColors.deepAlpha(0.08)),
+                        side: BorderSide(color: context.colors.deepAlpha(0.08)),
                       ),
                     ),
                 ],
@@ -120,7 +122,7 @@ class QuoteFieldRenderer extends StatelessWidget {
                     field.helperText!,
                     style: TextStyle(
                       fontSize: 10,
-                      color: AppColors.deepAlpha(0.4),
+                      color: context.colors.deepAlpha(0.4),
                     ),
                   ),
                 ),
@@ -140,9 +142,9 @@ class QuoteFieldRenderer extends StatelessWidget {
                   onChanged: (_) => onToggleMulti(option.value),
                   title: Text(
                     option.label,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 12.5,
-                      color: AppColors.deep,
+                      color: context.colors.deep,
                     ),
                   ),
                   controlAffinity: ListTileControlAffinity.leading,
@@ -164,7 +166,7 @@ class QuoteFieldRenderer extends StatelessWidget {
           style: TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.w700,
-            color: AppColors.deepAlpha(0.5),
+            color: kAppColors.deepAlpha(0.5),
           ),
         ),
         const SizedBox(height: 6),

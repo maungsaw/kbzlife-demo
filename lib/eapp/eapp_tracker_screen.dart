@@ -115,7 +115,7 @@ class _AppRow extends StatelessWidget {
             child: Icon(
               app.status.icon,
               color: AppColors.primaryColor,
-              size: 20,
+              size: context.iconXl,
             ),
           ),
           const SizedBox(width: 10),

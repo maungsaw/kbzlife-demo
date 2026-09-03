@@ -82,26 +82,26 @@ class _MobileLoginScreenState extends ConsumerState<MobileLoginScreen> {
       context: context,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        title: const Row(
+        title: Row(
           children: [
-            Icon(Icons.lock_clock_outlined, color: AppColors.danger),
-            SizedBox(width: 8),
+            Icon(Icons.lock_clock_outlined, color: context.colors.danger),
+            const SizedBox(width: 8),
             Text(
               'Account Locked',
-              style: TextStyle(fontSize: 16, color: AppColors.accentNavy),
+              style: TextStyle(fontSize: 16, color: context.colors.accentNavy),
             ),
           ],
         ),
-        content: const Text(
+        content: Text(
           'You have exceeded the maximum of 5 consecutive failed attempts. Your account has been locked. Please contact a System Administrator to unlock your account.',
-          style: TextStyle(fontSize: 12, color: AppColors.muted),
+          style: TextStyle(fontSize: 12, color: context.colors.muted),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text(
+            child: Text(
               'OK',
-              style: TextStyle(color: AppColors.primaryColor),
+              style: TextStyle(color: context.colors.primaryColor),
             ),
           ),
         ],
@@ -113,7 +113,7 @@ class _MobileLoginScreenState extends ConsumerState<MobileLoginScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message, style: const TextStyle(fontSize: 12)),
-        backgroundColor: AppColors.accentNavy,
+        backgroundColor: context.colors.accentNavy,
         behavior: SnackBarBehavior.floating,
       ),
     );
@@ -122,7 +122,7 @@ class _MobileLoginScreenState extends ConsumerState<MobileLoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.cream,
+      backgroundColor: context.colors.cream,
       body: SafeArea(
         child: Stack(
           children: [
@@ -142,20 +142,22 @@ class _MobileLoginScreenState extends ConsumerState<MobileLoginScreen> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  const Center(
+                  Center(
+                    // The supplied lockup already sets the wordmark, so the
+                    // heading below no longer repeats "KBZ LIFE".
                     child: Text(
                       'Sales Digital Platform',
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
-                        color: AppColors.accentNavy,
+                        color: context.colors.accentNavy,
                       ),
                     ),
                   ),
-                  const Center(
+                  Center(
                     child: Text(
                       'Sign in with your registered phone number',
-                      style: TextStyle(fontSize: 12, color: AppColors.muted),
+                      style: TextStyle(fontSize: 12, color: context.colors.muted),
                     ),
                   ),
                   const SizedBox(height: 36),
@@ -189,11 +191,11 @@ class _MobileLoginScreenState extends ConsumerState<MobileLoginScreen> {
                       onPressed: () {
                         context.push(RoutePaths.forgotPassword);
                       },
-                      child: const Text(
+                      child: Text(
                         'Forgot Password?',
                         style: TextStyle(
                           fontSize: 12,
-                          color: AppColors.primaryColor,
+                          color: context.colors.primaryColor,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -207,7 +209,7 @@ class _MobileLoginScreenState extends ConsumerState<MobileLoginScreen> {
                     height: 48,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primaryColor,
+                        backgroundColor: context.colors.primaryColor,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
@@ -241,7 +243,7 @@ class _MobileLoginScreenState extends ConsumerState<MobileLoginScreen> {
                   OutlinedButton(
                     style: OutlinedButton.styleFrom(
                       minimumSize: const Size(double.infinity, 48),
-                      side: const BorderSide(color: AppColors.border),
+                      side: BorderSide(color: context.colors.border),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
@@ -251,19 +253,19 @@ class _MobileLoginScreenState extends ConsumerState<MobileLoginScreen> {
                       ref.read(authProvider.notifier).login();
                       context.go('/');
                     },
-                    child: const Row(
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(
-                          Icons.fingerprint_rounded,
-                          color: AppColors.accentNavy,
-                          size: 20,
+                        Icons.fingerprint_rounded,
+                        color: context.colors.accentNavy,
+                        size: context.iconXl,
                         ),
-                        SizedBox(width: 8),
+                        const SizedBox(width: 8),
                         Text(
                           'Login with Biometrics',
                           style: TextStyle(
-                            color: AppColors.accentNavy,
+                            color: context.colors.accentNavy,
                             fontSize: 13,
                             fontWeight: FontWeight.w500,
                           ),
@@ -277,19 +279,19 @@ class _MobileLoginScreenState extends ConsumerState<MobileLoginScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text(
+                      Text(
                         "Don't have an agent account? ",
-                        style: TextStyle(fontSize: 12, color: AppColors.muted),
+                        style: TextStyle(fontSize: 12, color: context.colors.muted),
                       ),
                       GestureDetector(
                         onTap: () {
                           context.push(RoutePaths.register);
                         },
-                        child: const Text(
+                        child: Text(
                           'Register Here',
                           style: TextStyle(
                             fontSize: 12,
-                            color: AppColors.primaryColor,
+                            color: context.colors.primaryColor,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -303,9 +305,13 @@ class _MobileLoginScreenState extends ConsumerState<MobileLoginScreen> {
               top: 8,
               right: 8,
               child: IconButton(
-                icon: const Icon(Icons.close, color: AppColors.accentNavy),
+                icon: Icon(Icons.close, color: context.colors.accentNavy),
                 onPressed: () {
-                  context.pop();
+                  if (context.canPop()) {
+                    context.pop();
+                  } else {
+                    context.go('/guest/home');
+                  }
                 },
               ),
             ),

@@ -1,4 +1,4 @@
-import 'package:demo_ui/widgets/app_segmented_tabs.dart';
+import 'package:demo_ui/widgets/pill_tabs.dart';
 import 'package:demo_ui/widgets/app_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -112,7 +112,7 @@ class EappDobField extends StatelessWidget {
         );
         if (picked != null) onPick(picked);
       },
-      suffixIcon: const Icon(Icons.calendar_today_outlined, size: 18),
+      suffixIcon: Icon(Icons.calendar_today_outlined, size: context.iconLg),
       errorText: error,
       child: Text(
         date == null
@@ -181,7 +181,7 @@ class _OptionalDetailsState extends State<OptionalDetails> {
               children: [
                 Icon(
                   _open ? Icons.expand_less : Icons.expand_more,
-                  size: 18,
+                  size: context.iconLg,
                   color: AppColors.primaryColor,
                 ),
                 const SizedBox(width: 6),
@@ -308,16 +308,32 @@ class EappGenderField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AppSegmentedTabs<String>(
-          label: 'Gender *',
-          value: value ?? '',
-          options: const [
-            ('Male', 'Male', Icons.male_outlined),
-            ('Female', 'Female', Icons.female_outlined),
-          ],
-          onChanged: onChanged,
-        ),
+        _GenderPillTabs(value: value, onChanged: onChanged),
       ],
+    );
+  }
+}
+
+class _GenderPillTabs extends StatelessWidget {
+  const _GenderPillTabs({required this.value, required this.onChanged});
+  final String? value;
+  final ValueChanged<String> onChanged;
+
+  static const _options = [
+    ('Male', 'Male', Icons.male_outlined),
+    ('Female', 'Female', Icons.female_outlined),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final index = _options.indexWhere((t) => t.$1 == value).clamp(0, _options.length - 1);
+    return PillTabs(
+      initialIndex: index,
+      tabs: [
+        for (final o in _options)
+          PillTab(label: o.$2, icon: o.$3),
+      ],
+      onPageChanged: (i) => onChanged(_options[i].$1),
     );
   }
 }
@@ -675,7 +691,7 @@ class ApplicantCard extends StatelessWidget {
                   onTap: onRemove,
                   child: Icon(
                     Icons.close,
-                    size: 16,
+                    size: context.iconBase,
                     color: AppColors.deepAlpha(0.4),
                   ),
                 ),
@@ -697,20 +713,24 @@ class _TypeToggle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppSegmentedTabs<ApplicantType>(
-      label: 'Applicant Type *',
-      value: value,
-      options: [
-        for (final t in ApplicantType.values)
-          (
-            t,
-            t.label,
-            t == ApplicantType.person
-                ? Icons.person_outline
-                : Icons.business_outlined,
-          ),
+    final options = [
+      for (final t in ApplicantType.values)
+        (
+          t,
+          t.label,
+          t == ApplicantType.person
+              ? Icons.person_outline
+              : Icons.business_outlined,
+        ),
+    ];
+    final index = options.indexWhere((t) => t.$1 == value).clamp(0, options.length - 1);
+    return PillTabs(
+      initialIndex: index,
+      tabs: [
+        for (final o in options)
+          PillTab(label: o.$2, icon: o.$3),
       ],
-      onChanged: onChanged,
+      onPageChanged: (i) => onChanged(options[i].$1),
     );
   }
 }
@@ -733,7 +753,7 @@ class _AddressRow extends StatelessWidget {
     // rest instead of a bare InputDecorator.
     return AppTextField(
       label: 'Address',
-      suffixIcon: const Icon(Icons.chevron_right),
+      suffixIcon: Icon(Icons.chevron_right, size: context.iconBase),
       onTap: () async {
         if (await showAddressSheet(context, applicant)) onChanged();
       },
@@ -969,7 +989,7 @@ class MeasurementRow extends StatelessWidget {
           // Same shell as Weight beside it, which is a plain AppTextField.
           child: AppTextField(
             label: 'Height',
-            suffixIcon: const Icon(Icons.chevron_right),
+            suffixIcon: Icon(Icons.chevron_right, size: context.iconBase),
             onTap: () async {
               final result = await showHeightPickerSheet(context);
               if (result == null) return;
@@ -998,7 +1018,7 @@ class MeasurementRow extends StatelessWidget {
             controller: applicant.weightController,
             readOnly: true,
             label: 'Weight (lb)',
-            suffixIcon: const Icon(Icons.chevron_right),
+            suffixIcon: Icon(Icons.chevron_right, size: context.iconBase),
             errorText: ApplicantValidators.numberOnly(
               applicant.weightController.text,
             ),

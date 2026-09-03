@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../const.dart';
 import '../data/mock/mock_products.dart';
 import '../providers/router_provider.dart';
-import '../widgets/app_segmented_tabs.dart';
+import '../widgets/pill_tabs.dart';
 import '../widgets/app_text_field.dart';
 import '../eapp/pickers.dart';
 import 'create_model.dart';
@@ -125,7 +125,7 @@ class _CreateLeadScreenState extends ConsumerState<CreateLeadScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: AppColors.paper,
+      backgroundColor: context.colors.paper,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
@@ -141,12 +141,12 @@ class _CreateLeadScreenState extends ConsumerState<CreateLeadScreen> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+              Text(
                 'Address',
                 style: TextStyle(
                   fontWeight: FontWeight.w800,
                   fontSize: 16,
-                  color: AppColors.deep,
+                  color: context.colors.deep,
                 ),
               ),
               const SizedBox(height: 12),
@@ -232,7 +232,7 @@ class _CreateLeadScreenState extends ConsumerState<CreateLeadScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.cream,
+      backgroundColor: context.colors.cream,
       appBar: AppBar(
         automaticallyImplyActions: true,
         backgroundColor: Colors.white,
@@ -256,22 +256,22 @@ class _CreateLeadScreenState extends ConsumerState<CreateLeadScreen> {
                       vertical: 10,
                     ),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFFFF3CD),
+                      color: context.colors.warningLight,
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: const Color(0xFFFFEEBA)),
+                      border: Border.all(color: context.colors.warningBorder),
                     ),
-                    child: const Row(
+                    child: Row(
                       children: [
                         Icon(
                           Icons.cloud_off_rounded,
-                          size: 16,
-                          color: Color(0xFF856404),
+                          size: context.iconBase,
+                          color: context.colors.warningText,
                         ),
                         SizedBox(width: 8),
                         Text(
                           'Offline Mode • Will auto-sync when online',
                           style: TextStyle(
-                            color: Color(0xFF856404),
+                            color: context.colors.warningText,
                             fontWeight: FontWeight.w600,
                             fontSize: 13,
                           ),
@@ -282,18 +282,13 @@ class _CreateLeadScreenState extends ConsumerState<CreateLeadScreen> {
                   const SizedBox(height: 16),
 
                   // Lead Type Segmented Tabs
-                  AppSegmentedTabs<LeadType>(
-                    label: 'Lead Type *',
-                    value: _leadType,
-                    options: [
-                      (LeadType.individual, 'Individual', Icons.person_outline),
-                      (
-                        LeadType.corporate,
-                        'Corporate',
-                        Icons.business_outlined,
-                      ),
+                  PillTabs(
+                    initialIndex: _leadType == LeadType.individual ? 0 : 1,
+                    tabs: const [
+                      PillTab(label: 'Individual', icon: Icons.person_outline),
+                      PillTab(label: 'Corporate', icon: Icons.business_outlined),
                     ],
-                    onChanged: (val) => setState(() => _leadType = val),
+                    onPageChanged: (i) => setState(() => _leadType = i == 0 ? LeadType.individual : LeadType.corporate),
                   ),
                   const SizedBox(height: 20),
 
@@ -489,8 +484,8 @@ class _CreateLeadScreenState extends ConsumerState<CreateLeadScreen> {
       padding: const EdgeInsets.only(bottom: 8),
       child: Text(
         title,
-        style: const TextStyle(
-          color: AppColors.primaryColor,
+        style: TextStyle(
+          color: context.colors.primaryColor,
           fontSize: 12,
           fontWeight: FontWeight.bold,
         ),
@@ -504,13 +499,7 @@ class _CreateLeadScreenState extends ConsumerState<CreateLeadScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+
       ),
       child: Column(children: children),
     );
@@ -535,34 +524,34 @@ class _CreateLeadScreenState extends ConsumerState<CreateLeadScreen> {
       children: [
         Text(
           label,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 11,
             fontWeight: FontWeight.w700,
-            color: AppColors.accentNavy,
+            color: context.colors.accentNavy,
           ),
         ),
         const SizedBox(height: 6),
         DropdownButtonFormField<String>(
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: const TextStyle(fontSize: 13, color: AppColors.muted),
+            hintStyle: TextStyle(fontSize: 13, color: context.colors.muted),
             filled: true,
-            fillColor: AppColors.surfaceBg,
+            fillColor: context.colors.surfaceBg,
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 14,
               vertical: 12,
             ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppColors.border),
+              borderSide: BorderSide(color: context.colors.border),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppColors.border),
+              borderSide: BorderSide(color: context.colors.border),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppColors.primaryColor),
+              borderSide: BorderSide(color: context.colors.primaryColor),
             ),
           ),
           items: items
@@ -586,10 +575,10 @@ class _CreateLeadScreenState extends ConsumerState<CreateLeadScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(
+            Text(
               'INTERESTED PRODUCTS',
               style: TextStyle(
-                color: AppColors.primaryColor,
+                color: context.colors.primaryColor,
                 fontSize: 12,
                 fontWeight: FontWeight.bold,
               ),
@@ -598,8 +587,8 @@ class _CreateLeadScreenState extends ConsumerState<CreateLeadScreen> {
               onTap: _showProductBottomSheet,
               child: Text(
                 _selectedProducts.isEmpty ? '+ Add Products' : 'Edit Products',
-                style: const TextStyle(
-                  color: AppColors.primaryColor,
+                style: TextStyle(
+                  color: context.colors.primaryColor,
                   fontSize: 12,
                   fontWeight: FontWeight.bold,
                 ),
@@ -614,13 +603,7 @@ class _CreateLeadScreenState extends ConsumerState<CreateLeadScreen> {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.03),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
-              ),
-            ],
+
           ),
           child: _selectedProducts.isEmpty
               ? InkWell(
@@ -632,7 +615,7 @@ class _CreateLeadScreenState extends ConsumerState<CreateLeadScreen> {
                       children: [
                         Icon(
                           Icons.add_shopping_cart_rounded,
-                          size: 18,
+                          size: context.iconLg,
                           color: Colors.grey.shade400,
                         ),
                         const SizedBox(width: 8),
@@ -656,13 +639,13 @@ class _CreateLeadScreenState extends ConsumerState<CreateLeadScreen> {
                         prod.name,
                         style: const TextStyle(fontSize: 12),
                       ),
-                      backgroundColor: AppColors.primaryColor.withValues(
+                      backgroundColor: context.colors.primaryColor.withValues(
                         alpha: 0.08,
                       ),
                       side: BorderSide(
-                        color: AppColors.primaryColor.withValues(alpha: 0.2),
+                        color: context.colors.primaryColor.withValues(alpha: 0.2),
                       ),
-                      deleteIcon: const Icon(Icons.close, size: 14),
+                      deleteIcon: Icon(Icons.close, size: context.iconMd),
                       onDeleted: () => setState(
                         () => _selectedProducts.removeWhere(
                           (p) => p.id == prod.id,
@@ -686,16 +669,16 @@ class _CreateLeadScreenState extends ConsumerState<CreateLeadScreen> {
             child: OutlinedButton(
               style: OutlinedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 14),
-                side: const BorderSide(color: AppColors.border),
+                side: BorderSide(color: context.colors.border),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
               onPressed: () => context.pop(),
-              child: const Text(
+              child: Text(
                 'Cancel',
                 style: TextStyle(
-                  color: AppColors.primaryColor,
+                  color: context.colors.primaryColor,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -706,7 +689,7 @@ class _CreateLeadScreenState extends ConsumerState<CreateLeadScreen> {
             flex: 2,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primaryColor,
+                backgroundColor: context.colors.primaryColor,
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -790,7 +773,7 @@ class _ProductMultiSelectBottomSheetState
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: AppColors.border,
+                  color: context.colors.border,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -799,16 +782,16 @@ class _ProductMultiSelectBottomSheetState
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
+                    Text(
                       'Select Products',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
-                        color: AppColors.accentNavy,
+                        color: context.colors.accentNavy,
                       ),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.close, color: AppColors.muted),
+                      icon: Icon(Icons.close, color: context.colors.muted),
                       onPressed: () => context.pop(),
                     ),
                   ],
@@ -821,13 +804,13 @@ class _ProductMultiSelectBottomSheetState
                   onChanged: (val) => setState(() => _searchQuery = val),
                   decoration: InputDecoration(
                     hintText: 'Search products...',
-                    prefixIcon: const Icon(
+                    prefixIcon: Icon(
                       Icons.search,
-                      size: 20,
-                      color: AppColors.muted,
+                      size: context.iconXl,
+                      color: context.colors.muted,
                     ),
                     filled: true,
-                    fillColor: AppColors.surfaceBg,
+                    fillColor: context.colors.surfaceBg,
                     contentPadding: const EdgeInsets.symmetric(vertical: 10),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -847,7 +830,7 @@ class _ProductMultiSelectBottomSheetState
                       (p) => p.id == item.id,
                     );
                     return CheckboxListTile(
-                      activeColor: AppColors.primaryColor,
+                      activeColor: context.colors.primaryColor,
                       value: isSelected,
                       title: Text(
                         item.name,
@@ -881,7 +864,7 @@ class _ProductMultiSelectBottomSheetState
                   width: double.infinity,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primaryColor,
+                      backgroundColor: context.colors.primaryColor,
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
@@ -961,7 +944,7 @@ class _CRMContactsScreenState extends ConsumerState<CRMContactsScreen> {
         .length;
 
     return Scaffold(
-      backgroundColor: AppColors.cream,
+      backgroundColor: context.colors.cream,
       appBar: AppBar(
         backgroundColor: Colors.white,
         automaticallyImplyLeading: true,
@@ -971,8 +954,8 @@ class _CRMContactsScreenState extends ConsumerState<CRMContactsScreen> {
         ),
       ),
       body: _isLoading
-          ? const Center(
-              child: CircularProgressIndicator(color: AppColors.primaryColor),
+          ? Center(
+              child: CircularProgressIndicator(color: context.colors.primaryColor),
             )
           : ListView(
               padding: const EdgeInsets.all(16),
@@ -983,7 +966,7 @@ class _CRMContactsScreenState extends ConsumerState<CRMContactsScreen> {
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: _selectedTab == ContactType.lead
-                              ? AppColors.primaryColor
+                              ? context.colors.primaryColor
                               : Colors.white,
                         ),
                         onPressed: () =>
@@ -1003,7 +986,7 @@ class _CRMContactsScreenState extends ConsumerState<CRMContactsScreen> {
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: _selectedTab == ContactType.client
-                              ? AppColors.primaryColor
+                              ? context.colors.primaryColor
                               : Colors.white,
                         ),
                         onPressed: () =>
@@ -1039,7 +1022,7 @@ class _CRMContactsScreenState extends ConsumerState<CRMContactsScreen> {
       floatingActionButton: Tooltip(
         message: 'Create Lead',
         child: FloatingActionButton(
-          backgroundColor: AppColors.primaryColor,
+          backgroundColor: context.colors.primaryColor,
           child: const Icon(Icons.add_rounded, color: Colors.white),
           onPressed: () async {
             final result = await context.push<bool>(RoutePaths.crmCreateLead);

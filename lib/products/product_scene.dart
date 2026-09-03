@@ -57,9 +57,9 @@ class _ArtPainter extends CustomPainter {
   const _ArtPainter(this.art);
   final _Art art;
 
-  static const _deep = AppColors.deep;
-  static const _primaryColor = AppColors.primaryColor;
-  static const _sky = AppColors.primaryColor;
+  static final _deep = kAppColors.deep;
+  static final _primaryColor = kAppColors.primaryColor;
+  static final _sky = kAppColors.primaryColor;
 
   @override
   void paint(Canvas canvas, Size s) {
@@ -289,11 +289,11 @@ class _ScenePainter extends CustomPainter {
 
     canvas.drawRRect(
       r,
-      Paint()..color = AppColors.primaryColor.withValues(alpha: 0.10),
+      Paint()..color = kAppColors.primaryColor.withValues(alpha: 0.10),
     );
 
     final blob = Paint()
-      ..color = AppColors.primaryColor.withValues(alpha: 0.13);
+      ..color = kAppColors.primaryColor.withValues(alpha: 0.13);
     canvas.drawCircle(
       Offset(size.width * 0.22, size.height * 0.26),
       size.width * 0.30,
@@ -307,7 +307,7 @@ class _ScenePainter extends CustomPainter {
 
     canvas.drawRect(
       Rect.fromLTWH(0, size.height * 0.82, size.width, size.height * 0.18),
-      Paint()..color = AppColors.primaryColor.withValues(alpha: 0.10),
+      Paint()..color = kAppColors.primaryColor.withValues(alpha: 0.10),
     );
     canvas.restore();
   }
@@ -338,10 +338,10 @@ class _ShieldPainter extends CustomPainter {
     canvas.drawPath(
       path,
       Paint()
-        ..shader = const LinearGradient(
+        ..shader = LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [AppColors.primaryColor, AppColors.deep],
+          colors: [kAppColors.primaryColor, kAppColors.deep],
         ).createShader(Offset.zero & size),
     );
     canvas.drawPath(
@@ -349,7 +349,7 @@ class _ShieldPainter extends CustomPainter {
       Paint()
         ..style = PaintingStyle.stroke
         ..strokeWidth = size.width * 0.05
-        ..color = AppColors.primaryColor.withValues(alpha: 0.45),
+        ..color = kAppColors.primaryColor.withValues(alpha: 0.45),
     );
   }
 

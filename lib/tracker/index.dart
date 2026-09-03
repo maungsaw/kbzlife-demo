@@ -34,17 +34,17 @@ extension ApplicationStatusExtension on ApplicationStatus {
   Color get color {
     switch (this) {
       case ApplicationStatus.draft:
-        return AppColors.statusDraft;
+        return kAppColors.statusDraft;
       case ApplicationStatus.submitted:
-        return AppColors.statusSubmitted;
+        return kAppColors.statusSubmitted;
       case ApplicationStatus.underwriting:
-        return AppColors.statusUnderwriting;
+        return kAppColors.statusUnderwriting;
       case ApplicationStatus.markForCorrection:
-        return AppColors.statusCorrection;
+        return kAppColors.statusCorrection;
       case ApplicationStatus.approved:
-        return AppColors.statusApproved;
+        return kAppColors.statusApproved;
       case ApplicationStatus.rejected:
-        return AppColors.statusRejected;
+        return kAppColors.statusRejected;
     }
   }
 
@@ -165,22 +165,22 @@ class _ApplicationTrackerListScreenState
     return Scaffold(
       appBar: AppBar(
         title: Column(
-          children: const [
-            Text('Application Tracker'),
-            SizedBox(height: 2),
-            Text(
-              '• Last synced just now',
-              style: TextStyle(fontSize: 10, color: AppColors.primaryColor),
-            ),
-          ],
+        children: [
+          Text('Application Tracker'),
+          SizedBox(height: 2),
+          Text(
+            '• Last synced just now',
+            style: TextStyle(fontSize: 10, color: context.colors.primaryColor),
+          ),
+        ],
         ),
         centerTitle: true,
         actions: [
           IconButton(
-            icon: const Icon(
+            icon: Icon(
               Icons.autorenew_rounded,
-              color: AppColors.primaryColor,
-              size: 20,
+              color: context.colors.primaryColor,
+              size: context.iconXl,
             ),
             onPressed: () {},
           ),
@@ -204,24 +204,24 @@ class _ApplicationTrackerListScreenState
                           style: const TextStyle(fontSize: 13),
                           decoration: InputDecoration(
                             hintText: 'Search by ID, Name or NRC',
-                            prefixIcon: const Icon(
+                            prefixIcon: Icon(
                               Icons.search,
-                              size: 18,
-                              color: AppColors.muted,
+                              size: context.iconLg,
+                              color: context.colors.muted,
                             ),
                             filled: true,
                             fillColor: Colors.white,
                             contentPadding: EdgeInsets.zero,
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
-                              borderSide: const BorderSide(
-                                color: AppColors.border,
+                              borderSide: BorderSide(
+                                color: context.colors.border,
                               ),
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
-                              borderSide: const BorderSide(
-                                color: AppColors.primaryColor,
+                              borderSide: BorderSide(
+                                color: context.colors.primaryColor,
                               ),
                             ),
                           ),
@@ -235,12 +235,12 @@ class _ApplicationTrackerListScreenState
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: AppColors.border),
+                        border: Border.all(color: context.colors.border),
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Icons.filter_list_rounded,
-                        color: AppColors.accentNavy,
-                        size: 20,
+                        color: context.colors.accentNavy,
+                        size: context.iconXl,
                       ),
                     ),
                   ],
@@ -305,25 +305,25 @@ class _ApplicationTrackerListScreenState
                   children: [
                     Text(
                       '${filteredApps.length} Applications',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
-                        color: AppColors.muted,
+                        color: context.colors.muted,
                       ),
                     ),
                     Row(
-                      children: const [
+                      children: [
                         Text(
                           'Sort',
                           style: TextStyle(
                             fontSize: 11,
-                            color: AppColors.muted,
+                            color: context.colors.muted,
                           ),
                         ),
                         Icon(
                           Icons.keyboard_arrow_down_rounded,
-                          size: 16,
-                          color: AppColors.muted,
+                          size: context.iconBase,
+                          color: context.colors.muted,
                         ),
                       ],
                     ),
@@ -350,7 +350,7 @@ class _ApplicationTrackerListScreenState
                           ),
                           child: Icon(
                             app.status.icon,
-                            size: 18,
+                            size: context.iconLg,
                             color: app.status.color,
                           ),
                         ),
@@ -359,10 +359,10 @@ class _ApplicationTrackerListScreenState
                           children: [
                             Text(
                               app.proposalId,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 13,
-                                color: AppColors.accentNavy,
+                                color: context.colors.accentNavy,
                               ),
                             ),
                             Container(
@@ -392,25 +392,25 @@ class _ApplicationTrackerListScreenState
                             children: [
                               Text(
                                 '${app.applicantName}\n${app.planName}',
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 11,
-                                  color: AppColors.muted,
+                                  color: context.colors.muted,
                                 ),
                               ),
                               Text(
                                 app.updatedAt,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 10,
-                                  color: AppColors.muted,
+                                  color: context.colors.muted,
                                 ),
                               ),
                             ],
                           ),
                         ),
-                        trailing: const Icon(
+                        trailing: Icon(
                           Icons.chevron_right_rounded,
-                          size: 16,
-                          color: AppColors.muted,
+                          size: context.iconBase,
+                          color: context.colors.muted,
                         ),
                         onTap: () {
                           context.push(RoutePaths.trackerDetail.replaceFirst(':status', app.status.name));
@@ -436,10 +436,10 @@ class _ApplicationTrackerListScreenState
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
           decoration: BoxDecoration(
-            color: isSelected ? AppColors.primaryColor : Colors.white,
+            color: isSelected ? context.colors.primaryColor : Colors.white,
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: isSelected ? AppColors.primaryColor : AppColors.border,
+              color: isSelected ? context.colors.primaryColor : context.colors.border,
             ),
           ),
           child: Text(
@@ -447,7 +447,7 @@ class _ApplicationTrackerListScreenState
             style: TextStyle(
               fontSize: 11,
               fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-              color: isSelected ? Colors.white : AppColors.muted,
+              color: isSelected ? Colors.white : context.colors.muted,
             ),
           ),
         ),

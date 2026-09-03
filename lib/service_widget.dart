@@ -2,21 +2,21 @@ import 'commission.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:go_router/go_router.dart';
 
 import 'const.dart';
 import 'crm/index.dart';
+import 'eapp/eapp_screen.dart';
 import 'login/index.dart';
 import 'policy/index.dart';
-import 'products/product_library_screen.dart';
 import 'providers/router_provider.dart';
 import 'task/index.dart';
 import 'tracker/index.dart';
 
 class ServiceItem {
   final String title;
-  final FaIconData icon;
+  final IconData icon;
   final bool isGuestAllowed;
   final Widget Function(BuildContext)? targetScreen;
   final String? externalUrl;
@@ -40,7 +40,7 @@ class ServiceRegistry {
   static const Map<String, String> routePaths = {
     'Products': RoutePaths.products,
     'Calculator': RoutePaths.calculator,
-    'Proposal': RoutePaths.products,
+    'Proposal': RoutePaths.eapp,
     'Commission': RoutePaths.commission,
     'Tracker': RoutePaths.trackerList,
     'CRM': RoutePaths.crm,
@@ -68,39 +68,43 @@ class ServicesCard extends StatelessWidget {
   List<ServiceItem> get _services => [
     ServiceItem(
       title: 'Products',
-      icon: FontAwesomeIcons.boxOpen,
+      icon: BootstrapIcons.box_seam,
       isGuestAllowed: true,
       tabIndex: 2,
       guestTabIndex: 1,
     ),
     ServiceItem(
       title: 'Calculator',
-      icon: FontAwesomeIcons.calculator,
+      icon: BootstrapIcons.calculator,
       isGuestAllowed: true,
+    ),
+    const ServiceItem(
+      title: 'Online',
+      icon: BootstrapIcons.globe,
+      isGuestAllowed: true,
+      externalUrl: 'https://selfservice.kbzlife.com/',
     ),
     ServiceItem(
       title: 'Proposal',
-      icon: FontAwesomeIcons.fileSignature,
+      icon: BootstrapIcons.file_earmark_text,
       isGuestAllowed: false,
-      tabIndex: 2,
-      guestTabIndex: 2,
-      targetScreen: (context) => const ProductsLibraryScreen(),
+      targetScreen: (context) => const EAppScreen(),
     ),
     ServiceItem(
       title: 'Commission',
-      icon: FontAwesomeIcons.wallet,
+      icon: BootstrapIcons.wallet2,
       isGuestAllowed: false,
       targetScreen: (context) => CommissionReportScreen(),
     ),
     ServiceItem(
       title: 'Tracker',
-      icon: FontAwesomeIcons.chartLine,
+      icon: BootstrapIcons.graph_up,
       isGuestAllowed: false,
       targetScreen: (context) => ApplicationTrackerListScreen(),
     ),
     ServiceItem(
       title: 'CRM',
-      icon: FontAwesomeIcons.users,
+      icon: BootstrapIcons.people,
       isGuestAllowed: false,
       targetScreen: (context) => CRMListViewScreen(),
       tabIndex: 1,
@@ -108,22 +112,15 @@ class ServicesCard extends StatelessWidget {
     ),
     ServiceItem(
       title: 'Tasks',
-      icon: FontAwesomeIcons.listCheck,
+      icon: BootstrapIcons.list_check,
       isGuestAllowed: false,
       targetScreen: (context) => const ModernTaskCalendarScreen(),
     ),
     ServiceItem(
       title: 'Policy',
-      icon: FontAwesomeIcons.fileContract,
+      icon: BootstrapIcons.file_text,
       isGuestAllowed: false,
       targetScreen: (context) => const PolicyListScreen(),
-    ),
-
-    const ServiceItem(
-      title: 'Online',
-      icon: FontAwesomeIcons.globe,
-      isGuestAllowed: true,
-      externalUrl: 'https://selfservice.kbzlife.com/',
     ),
   ];
 
@@ -134,19 +131,6 @@ class ServicesCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: .circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.baltic.withValues(alpha: 0.04),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
-          ),
-          BoxShadow(
-            color: AppColors.baltic.withValues(alpha: 0.04),
-            blurRadius: 28,
-            spreadRadius: -4,
-            offset: const Offset(0, 14),
-          ),
-        ],
       ),
       child: Column(
         crossAxisAlignment: .start,
@@ -160,40 +144,38 @@ class ServicesCard extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: .w800,
-                  color: Color(0xFF0F172A),
+                  color: context.colors.textPrimary,
                   letterSpacing: -0.3,
                 ),
               ),
 
               if (isGuest)
                 Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 5,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: MediaQuery.sizeOf(context).width * 0.018,
+                    vertical: MediaQuery.sizeOf(context).height * 0.004,
                   ),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFFF7ED),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: const Color(0xFFFFEDD5)),
+                    color: context.colors.warningLight,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: context.colors.warningBorder),
                   ),
-                  child: const Row(
-                    mainAxisSize: MainAxisSize
-                        .min, // Prevents row from stretching infinitely
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Icon(
                         Icons.lock_clock_rounded,
-                        size:
-                            14, // Set close to font size (11–14px) for proportional alignment
-                        color: Color(0xFFF97316),
+                        size: context.iconSm,
+                        color: context.colors.warningText,
                       ),
-                      SizedBox(width: 4),
+                      SizedBox(width: MediaQuery.sizeOf(context).width * 0.008),
                       Text(
                         'Guest Mode',
                         style: TextStyle(
-                          fontSize: 11,
+                          fontSize: MediaQuery.sizeOf(context).width * 0.025,
                           fontWeight: FontWeight.w700,
-                          color: Color(0xFFF97316),
+                          color: context.colors.warningText,
                         ),
                       ),
                     ],
@@ -201,6 +183,7 @@ class ServicesCard extends StatelessWidget {
                 ),
             ],
           ),
+          SizedBox(height: MediaQuery.sizeOf(context).height * 0.012),
           LayoutBuilder(
             builder: (context, constraints) {
               final crossAxisCount = constraints.maxWidth > 500 ? 5 : 4;
@@ -218,7 +201,7 @@ class ServicesCard extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final service = _services[index];
                   final isLocked = isGuest && !service.isGuestAllowed;
-                  final accent = AppColors.primaryColor;
+                  final accent = context.colors.primaryColor;
 
                   return _ServiceTile(
                     service: service,
@@ -280,7 +263,7 @@ class _ServiceTileState extends ConsumerState<_ServiceTile> {
 
     // Normal mode navigation
     if (widget.service.tabIndex != null) {
-      final paths = ['/home', '/crm', '/products', '/profile'];
+      final paths = ['/home', '/crm', '/products', '/profile', '/e-app'];
       if (widget.service.tabIndex! < paths.length) {
         context.go(paths[widget.service.tabIndex!]);
       }
@@ -318,74 +301,85 @@ class _ServiceTileState extends ConsumerState<_ServiceTile> {
         child: AnimatedOpacity(
           opacity: widget.isLocked ? 0.55 : 1.0,
           duration: const Duration(milliseconds: 150),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: 56,
-                height: 56,
-                child: Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    Positioned.fill(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: AppColors.baltic.withValues(alpha: 0.04),
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                        child: Center(
-                          child: FaIcon(
-                            widget.service.icon,
-                            size: 40,
-                            color: AppColors.primaryColor,
-                          ),
-                        ),
-                      ),
-                    ),
-                    if (widget.isLocked)
-                      Positioned(
-                        top: -2,
-                        right: -2,
-                        child: Container(
-                          padding: const EdgeInsets.all(4),
-                          decoration: BoxDecoration(
-                            color: AppColors.primaryColor.withValues(
-                              alpha: 0.5,
-                            ),
-                            shape: BoxShape.circle,
-                            border: Border.all(color: Colors.white, width: 1.5),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.15),
-                                blurRadius: 4,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final tileSize = constraints.maxWidth;
+              final textSpace = 20.0;
+              final containerSize = (tileSize - textSpace).clamp(40.0, 54.0);
+              final iconSize = containerSize * 0.48;
+              final lockIconSize = containerSize * 0.18;
+
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: containerSize,
+                    height: containerSize,
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        Positioned.fill(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: context.colors.primaryColor.withValues(
+                                alpha: 0.09,
                               ),
-                            ],
-                          ),
-                          child: const Icon(
-                            Icons.lock_rounded,
-                            size: 10,
-                            color: Colors.white,
+                              borderRadius: BorderRadius.circular(
+                                containerSize * 0.50,
+                              ),
+                            ),
+                            child: Center(
+                              child: Icon(
+                                widget.service.icon,
+                                size: iconSize,
+                                color: context.colors.primaryColor,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                widget.service.title,
-                textAlign: TextAlign.center,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF334155),
-                  letterSpacing: -0.2,
-                ),
-              ),
-            ],
+                        if (widget.isLocked)
+                          Positioned(
+                            top: -2,
+                            right: -2,
+                            child: Container(
+                              padding: const EdgeInsets.all(4),
+                              decoration: BoxDecoration(
+                                color: context.colors.primaryColor.withValues(
+                                  alpha: 0.5,
+                                ),
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: Colors.white,
+                                  width: 1.5,
+                                ),
+                              ),
+                              child: Icon(
+                                Icons.lock_rounded,
+                                size: lockIconSize,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    widget.service.title,
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                      color: context.colors.textSecondary,
+                      letterSpacing: -0.2,
+                    ),
+                  ),
+                ],
+              );
+            },
           ),
         ),
       ),

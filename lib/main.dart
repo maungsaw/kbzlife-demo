@@ -25,24 +25,25 @@ class MyApp extends ConsumerWidget {
         fontFamily: 'Inter',
         useMaterial3: true,
         brightness: Brightness.light,
-        primaryColor: AppColors.primaryColor,
-        scaffoldBackgroundColor: AppColors.surfaceBg,
-        colorScheme: const ColorScheme.light(
-          primary: AppColors.primaryColor,
-          secondary: AppColors.secondaryColor,
-          surface: AppColors.surfaceBg,
-          error: AppColors.danger,
+        primaryColor: kAppColors.primaryColor,
+        scaffoldBackgroundColor: kAppColors.cream,
+        extensions: [kAppColors],
+        colorScheme: ColorScheme.light(
+          primary: kAppColors.primaryColor,
+          secondary: kAppColors.secondaryColor,
+          surface: kAppColors.surfaceBg,
+          error: kAppColors.danger,
           onPrimary: Colors.white,
           onSecondary: Colors.white,
-          onSurface: Color(0xFF0F172A),
+          onSurface: kAppColors.textPrimary,
         ),
-        appBarTheme: const AppBarTheme(
+        appBarTheme: AppBarTheme(
           backgroundColor: Colors.white,
-          foregroundColor: Color(0xFF0F172A),
+          foregroundColor: kAppColors.textPrimary,
           elevation: 0,
-          scrolledUnderElevation: 0.5,
+          scrolledUnderElevation: 0,
           titleTextStyle: TextStyle(
-            color: Color(0xFF0F172A),
+            color: kAppColors.textPrimary,
             fontSize: 18,
             fontWeight: FontWeight.bold,
           ),
@@ -52,21 +53,18 @@ class MyApp extends ConsumerWidget {
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
-            side: const BorderSide(color: AppColors.border),
+            side: BorderSide(color: kAppColors.border),
           ),
         ),
-        dividerTheme: const DividerThemeData(
-          color: AppColors.border,
-          thickness: 1,
-        ),
-        tabBarTheme: const TabBarThemeData(
-          labelColor: AppColors.primaryColor,
-          unselectedLabelColor: AppColors.muted,
-          indicatorColor: AppColors.primaryColor,
+        dividerTheme: DividerThemeData(color: kAppColors.border, thickness: 1),
+        tabBarTheme: TabBarThemeData(
+          labelColor: kAppColors.primaryColor,
+          unselectedLabelColor: kAppColors.muted,
+          indicatorColor: kAppColors.primaryColor,
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.primaryColor,
+            backgroundColor: kAppColors.primaryColor,
             foregroundColor: Colors.white,
             elevation: 0,
             minimumSize: const Size(double.infinity, 48),
@@ -81,12 +79,12 @@ class MyApp extends ConsumerWidget {
         ),
         outlinedButtonTheme: OutlinedButtonThemeData(
           style: OutlinedButton.styleFrom(
-            foregroundColor: AppColors.primaryColor,
+            foregroundColor: kAppColors.primaryColor,
             minimumSize: const Size(double.infinity, 48),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
             ),
-            side: const BorderSide(color: AppColors.primaryColor),
+            side: BorderSide(color: kAppColors.primaryColor),
             textStyle: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.bold,
@@ -95,7 +93,7 @@ class MyApp extends ConsumerWidget {
         ),
         textButtonTheme: TextButtonThemeData(
           style: TextButton.styleFrom(
-            foregroundColor: AppColors.primaryColor,
+            foregroundColor: kAppColors.primaryColor,
             textStyle: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.bold,

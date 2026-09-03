@@ -14,15 +14,15 @@ class RoleBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
-        color: AppColors.primaryColor.withValues(alpha: 0.1),
+        color: context.colors.primaryColor.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(4),
       ),
       child: Text(
         role.label,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 10,
           fontWeight: FontWeight.bold,
-          color: AppColors.primaryColor,
+          color: context.colors.primaryColor,
         ),
       ),
     );
@@ -55,7 +55,7 @@ class MetricCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(icon, color: color, size: 24),
+          Icon(icon, color: color, size: context.iconXxxl),
           const SizedBox(width: 8),
           Expanded(
             child: Column(

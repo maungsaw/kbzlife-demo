@@ -13,14 +13,14 @@ class CommissionReportScreen extends ConsumerStatefulWidget {
 
 class _CommissionReportScreenState extends ConsumerState<CommissionReportScreen> {
   // Real Product Portfolio Data categorized from KBZ Life Insurance
-  final List<CategoryReportModel> categories = [
+  List<CategoryReportModel> _buildCategories(BuildContext context) => [
     CategoryReportModel(
       label: 'Protection',
       count: 24,
       amount: 'MMK 24,800,000',
       icon: Icons.shield_outlined,
-      iconBg: const Color(0xFFE0EDFF),
-      iconColor: const Color(0xFF1D4ED8),
+      iconBg: context.colors.infoLight,
+      iconColor: context.colors.primaryColor,
       heightRatio: 0.70,
       products: [
         KbzProductItem('Personal Accident Insurance', 'MMK 8,500,000', 9),
@@ -39,8 +39,8 @@ class _CommissionReportScreenState extends ConsumerState<CommissionReportScreen>
       count: 8,
       amount: 'MMK 8,750,000',
       icon: Icons.savings_outlined,
-      iconBg: const Color(0xFFFFF1E6),
-      iconColor: const Color(0xFFEA580C),
+      iconBg: context.colors.warningLight,
+      iconColor: context.colors.statusCorrection,
       heightRatio: 0.28,
       products: [
         KbzProductItem('Universal Life Insurance', 'MMK 4,250,000', 3),
@@ -53,8 +53,8 @@ class _CommissionReportScreenState extends ConsumerState<CommissionReportScreen>
       count: 13,
       amount: 'MMK 13,650,000',
       icon: Icons.favorite_border,
-      iconBg: const Color(0xFFFFE4E6),
-      iconColor: const Color(0xFFE11D48),
+      iconBg: context.colors.roseLight,
+      iconColor: context.colors.roseAccent,
       heightRatio: 0.42,
       products: [
         KbzProductItem('Health Insurance (Medical Care)', 'MMK 7,800,000', 7),
@@ -67,8 +67,8 @@ class _CommissionReportScreenState extends ConsumerState<CommissionReportScreen>
       count: 32,
       amount: 'MMK 32,250,000',
       icon: Icons.card_travel,
-      iconBg: const Color(0xFFF3E8FF),
-      iconColor: const Color(0xFF9333EA),
+      iconBg: context.colors.purpleLight,
+      iconColor: context.colors.purpleAccent,
       heightRatio: 0.95,
       products: [
         KbzProductItem('Inbound Travel Insurance', 'MMK 18,500,000', 18),
@@ -82,7 +82,7 @@ class _CommissionReportScreenState extends ConsumerState<CommissionReportScreen>
     final commissionState = ref.watch(commissionProvider);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F9FC),
+      backgroundColor: context.colors.cream,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -164,13 +164,6 @@ class _CommissionReportScreenState extends ConsumerState<CommissionReportScreen>
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
       ),
       child: Column(
         children: [
@@ -182,13 +175,13 @@ class _CommissionReportScreenState extends ConsumerState<CommissionReportScreen>
                   Container(
                     padding: const EdgeInsets.all(6),
                     decoration: BoxDecoration(
-                      color: AppColors.primaryColor.withValues(alpha: 0.1),
+                      color: context.colors.primaryColor.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Icon(
                       Icons.bar_chart_rounded,
-                      color: AppColors.primaryColor,
-                      size: 18,
+                      color: context.colors.primaryColor,
+                      size: context.iconLg,
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -213,9 +206,9 @@ class _CommissionReportScreenState extends ConsumerState<CommissionReportScreen>
                 ),
                 child: Row(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.calendar_today_outlined,
-                      size: 12,
+                      size: context.iconSm,
                       color: Colors.grey,
                     ),
                     const SizedBox(width: 4),
@@ -223,9 +216,9 @@ class _CommissionReportScreenState extends ConsumerState<CommissionReportScreen>
                       commissionState.selectedPeriod,
                       style: const TextStyle(fontSize: 11, color: Colors.grey),
                     ),
-                    const Icon(
+                    Icon(
                       Icons.keyboard_arrow_down,
-                      size: 14,
+                      size: context.iconMd,
                       color: Colors.grey,
                     ),
                   ],
@@ -269,7 +262,7 @@ class _CommissionReportScreenState extends ConsumerState<CommissionReportScreen>
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     crossAxisAlignment: CrossAxisAlignment.end,
-                    children: categories.map((cat) {
+                    children: _buildCategories(context).map((cat) {
                       final isSelected = commissionState.expandedCategoryLabel == cat.label;
                       return GestureDetector(
                         onTap: () {
@@ -284,8 +277,8 @@ class _CommissionReportScreenState extends ConsumerState<CommissionReportScreen>
                                 fontSize: 8,
                                 fontWeight: FontWeight.bold,
                                 color: isSelected
-                                    ? AppColors.secondaryColor
-                                    : AppColors.primaryColor,
+                                    ? context.colors.secondaryColor
+                                    : context.colors.primaryColor,
                               ),
                             ),
                             const SizedBox(height: 4),
@@ -297,12 +290,12 @@ class _CommissionReportScreenState extends ConsumerState<CommissionReportScreen>
                                 gradient: LinearGradient(
                                   colors: isSelected
                                       ? [
-                                          AppColors.primaryColor,
-                                          AppColors.secondaryColor,
+                                          context.colors.primaryColor,
+                                          context.colors.secondaryColor,
                                         ]
                                       : [
-                                          AppColors.secondaryColor,
-                                          AppColors.primaryColor,
+                                          context.colors.secondaryColor,
+                                          context.colors.primaryColor,
                                         ],
                                   begin: Alignment.topCenter,
                                   end: Alignment.bottomCenter,
@@ -325,13 +318,13 @@ class _CommissionReportScreenState extends ConsumerState<CommissionReportScreen>
                               padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
                                 color: isSelected
-                                    ? AppColors.primaryColor
+                                    ? context.colors.primaryColor
                                     : cat.iconBg,
                                 shape: BoxShape.circle,
                               ),
                               child: Icon(
                                 cat.icon,
-                                size: 16,
+                                size: context.iconBase,
                                 color: isSelected
                                     ? Colors.white
                                     : cat.iconColor,
@@ -346,7 +339,7 @@ class _CommissionReportScreenState extends ConsumerState<CommissionReportScreen>
                                     ? FontWeight.bold
                                     : FontWeight.w500,
                                 color: isSelected
-                                    ? AppColors.primaryColor
+                                    ? context.colors.primaryColor
                                     : Colors.black87,
                               ),
                             ),
@@ -369,10 +362,10 @@ class _CommissionReportScreenState extends ConsumerState<CommissionReportScreen>
       margin: const EdgeInsets.symmetric(horizontal: 16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.primaryColor.withValues(alpha: 0.05),
+        color: context.colors.primaryColor.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(18),
         border: Border.all(
-          color: AppColors.primaryColor.withValues(alpha: 0.15),
+          color: context.colors.primaryColor.withValues(alpha: 0.15),
         ),
       ),
       child: Column(
@@ -392,13 +385,13 @@ class _CommissionReportScreenState extends ConsumerState<CommissionReportScreen>
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: AppColors.primaryColor,
+                  color: context.colors.primaryColor,
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.card_travel,
                   color: Colors.white,
-                  size: 22,
+                  size: context.iconXxl,
                 ),
               ),
               const SizedBox(width: 12),
@@ -420,7 +413,7 @@ class _CommissionReportScreenState extends ConsumerState<CommissionReportScreen>
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.bold,
-                        color: AppColors.primaryColor,
+                        color: context.colors.primaryColor,
                       ),
                     ),
                     const SizedBox(height: 2),
@@ -439,7 +432,7 @@ class _CommissionReportScreenState extends ConsumerState<CommissionReportScreen>
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
-                      color: AppColors.primaryColor,
+                      color: context.colors.primaryColor,
                     ),
                   ),
                   const Text(
@@ -462,13 +455,6 @@ class _CommissionReportScreenState extends ConsumerState<CommissionReportScreen>
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -481,13 +467,13 @@ class _CommissionReportScreenState extends ConsumerState<CommissionReportScreen>
                   Container(
                     padding: const EdgeInsets.all(6),
                     decoration: BoxDecoration(
-                      color: AppColors.primaryColor.withValues(alpha: 0.1),
+                      color: context.colors.primaryColor.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Icon(
                       Icons.list_alt_rounded,
-                      color: AppColors.primaryColor,
-                      size: 16,
+                      color: context.colors.primaryColor,
+                      size: context.iconBase,
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -506,7 +492,7 @@ class _CommissionReportScreenState extends ConsumerState<CommissionReportScreen>
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w600,
-                  color: AppColors.primaryColor,
+                  color: context.colors.primaryColor,
                 ),
               ),
             ],
@@ -515,11 +501,11 @@ class _CommissionReportScreenState extends ConsumerState<CommissionReportScreen>
           ListView.separated(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            itemCount: categories.length,
+            itemCount: _buildCategories(context).length,
             separatorBuilder: (context, index) =>
                 Divider(color: Colors.grey.shade100, height: 1),
             itemBuilder: (context, index) {
-              final cat = categories[index];
+              final cat = _buildCategories(context)[index];
               final isExpanded = commissionState.expandedCategoryLabel == cat.label;
 
               return ExpansionTile(
@@ -535,7 +521,7 @@ class _CommissionReportScreenState extends ConsumerState<CommissionReportScreen>
                     color: cat.iconBg,
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(cat.icon, size: 18, color: cat.iconColor),
+                  child: Icon(cat.icon, size: context.iconLg, color: cat.iconColor),
                 ),
                 title: Text(
                   cat.label,
@@ -557,7 +543,7 @@ class _CommissionReportScreenState extends ConsumerState<CommissionReportScreen>
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
-                        color: AppColors.primaryColor,
+                        color: context.colors.primaryColor,
                       ),
                     ),
                     const SizedBox(width: 4),
@@ -565,7 +551,7 @@ class _CommissionReportScreenState extends ConsumerState<CommissionReportScreen>
                       isExpanded
                           ? Icons.keyboard_arrow_up
                           : Icons.keyboard_arrow_down,
-                      size: 18,
+                      size: context.iconLg,
                       color: Colors.grey,
                     ),
                   ],
@@ -578,7 +564,7 @@ class _CommissionReportScreenState extends ConsumerState<CommissionReportScreen>
                       vertical: 10,
                     ),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFF8FAFC),
+                      color: context.colors.surfaceBg,
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Row(
@@ -634,13 +620,6 @@ class _CommissionReportScreenState extends ConsumerState<CommissionReportScreen>
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -650,13 +629,13 @@ class _CommissionReportScreenState extends ConsumerState<CommissionReportScreen>
               Container(
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
-                  color: AppColors.primaryColor.withValues(alpha: 0.1),
+                  color: context.colors.primaryColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Icon(
                   Icons.article_outlined,
-                  color: AppColors.primaryColor,
-                  size: 16,
+                  color: context.colors.primaryColor,
+                  size: context.iconBase,
                 ),
               ),
               const SizedBox(width: 8),
@@ -676,30 +655,30 @@ class _CommissionReportScreenState extends ConsumerState<CommissionReportScreen>
               Expanded(
                 child: _buildSummaryMetric(
                   icon: Icons.monetization_on_outlined,
-                  iconBg: AppColors.primaryColor.withValues(alpha: 0.1),
-                  iconColor: AppColors.primaryColor,
+                  iconBg: context.colors.primaryColor.withValues(alpha: 0.1),
+                  iconColor: context.colors.primaryColor,
                   value: '77',
                   subValue: 'MMK 77,450,000',
-                  subColor: AppColors.primaryColor,
+                  subColor: context.colors.primaryColor,
                   label: 'Total Commissions',
                 ),
               ),
               Expanded(
                 child: _buildSummaryMetric(
                   icon: Icons.trending_up_rounded,
-                  iconBg: const Color(0xFFDCFCE7),
-                  iconColor: const Color(0xFF16A34A),
+                  iconBg: context.colors.successAccentLight,
+                  iconColor: context.colors.successAccent,
                   value: '12%',
                   subValue: 'MMK 8,600,000',
-                  subColor: const Color(0xFF16A34A),
+                  subColor: context.colors.successAccent,
                   label: 'Vs Last Month',
                 ),
               ),
               Expanded(
                 child: _buildSummaryMetric(
                   icon: Icons.pie_chart_outline_rounded,
-                  iconBg: const Color(0xFFF3E8FF),
-                  iconColor: const Color(0xFF9333EA),
+                  iconBg: context.colors.purpleLight,
+                  iconColor: context.colors.purpleAccent,
                   value: '4',
                   subValue: '',
                   subColor: Colors.transparent,
@@ -709,8 +688,8 @@ class _CommissionReportScreenState extends ConsumerState<CommissionReportScreen>
               Expanded(
                 child: _buildSummaryMetric(
                   icon: Icons.people_alt_outlined,
-                  iconBg: const Color(0xFFFFEDD5),
-                  iconColor: const Color(0xFFEA580C),
+                  iconBg: context.colors.warningBorder,
+                  iconColor: context.colors.statusCorrection,
                   value: '36',
                   subValue: '',
                   subColor: Colors.transparent,
@@ -738,7 +717,7 @@ class _CommissionReportScreenState extends ConsumerState<CommissionReportScreen>
         Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(color: iconBg, shape: BoxShape.circle),
-          child: Icon(icon, size: 16, color: iconColor),
+          child: Icon(icon, size: context.iconBase, color: iconColor),
         ),
         const SizedBox(height: 8),
         FittedBox(

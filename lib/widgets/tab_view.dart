@@ -46,10 +46,10 @@ class _CustomTabViewState extends ConsumerState<CustomTabView> {
     final tabBar = TabBar(
       controller: widget.controller,
       isScrollable: widget.isScrollable,
-      indicatorColor: widget.indicatorColor ?? AppColors.primaryColor,
-      labelColor: widget.labelColor ?? AppColors.primaryColor,
-      unselectedLabelColor: widget.unselectedLabelColor ?? AppColors.muted,
-      dividerColor: AppColors.border,
+      indicatorColor: widget.indicatorColor ?? context.colors.primaryColor,
+      labelColor: widget.labelColor ?? context.colors.primaryColor,
+      unselectedLabelColor: widget.unselectedLabelColor ?? context.colors.muted,
+      dividerColor: context.colors.border,
       tabs: widget.tabs.map((tab) {
         if (tab.icon != null) {
           return Tab(text: tab.label, icon: Icon(tab.icon!));

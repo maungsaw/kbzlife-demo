@@ -82,9 +82,9 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
 
     if (mounted && context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Password reset successfully!'),
-          backgroundColor: AppColors.accentNavy,
+        SnackBar(
+          content: const Text('Password reset successfully!'),
+          backgroundColor: context.colors.accentNavy,
         ),
       );
       await Future.delayed(const Duration(milliseconds: 500));
@@ -97,17 +97,17 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.cream,
+      backgroundColor: context.colors.cream,
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Forgot Password',
-          style: TextStyle(fontSize: 15, color: AppColors.accentNavy),
+          style: TextStyle(fontSize: 15, color: context.colors.accentNavy),
         ),
         backgroundColor: Colors.white,
-        foregroundColor: AppColors.accentNavy,
+        foregroundColor: context.colors.accentNavy,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 18),
+          icon: Icon(Icons.arrow_back_ios_new_rounded, size: context.iconLg),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -120,9 +120,9 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (!_isOtpVerified) ...[
-                  const Text(
+                  Text(
                     'Enter your registered agent mobile number to receive a security OTP.',
-                    style: TextStyle(fontSize: 12, color: AppColors.muted),
+                    style: TextStyle(fontSize: 12, color: context.colors.muted),
                   ),
                   const SizedBox(height: 16),
                   buildInputField(
@@ -138,7 +138,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                     height: 46,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primaryColor,
+                        backgroundColor: context.colors.primaryColor,
                         elevation: 0,
                       ),
                       onPressed: _triggerOtpStep,
@@ -212,7 +212,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                     height: 46,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primaryColor,
+                        backgroundColor: context.colors.primaryColor,
                         elevation: 0,
                       ),
                       onPressed: _isSubmitting ? null : _submitReset,

@@ -48,29 +48,29 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.accentNavy),
+          icon: Icon(Icons.arrow_back, color: context.colors.accentNavy),
           onPressed: () => Navigator.maybePop(context),
         ),
-        title: const Text(
+        title: Text(
           'Task Details',
           style: TextStyle(
-            color: AppColors.accentNavy,
+            color: context.colors.accentNavy,
             fontWeight: FontWeight.bold,
             fontSize: 18,
           ),
         ),
         actions: [
           IconButton(
-            icon: const Icon(
+            icon: Icon(
               Icons.edit_outlined,
-              color: AppColors.primaryColor,
+              color: context.colors.primaryColor,
             ),
             onPressed: () {
               // Navigate back to Edit/Create view
             },
           ),
           IconButton(
-            icon: const Icon(Icons.delete_outline, color: AppColors.danger),
+            icon: Icon(Icons.delete_outline, color: context.colors.danger),
             onPressed: _showDeleteConfirmation,
           ),
         ],
@@ -91,10 +91,10 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
               const SizedBox(height: 12),
               Text(
                 _task['title'],
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.accentNavy,
+                  color: context.colors.accentNavy,
                 ),
               ),
               const SizedBox(height: 8),
@@ -102,9 +102,9 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
                   _task['description'].isNotEmpty)
                 Text(
                   _task['description'],
-                  style: const TextStyle(
+                    style: TextStyle(
                     fontSize: 14,
-                    color: AppColors.accentNavy,
+                    color: context.colors.accentNavy,
                     height: 1.4,
                   ),
                 ),
@@ -115,18 +115,18 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
                   onTap: () {},
                   child: Row(
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.link,
-                        size: 16,
-                        color: AppColors.primaryColor,
+                        size: context.iconBase,
+                        color: context.colors.primaryColor,
                       ),
                       const SizedBox(width: 6),
                       Expanded(
                         child: Text(
                           _task['embeddedLink'],
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 13,
-                            color: AppColors.primaryColor,
+                            color: context.colors.primaryColor,
                             decoration: TextDecoration.underline,
                           ),
                           overflow: TextOverflow.ellipsis,
@@ -175,12 +175,12 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: AppColors.surfaceBg,
+                    color: context.colors.surfaceBg,
                     borderRadius: BorderRadius.circular(6),
                   ),
-                  child: const Text(
+                    child: Text(
                     'All Day Event',
-                    style: TextStyle(fontSize: 12, color: AppColors.accentNavy),
+                    style: TextStyle(fontSize: 12, color: context.colors.accentNavy),
                   ),
                 ),
               ],
@@ -201,7 +201,7 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
                   ...(_task['assignees'] as List<String>).map(
                     (user) => Chip(
                       avatar: CircleAvatar(
-                        backgroundColor: AppColors.primaryColor,
+                        backgroundColor: context.colors.primaryColor,
                         child: Text(
                           user[0],
                           style: const TextStyle(
@@ -211,8 +211,8 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
                         ),
                       ),
                       label: Text(user, style: const TextStyle(fontSize: 12)),
-                      backgroundColor: AppColors.cream,
-                      side: const BorderSide(color: AppColors.border),
+                      backgroundColor: context.colors.cream,
+                      side: BorderSide(color: context.colors.border),
                       visualDensity: VisualDensity.compact,
                     ),
                   ),
@@ -257,22 +257,22 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
                   ),
                 ],
               ),
-              const Divider(height: 24, color: AppColors.surfaceBg),
+              Divider(height: 24, color: context.colors.surfaceBg),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     'Created: ${_task['createdDate']}',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 11,
-                      color: AppColors.muted,
+                      color: context.colors.muted,
                     ),
                   ),
                   Text(
                     'Last Updated: ${_task['updatedDate']}',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 11,
-                      color: AppColors.muted,
+                      color: context.colors.muted,
                     ),
                   ),
                 ],
@@ -300,10 +300,10 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
           if (title != null) ...[
             Text(
               title,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
-                color: AppColors.primaryColor,
+                color: context.colors.primaryColor,
               ),
             ),
             const SizedBox(height: 14),
@@ -317,10 +317,10 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
   Widget _buildFieldLabel(String label) {
     return Text(
       label,
-      style: const TextStyle(
+      style: TextStyle(
         fontSize: 12,
         fontWeight: FontWeight.w500,
-        color: AppColors.accentNavy,
+        color: context.colors.accentNavy,
       ),
     );
   }
@@ -333,7 +333,7 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
     return Row(
       crossAxisAlignment: .start,
       children: [
-        Icon(icon, size: 18, color: AppColors.muted),
+        Icon(icon, size: context.iconLg, color: context.colors.muted),
         const SizedBox(width: 8),
         Expanded(
           child: Column(
@@ -341,15 +341,15 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
             children: [
               Text(
                 label,
-                style: const TextStyle(fontSize: 11, color: AppColors.muted),
+                style: TextStyle(fontSize: 11, color: context.colors.muted),
               ),
               const SizedBox(height: 2),
               Text(
                 value,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
-                  color: AppColors.accentNavy,
+                  color: context.colors.accentNavy,
                 ),
               ),
             ],
@@ -375,17 +375,17 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
         Column(
           crossAxisAlignment: .start,
           children: [
-            const Text(
+            Text(
               'Priority',
-              style: TextStyle(fontSize: 11, color: AppColors.muted),
+              style: TextStyle(fontSize: 11, color: context.colors.muted),
             ),
             const SizedBox(height: 2),
             Text(
               priority,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
-                color: AppColors.accentNavy,
+                color: context.colors.accentNavy,
               ),
             ),
           ],
@@ -395,14 +395,14 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
   }
 
   Widget _buildStatusBadge(String status) {
-    Color bg = const Color(0xFFE0F2FE);
-    Color text = const Color(0xFF0284C7);
+    Color bg = context.colors.infoLight;
+    Color text = context.colors.infoText;
     if (status == 'Done') {
-      bg = const Color(0xFFDCFCE7);
-      text = const Color(0xFF16A34A);
+      bg = context.colors.successAccentLight;
+      text = context.colors.successAccent;
     } else if (status == 'In Progress') {
-      bg = const Color(0xFFFEF3C7);
-      text = const Color(0xFFD97706);
+      bg = context.colors.warningLight;
+      text = context.colors.statusLead;
     }
 
     return Container(
@@ -426,15 +426,15 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: AppColors.surfaceBg,
+        color: context.colors.surfaceBg,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Text(
         type,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 11,
           fontWeight: FontWeight.bold,
-          color: AppColors.accentNavy,
+          color: context.colors.accentNavy,
         ),
       ),
     );

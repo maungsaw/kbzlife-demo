@@ -92,17 +92,17 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.cream,
+      backgroundColor: context.colors.cream,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        foregroundColor: const Color(0xFF0F172A),
+        foregroundColor: context.colors.textPrimary,
         elevation: 0,
-        title: const Text(
+        title: Text(
           'Register Account',
           style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.bold,
-            color: AppColors.accentNavy,
+            color: context.colors.accentNavy,
           ),
         ),
         scrolledUnderElevation: 0,
@@ -183,7 +183,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   height: 48,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primaryColor,
+                      backgroundColor: context.colors.primaryColor,
                       elevation: 0,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
@@ -218,17 +218,17 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
+                    Text(
                       'isAlreadyExist (Test Toggle)',
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w500,
-                        color: AppColors.accentNavy,
+                        color: context.colors.accentNavy,
                       ),
                     ),
                     Switch(
                       value: _isAlreadyExist,
-                      activeThumbColor: AppColors.primaryColor,
+                      activeThumbColor: context.colors.primaryColor,
                       onChanged: (val) {
                         setState(() {
                           _isAlreadyExist = val;
@@ -243,20 +243,20 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text(
+                    Text(
                       'Already have an account? ',
-                      style: TextStyle(fontSize: 13, color: AppColors.muted),
+                      style: TextStyle(fontSize: 13, color: context.colors.muted),
                     ),
                     GestureDetector(
                       onTap: () => Navigator.maybePop(context),
-                      child: const Text(
-                        'Login Now',
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.primaryColor,
+                        child: Text(
+                          'Login Now',
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
+                            color: context.colors.primaryColor,
+                          ),
                         ),
-                      ),
                     ),
                   ],
                 ),

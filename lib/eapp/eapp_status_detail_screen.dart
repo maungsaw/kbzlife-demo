@@ -223,7 +223,7 @@ class _TimelineTile extends StatelessWidget {
                 child: Icon(
                   done ? Icons.check : status.icon,
                   color: Colors.white,
-                  size: 13,
+                  size: context.iconSm,
                 ),
               ),
               if (!isLast)
@@ -459,7 +459,7 @@ class _TimeInProcessCardState extends State<_TimeInProcessCard> {
                           _notifyMe
                               ? Icons.notifications_active_rounded
                               : Icons.notifications_off_outlined,
-                          size: 15,
+                          size: context.iconBase,
                           color: _notifyMe
                               ? AppColors.primaryColor
                               : AppColors.deepAlpha(0.4),
@@ -648,7 +648,7 @@ class _StageDot extends StatelessWidget {
       alignment: Alignment.center,
       decoration: BoxDecoration(color: color, shape: BoxShape.circle),
       child: done
-          ? const Icon(Icons.check, color: Colors.white, size: 14)
+          ? Icon(Icons.check, color: Colors.white, size: context.iconMd)
           : Text(
               '$number',
               style: const TextStyle(

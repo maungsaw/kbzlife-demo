@@ -15,7 +15,7 @@ class AccountDetailScreen extends ConsumerWidget {
     final agentData = profileState.agentData;
 
     return Scaffold(
-      backgroundColor: AppColors.cream,
+      backgroundColor: context.colors.cream,
       appBar: AppBar(title: const Text('Account')),
       body: ListView(
         padding: const EdgeInsets.all(16),
@@ -32,11 +32,11 @@ class AccountDetailScreen extends ConsumerWidget {
                   height: 80,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: AppColors.primaryColor.withValues(alpha: 0.1),
+                    color: context.colors.primaryColor.withValues(alpha: 0.1),
                   ),
                   child: CircleAvatar(
                     radius: 38,
-                    backgroundColor: AppColors.primaryColor.withValues(
+                    backgroundColor: context.colors.primaryColor.withValues(
                       alpha: 0.15,
                     ),
                     backgroundImage: profileState.selectedImage != null
@@ -44,10 +44,10 @@ class AccountDetailScreen extends ConsumerWidget {
                               as ImageProvider
                         : null,
                     child: profileState.selectedImage == null
-                        ? const FaIcon(
+                        ? FaIcon(
                             FontAwesomeIcons.solidUser,
-                            size: 28,
-                            color: AppColors.primaryColor,
+                            size: context.icon4xl,
+                            color: context.colors.primaryColor,
                           )
                         : null,
                   ),
@@ -55,16 +55,16 @@ class AccountDetailScreen extends ConsumerWidget {
                 const SizedBox(height: 14),
                 Text(
                   agentData.fullName,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.accentNavy,
+                    color: context.colors.accentNavy,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   agentData.designation,
-                  style: const TextStyle(fontSize: 14, color: AppColors.muted),
+                  style: TextStyle(fontSize: 14, color: context.colors.muted),
                 ),
               ],
             ),
@@ -80,12 +80,12 @@ class AccountDetailScreen extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'Personal Information',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.accentNavy,
+                    color: context.colors.accentNavy,
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -93,20 +93,20 @@ class AccountDetailScreen extends ConsumerWidget {
                   FontAwesomeIcons.idBadge,
                   'License No.',
                   agentData.agentCode,
-                  AppColors.primaryColor,
+                  context.colors.primaryColor,
                 ),
                 _buildInfoTile(
                   FontAwesomeIcons.mobileScreen,
                   'Phone',
                   agentData.phone,
-                  AppColors.mint,
+                  context.colors.mint,
                   onTap: () => launchUrl(Uri.parse('tel:${agentData.phone}')),
                 ),
                 _buildInfoTile(
                   FontAwesomeIcons.envelope,
                   'Email',
                   agentData.email,
-                  AppColors.deep,
+                  context.colors.deep,
                   onTap: () =>
                       launchUrl(Uri.parse('mailto:${agentData.email}')),
                 ),
@@ -114,7 +114,7 @@ class AccountDetailScreen extends ConsumerWidget {
                   FontAwesomeIcons.buildingColumns,
                   'Branch',
                   agentData.branchName,
-                  AppColors.warn,
+                  context.colors.warn,
                   showDivider: false,
                 ),
               ],
@@ -131,12 +131,12 @@ class AccountDetailScreen extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'Organization',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.accentNavy,
+                    color: context.colors.accentNavy,
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -144,7 +144,7 @@ class AccountDetailScreen extends ConsumerWidget {
                   FontAwesomeIcons.userTie,
                   'Supervisor',
                   agentData.supervisorName,
-                  AppColors.danger,
+                  context.colors.danger,
                   showDivider: false,
                 ),
               ],
@@ -158,13 +158,6 @@ class AccountDetailScreen extends ConsumerWidget {
   BoxDecoration _cardDecoration() => BoxDecoration(
     color: Colors.white,
     borderRadius: BorderRadius.circular(16),
-    boxShadow: [
-      BoxShadow(
-        color: AppColors.deep.withValues(alpha: 0.05),
-        blurRadius: 12,
-        offset: const Offset(0, 2),
-      ),
-    ],
   );
 
   Widget _buildInfoTile(
@@ -201,28 +194,28 @@ class AccountDetailScreen extends ConsumerWidget {
                       children: [
                         Text(
                           label,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 12,
-                            color: AppColors.muted,
+                            color: kAppColors.muted,
                           ),
                         ),
                         const SizedBox(height: 2),
                         Text(
                           value,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
-                            color: AppColors.accentNavy,
+                            color: kAppColors.accentNavy,
                           ),
                         ),
                       ],
                     ),
                   ),
                   if (onTap != null)
-                    const FaIcon(
+                    FaIcon(
                       FontAwesomeIcons.chevronRight,
-                      size: 11,
-                      color: AppColors.border,
+                      size: 10,
+                      color: kAppColors.border,
                     ),
                 ],
               ),
@@ -230,7 +223,7 @@ class AccountDetailScreen extends ConsumerWidget {
           ),
         ),
         if (showDivider)
-          Divider(height: 1, color: AppColors.border.withValues(alpha: 0.5)),
+          Divider(height: 1, color: kAppColors.border.withValues(alpha: 0.5)),
       ],
     );
   }

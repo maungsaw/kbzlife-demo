@@ -30,27 +30,18 @@ class AppIconChip extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(size * 0.3),
         gradient: solid
-            ? const LinearGradient(
+            ? LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [AppColors.primaryColor, AppColors.secondaryColor],
+                colors: [context.colors.primaryColor, context.colors.secondaryColor],
               )
             : null,
-        color: solid ? null : AppColors.primaryColor.withValues(alpha: 0.14),
-        boxShadow: solid
-            ? [
-                BoxShadow(
-                  color: AppColors.secondaryColor.withValues(alpha: 0.28),
-                  blurRadius: 10,
-                  offset: const Offset(0, 4),
-                ),
-              ]
-            : null,
+        color: solid ? null : context.colors.primaryColor.withValues(alpha: 0.14),
       ),
       child: Icon(
         icon,
         size: size * _glyphRatio,
-        color: solid ? Colors.white : AppColors.baltic,
+        color: solid ? Colors.white : context.colors.baltic,
       ),
     );
 
@@ -65,16 +56,16 @@ class AppIconChip extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(2.5),
             decoration: BoxDecoration(
-              color: AppColors.paper,
+              color: context.colors.paper,
               shape: BoxShape.circle,
               // A hairline ring, or the white disc disappears into the
               // pale tile behind it and the lock looks like a smudge.
-              border: Border.all(color: AppColors.deepAlpha(0.10)),
+              border: Border.all(color: context.colors.deepAlpha(0.10)),
             ),
             child: Icon(
               Icons.lock,
               size: size * 0.34,
-              color: AppColors.deepAlpha(0.55),
+              color: context.colors.deepAlpha(0.55),
             ),
           ),
         ),

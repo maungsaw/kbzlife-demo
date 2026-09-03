@@ -1,9 +1,7 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
 import 'const.dart';
 import 'providers/router_provider.dart';
 import 'service_widget.dart';
@@ -97,7 +95,7 @@ class _BeforeLoginDashboardScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.cream,
+      backgroundColor: context.colors.cream,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -105,13 +103,28 @@ class _BeforeLoginDashboardScreenState
           padding: const EdgeInsets.all(8.0),
           child: Container(
             decoration: BoxDecoration(
-              color: AppColors.primaryColor.withValues(alpha: 0.09),
               shape: BoxShape.circle,
+              border: Border.all(color: context.colors.primaryColor, width: 2),
             ),
-            child: Icon(
-              Icons.badge_outlined,
-              color: AppColors.primaryColor,
-              size: 22,
+            child: ClipOval(
+              child: Image.asset(
+                'assets/icons/brand-mark.png',
+                width: 32,
+                height: 32,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    width: 32,
+                    height: 32,
+                    color: Colors.blue[100],
+                    child: Icon(
+                      Icons.account_circle_rounded,
+                      color: Colors.blue,
+                      size: context.iconXl,
+                    ),
+                  );
+                },
+              ),
             ),
           ),
         ),
@@ -143,7 +156,7 @@ class _BeforeLoginDashboardScreenState
               child: ElevatedButton(
                 onPressed: () => context.push(RoutePaths.login),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primaryColor,
+                  backgroundColor: context.colors.primaryColor,
                   foregroundColor: Colors.white,
                   elevation: 0,
                   minimumSize: Size(0, 36),
@@ -177,15 +190,10 @@ class _BeforeLoginDashboardScreenState
           const SizedBox(height: 16),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: ServicesCard(
-              isGuest: true,
-              // onTabChanged: (index) {
-              //   _handleTabNavigation(index);
-              // },
-            ),
+            child: ServicesCard(isGuest: true),
           ),
           const SizedBox(height: 16),
-          _buildFeaturedAgentProducts(),
+          _buildWhyJoinSection(),
           const SizedBox(height: 16),
         ],
       ),
@@ -213,13 +221,6 @@ class _BeforeLoginDashboardScreenState
                     image: NetworkImage(item['imageUrl']!),
                     fit: BoxFit.cover,
                   ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.12),
-                      blurRadius: 12,
-                      offset: const Offset(0, 6),
-                    ),
-                  ],
                 ),
                 child: Container(
                   padding: const EdgeInsets.symmetric(
@@ -297,14 +298,14 @@ class _BeforeLoginDashboardScreenState
                               onPressed: () {
                                 context.push(RoutePaths.login);
                               },
-                              icon: const Icon(
+                              icon: Icon(
                                 Icons.rocket_launch_outlined,
-                                size: 13,
+                                size: context.iconSm,
                               ),
                               label: Text(item['buttonText']!),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.white,
-                                foregroundColor: AppColors.primaryColor,
+                                foregroundColor: context.colors.primaryColor,
                                 elevation: 0,
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 14,
@@ -341,7 +342,7 @@ class _BeforeLoginDashboardScreenState
               width: _currentBannerIndex == index ? 18 : 6,
               decoration: BoxDecoration(
                 color: _currentBannerIndex == index
-                    ? AppColors.primaryColor
+                    ? context.colors.primaryColor
                     : Colors.grey.shade300,
                 borderRadius: BorderRadius.circular(3),
               ),
@@ -352,47 +353,57 @@ class _BeforeLoginDashboardScreenState
     );
   }
 
-  Widget _buildFeaturedAgentProducts() {
+  Widget _buildWhyJoinSection() {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'High-Demand Products',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
-              ),
-              Text(
-                'View Catalog',
-                style: TextStyle(color: Colors.blue, fontSize: 13),
-              ),
-            ],
+          const Text(
+            'Why Join Our Network',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
           ),
           const SizedBox(height: 12),
           Row(
             children: [
               Expanded(
-                child: _buildProductCard(
-                  'Life & Savings\nPlans',
-                  'High retention rates &\nrecurring commissions',
-                  Icons.savings_outlined,
-                  Colors.blue[50]!,
+                child: _buildStatCard(
+                  value: '5,000+',
+                  label: 'Agents',
+                  sublabel: 'Nationwide',
                 ),
               ),
-              const SizedBox(width: 12),
+              Container(width: 1, height: 40, color: context.colors.divider),
               Expanded(
-                child: _buildProductCard(
-                  'Commercial &\nFleet Cover',
-                  'High ticket sizes &\nfast digital quotes',
-                  Icons.business_center_outlined,
-                  Colors.green[50]!,
+                child: _buildStatCard(
+                  value: '24 Hrs',
+                  label: 'Avg Payout',
+                  sublabel: 'Fast Claims',
+                ),
+              ),
+              Container(width: 1, height: 40, color: context.colors.divider),
+              Expanded(
+                child: _buildStatCard(
+                  value: 'Up to 35%',
+                  label: 'Commission',
+                  sublabel: 'Tiered Boost',
+                ),
+              ),
+              Container(width: 1, height: 40, color: context.colors.divider),
+              Expanded(
+                child: _buildStatCard(
+                  value: 'Dedicated',
+                  label: 'Support',
+                  sublabel: 'Desk',
                 ),
               ),
             ],
@@ -402,79 +413,44 @@ class _BeforeLoginDashboardScreenState
     );
   }
 
-  Widget _buildProductCard(
-    String title,
-    String subtitle,
-    IconData icon,
-    Color bgColor,
-  ) {
+  Widget _buildStatCard({
+    required String value,
+    required String label,
+    required String sublabel,
+  }) {
     return Container(
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
       decoration: BoxDecoration(
-        color: bgColor,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: title.startsWith('Life & Savings')
-                ? AppColors.primaryColor.withValues(alpha: 0.04)
-                : AppColors.mint.withValues(alpha: 0.04),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
-          ),
-          BoxShadow(
-            color: title.startsWith('Life & Savings')
-                ? AppColors.primaryColor.withValues(alpha: 0.04)
-                : AppColors.mint.withValues(alpha: 0.04),
-            blurRadius: 28,
-            spreadRadius: -4,
-            offset: const Offset(0, 14),
-          ),
-        ],
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            title,
-            style: const TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
-              height: 1.2,
+            label,
+            style: TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.w500,
+              color: context.colors.textSecondary,
             ),
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: 4),
           Text(
-            subtitle,
-            style: const TextStyle(
-              fontSize: 11,
-              color: Colors.black54,
-              height: 1.2,
+            value,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: context.colors.primaryColor,
             ),
           ),
-          const SizedBox(height: 10),
-          Row(
-            children: [
-              const Expanded(
-                child: Text(
-                  'Commission Rate',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: Colors.blue,
-                    fontSize: 10,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-              Icon(
-                Icons.arrow_forward,
-                size: 11,
-                color: AppColors.primaryColor,
-              ),
-              const SizedBox(width: 4),
-              Icon(icon, size: 28, color: AppColors.primaryColor),
-            ],
+          const SizedBox(height: 2),
+          Text(
+            sublabel,
+            style: TextStyle(
+              fontSize: 9,
+              color: context.colors.primaryColor,
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ],
       ),

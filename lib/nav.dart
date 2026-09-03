@@ -12,6 +12,7 @@ class BottomApp extends ConsumerWidget {
   final bool isOnline;
   final ValueChanged<int>? onTabChanged;
   final int currentIndex;
+  final bool showFab;
 
   const BottomApp({
     super.key,
@@ -19,6 +20,7 @@ class BottomApp extends ConsumerWidget {
     this.isOnline = true,
     this.onTabChanged,
     this.currentIndex = 0,
+    this.showFab = false,
   });
 
   @override
@@ -45,20 +47,6 @@ class BottomApp extends ConsumerWidget {
               decoration: BoxDecoration(
                 color: Colors.white.withValues(alpha: 0.95),
                 borderRadius: BorderRadius.circular(barHeight / 2),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.06),
-                    blurRadius: 20,
-                    spreadRadius: 2,
-                    offset: const Offset(0, 6),
-                  ),
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.03),
-                    blurRadius: 6,
-                    spreadRadius: 0,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -67,7 +55,7 @@ class BottomApp extends ConsumerWidget {
             ),
           ),
           const SizedBox(width: 12),
-          if (!isGuest) _buildFab(context, ref),
+          if (showFab) _buildFab(context, ref),
         ],
       ),
     );
@@ -80,10 +68,21 @@ class BottomApp extends ConsumerWidget {
         child: IconButton(
           icon: FaIcon(
             FontAwesomeIcons.solidHouse,
-            color: currentTab == 0 ? AppColors.primaryColor : Colors.grey,
-            size: 18,
+            color: currentTab == 0 ? context.colors.primaryColor : Colors.grey,
+            size: context.iconLg,
           ),
           onPressed: () => onTabChanged?.call(0),
+        ),
+      ),
+      _tooltip(
+        message: 'CRM',
+        child: IconButton(
+          icon: FaIcon(
+            FontAwesomeIcons.users,
+            color: currentTab == 1 ? context.colors.primaryColor : Colors.grey,
+            size: context.iconLg,
+          ),
+          onPressed: () => onTabChanged?.call(1),
         ),
       ),
       _tooltip(
@@ -91,10 +90,10 @@ class BottomApp extends ConsumerWidget {
         child: IconButton(
           icon: FaIcon(
             FontAwesomeIcons.boxOpen,
-            color: currentTab == 1 ? AppColors.primaryColor : Colors.grey,
-            size: 18,
+            color: currentTab == 2 ? context.colors.primaryColor : Colors.grey,
+            size: context.iconLg,
           ),
-          onPressed: () => onTabChanged?.call(1),
+          onPressed: () => onTabChanged?.call(2),
         ),
       ),
       _tooltip(
@@ -102,10 +101,10 @@ class BottomApp extends ConsumerWidget {
         child: IconButton(
           icon: FaIcon(
             FontAwesomeIcons.solidUser,
-            color: currentTab == 2 ? AppColors.primaryColor : Colors.grey,
-            size: 18,
+            color: currentTab == 3 ? context.colors.primaryColor : Colors.grey,
+            size: context.iconLg,
           ),
-          onPressed: () => onTabChanged?.call(2),
+          onPressed: () => onTabChanged?.call(3),
         ),
       ),
     ];
@@ -118,8 +117,8 @@ class BottomApp extends ConsumerWidget {
         child: IconButton(
           icon: FaIcon(
             FontAwesomeIcons.solidHouse,
-            color: currentTab == 0 ? AppColors.primaryColor : Colors.grey,
-            size: 18,
+            color: currentTab == 0 ? context.colors.primaryColor : Colors.grey,
+            size: context.iconLg,
           ),
           onPressed: () => onTabChanged?.call(0),
         ),
@@ -129,8 +128,8 @@ class BottomApp extends ConsumerWidget {
         child: IconButton(
           icon: FaIcon(
             FontAwesomeIcons.users,
-            color: currentTab == 1 ? AppColors.primaryColor : Colors.grey,
-            size: 18,
+            color: currentTab == 1 ? context.colors.primaryColor : Colors.grey,
+            size: context.iconLg,
           ),
           onPressed: () => onTabChanged?.call(1),
         ),
@@ -140,8 +139,8 @@ class BottomApp extends ConsumerWidget {
         child: IconButton(
           icon: FaIcon(
             FontAwesomeIcons.boxOpen,
-            color: currentTab == 2 ? AppColors.primaryColor : Colors.grey,
-            size: 18,
+            color: currentTab == 2 ? context.colors.primaryColor : Colors.grey,
+            size: context.iconLg,
           ),
           onPressed: () => onTabChanged?.call(2),
         ),
@@ -155,8 +154,9 @@ class BottomApp extends ConsumerWidget {
 
   int _tabIndexFromPath(String path) {
     if (path.startsWith('/guest')) {
-      if (path.contains('/products')) return 1;
-      if (path.contains('/profile')) return 2;
+      if (path.contains('/calculator')) return 1;
+      if (path.contains('/products')) return 2;
+      if (path.contains('/profile')) return 3;
       return 0;
     }
     if (path.contains('/crm')) return 1;
@@ -190,36 +190,30 @@ class BottomApp extends ConsumerWidget {
     return CompositedTransformTarget(
       link: LayerLink(),
       child: _tooltip(
-        message: '更多功能',
+        message: isGuest ? 'Login' : 'More Options',
         child: GestureDetector(
-          onTap: isGuest ? null : () => _showOverlayMenu(context),
+          onTap: () {
+            if (isGuest) {
+              context.push(RoutePaths.login);
+            } else {
+              _showOverlayMenu(context);
+            }
+          },
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 200),
             width: mainFabSize,
             height: mainFabSize,
             decoration: BoxDecoration(
-              color: AppColors.primaryColor,
+              color: context.colors.primaryColor,
               shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.primaryColor.withValues(alpha: 0.35),
-                  blurRadius: 16,
-                  spreadRadius: 1,
-                  offset: const Offset(0, 6),
-                ),
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.1),
-                  blurRadius: 8,
-                  spreadRadius: 0,
-                  offset: const Offset(0, 3),
-                ),
-              ],
             ),
-            child: const Center(
+            child: Center(
               child: FaIcon(
-                FontAwesomeIcons.shieldHeart,
+                isGuest
+                    ? FontAwesomeIcons.shieldHeart
+                    : FontAwesomeIcons.shieldHeart,
                 color: Colors.white,
-                size: 20,
+                size: context.iconXl,
               ),
             ),
           ),
@@ -240,8 +234,8 @@ class BottomApp extends ConsumerWidget {
         IconButton(
           icon: FaIcon(
             FontAwesomeIcons.solidUser,
-            color: currentTab == 3 ? AppColors.primaryColor : Colors.grey,
-            size: 18,
+            color: currentTab == 3 ? context.colors.primaryColor : Colors.grey,
+            size: context.iconLg,
           ),
           onPressed: () {
             if (onTabChanged != null) {
@@ -258,9 +252,7 @@ class BottomApp extends ConsumerWidget {
             width: 9,
             height: 9,
             decoration: BoxDecoration(
-              color: isOnline
-                  ? const Color(0xFF4CAF50)
-                  : const Color(0xFFFF9800),
+              color: isOnline ? context.colors.online : context.colors.away,
               shape: BoxShape.circle,
               border: Border.all(color: Colors.white, width: 1.5),
             ),
@@ -304,53 +296,44 @@ class BottomApp extends ConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          _verticalTooltip(
-            message: 'Create Proposal',
-            child: _overlayItem(
-              context: context,
-              icon: FontAwesomeIcons.fileSignature,
-              onTap: () {
-                Navigator.pop(context);
-                navigateTo(RoutePaths.products);
-              },
-            ),
+          _overlayItem(
+            context: context,
+            icon: FontAwesomeIcons.fileSignature,
+            label: 'Create Proposal',
+            onTap: () {
+              Navigator.pop(context);
+              navigateTo(RoutePaths.products);
+            },
           ),
           const SizedBox(height: 16),
-          _verticalTooltip(
-            message: 'Add People',
-            child: _overlayItem(
-              context: context,
-              icon: FontAwesomeIcons.userPlus,
-              onTap: () {
-                Navigator.pop(context);
-                navigateTo(RoutePaths.crmCreateLead);
-              },
-            ),
+          _overlayItem(
+            context: context,
+            icon: FontAwesomeIcons.userPlus,
+            label: 'Add People',
+            onTap: () {
+              Navigator.pop(context);
+              navigateTo(RoutePaths.crmCreateLead);
+            },
           ),
           const SizedBox(height: 16),
-          _verticalTooltip(
-            message: 'Create Task',
-            child: _overlayItem(
-              context: context,
-              icon: FontAwesomeIcons.listCheck,
-              onTap: () {
-                Navigator.pop(context);
-                navigateTo(RoutePaths.taskCreate);
-              },
-            ),
+          _overlayItem(
+            context: context,
+            icon: FontAwesomeIcons.listCheck,
+            label: 'Create Task',
+            onTap: () {
+              Navigator.pop(context);
+              navigateTo(RoutePaths.taskCreate);
+            },
           ),
         ],
       ),
     );
   }
 
-  Widget _verticalTooltip({required String message, required Widget child}) {
-    return _VerticalTooltipWrapper(message: message, child: child);
-  }
-
   Widget _overlayItem({
     required BuildContext context,
     required FaIconData icon,
+    required String label,
     required VoidCallback onTap,
   }) {
     return Material(
@@ -362,17 +345,12 @@ class BottomApp extends ConsumerWidget {
           width: 48,
           height: 48,
           decoration: BoxDecoration(
-            color: AppColors.primaryColor,
+            color: context.colors.primaryColor,
             shape: BoxShape.circle,
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.primaryColor.withValues(alpha: 0.3),
-                blurRadius: 8,
-                offset: const Offset(0, 3),
-              ),
-            ],
           ),
-          child: Center(child: FaIcon(icon, color: Colors.white, size: 18)),
+          child: Center(
+            child: FaIcon(icon, color: Colors.white, size: context.iconLg),
+          ),
         ),
       ),
     );
@@ -399,80 +377,18 @@ class _NavShellState extends ConsumerState<NavShell> {
   @override
   Widget build(BuildContext context) {
     final tabPaths = widget.isGuest
-        ? ['/guest/home', '/guest/products', '/guest/profile']
+        ? ['/guest/home', 'login', '/guest/products', '/guest/profile']
         : ['/home', '/crm', '/products', '/profile'];
 
     return Scaffold(
-      backgroundColor: AppColors.cream,
+      backgroundColor: context.colors.cream,
       body: widget.navigationShell,
       bottomNavigationBar: BottomApp(
         isGuest: widget.isGuest,
         isOnline: widget.isOnline,
         onTabChanged: (index) => context.go(tabPaths[index]),
         currentIndex: widget.navigationShell?.currentIndex ?? 0,
-      ),
-    );
-  }
-}
-
-class _VerticalTooltipWrapper extends StatefulWidget {
-  final String message;
-  final Widget child;
-
-  const _VerticalTooltipWrapper({required this.message, required this.child});
-
-  @override
-  State<_VerticalTooltipWrapper> createState() =>
-      _VerticalTooltipWrapperState();
-}
-
-class _VerticalTooltipWrapperState extends State<_VerticalTooltipWrapper> {
-  bool _show = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onLongPress: () => setState(() => _show = true),
-      onLongPressEnd: (_) => setState(() => _show = false),
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          widget.child,
-          if (_show)
-            Positioned(
-              bottom: 56,
-              left: 0,
-              right: 0,
-              child: _TooltipBubble(message: widget.message),
-            ),
-        ],
-      ),
-    );
-  }
-}
-
-class _TooltipBubble extends StatelessWidget {
-  final String message;
-
-  const _TooltipBubble({required this.message});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-        decoration: BoxDecoration(
-          color: Colors.black.withValues(alpha: 0.8),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Text(
-          message,
-          style: const TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w500,
-            color: Colors.white,
-          ),
-        ),
+        showFab: true,
       ),
     );
   }

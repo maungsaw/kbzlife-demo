@@ -70,15 +70,15 @@ class _ComparisonScreenState extends ConsumerState<ComparisonScreen> {
     ];
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: context.colors.surfaceBg,
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.white,
         leading: IconButton(
-          icon: const Icon(
+          icon: Icon(
             Icons.arrow_back_ios_new,
             color: Colors.black87,
-            size: 18,
+            size: context.iconLg,
           ),
           onPressed: () => Navigator.pop(context),
         ),
@@ -118,7 +118,7 @@ class _ComparisonScreenState extends ConsumerState<ComparisonScreen> {
                   child: ChoiceChip(
                     label: Text(products[index].name),
                     selected: isSelected,
-                    selectedColor: AppColors.primaryColor,
+                    selectedColor: context.colors.primaryColor,
                     backgroundColor: Colors.white,
                     labelStyle: TextStyle(
                       color: isSelected ? Colors.white : Colors.black87,
@@ -132,7 +132,7 @@ class _ComparisonScreenState extends ConsumerState<ComparisonScreen> {
                     ),
                     side: BorderSide(
                       color: isSelected
-                          ? AppColors.primaryColor
+                          ? context.colors.primaryColor
                           : Colors.grey.shade300,
                     ),
                     onSelected: (_) =>
@@ -171,13 +171,6 @@ class _ComparisonScreenState extends ConsumerState<ComparisonScreen> {
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 10,
-              offset: const Offset(0, -4),
-            ),
-          ],
         ),
         child: SafeArea(
           child: Row(
@@ -196,7 +189,7 @@ class _ComparisonScreenState extends ConsumerState<ComparisonScreen> {
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
-                        color: AppColors.primaryColor,
+                        color: context.colors.primaryColor,
                       ),
                     ),
                   ],
@@ -214,10 +207,10 @@ class _ComparisonScreenState extends ConsumerState<ComparisonScreen> {
                     //   ),
                     // );
                   },
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.arrow_forward_rounded,
                     color: Colors.white,
-                    size: 18,
+                    size: context.iconLg,
                   ),
                   label: const Text(
                     'Select Plan',
@@ -228,7 +221,7 @@ class _ComparisonScreenState extends ConsumerState<ComparisonScreen> {
                     ),
                   ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primaryColor,
+                    backgroundColor: context.colors.primaryColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -251,20 +244,13 @@ class _ComparisonScreenState extends ConsumerState<ComparisonScreen> {
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: product.isPrimary ? AppColors.accentNavy : Colors.white,
+        color: product.isPrimary ? context.colors.accentNavy : Colors.white,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: product.isPrimary
-              ? AppColors.accentNavy
+              ? context.colors.accentNavy
               : Colors.grey.shade200,
         ),
-        boxShadow: const [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 10,
-            offset: Offset(0, 4),
-          ),
-        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -279,7 +265,7 @@ class _ComparisonScreenState extends ConsumerState<ComparisonScreen> {
                 ),
                 decoration: BoxDecoration(
                   color: product.isPrimary
-                      ? AppColors.goldAccent.withValues(alpha: 0.2)
+                      ? context.colors.goldAccent.withValues(alpha: 0.2)
                       : Colors.blue.shade50,
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -289,16 +275,16 @@ class _ComparisonScreenState extends ConsumerState<ComparisonScreen> {
                     fontSize: 10,
                     fontWeight: FontWeight.bold,
                     color: product.isPrimary
-                        ? AppColors.goldAccent
+                        ? context.colors.goldAccent
                         : Colors.blue.shade700,
                   ),
                 ),
               ),
               if (product.isPrimary)
-                const Icon(
+                Icon(
                   Icons.stars_rounded,
-                  color: AppColors.goldAccent,
-                  size: 22,
+                  color: context.colors.goldAccent,
+                  size: context.iconXxl,
                 ),
             ],
           ),
@@ -326,7 +312,7 @@ class _ComparisonScreenState extends ConsumerState<ComparisonScreen> {
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
-              color: product.isPrimary ? Colors.white : AppColors.primaryColor,
+              color: product.isPrimary ? Colors.white : context.colors.primaryColor,
             ),
           ),
         ],
@@ -382,13 +368,13 @@ class _ComparisonScreenState extends ConsumerState<ComparisonScreen> {
                     Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: AppColors.primaryColor.withValues(alpha: 0.08),
+                        color: context.colors.primaryColor.withValues(alpha: 0.08),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Icon(
                         f.icon,
-                        size: 18,
-                        color: AppColors.primaryColor,
+                        size: context.iconLg,
+                        color: context.colors.primaryColor,
                       ),
                     ),
                     const SizedBox(width: 12),

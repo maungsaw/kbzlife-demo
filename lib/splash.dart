@@ -56,7 +56,7 @@ class _AnimatedSplashScreenState extends State<AnimatedSplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.colors.cream,
       body: SafeArea(
         child: Center(
           child: Padding(
@@ -77,24 +77,24 @@ class _AnimatedSplashScreenState extends State<AnimatedSplashScreen>
                       width: 200,
                       height: 200,
                       decoration: BoxDecoration(
-                        color: AppColors.primaryColor.withValues(alpha: 0.1),
+                        color: context.colors.primaryColor.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Icons.business,
-                        size: 90,
-                        color: AppColors.primaryColor,
+                        size: context.icon8xl,
+                        color: context.colors.primaryColor,
                       ),
                     );
                   },
                 ),
                 const SizedBox(height: 40),
-                const Text(
+                Text(
                   'Agency Sales Digital Platform',
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w400,
-                    color: AppColors.muted,
+                    color: context.colors.muted,
                     letterSpacing: 0.5,
                   ),
                 ),
@@ -106,9 +106,9 @@ class _AnimatedSplashScreenState extends State<AnimatedSplashScreen>
                     builder: (context, child) {
                       return LinearProgressIndicator(
                         value: _progressAnimation.value,
-                        backgroundColor: AppColors.border,
-                        valueColor: const AlwaysStoppedAnimation<Color>(
-                          AppColors.primaryColor,
+                        backgroundColor: context.colors.border,
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          context.colors.primaryColor,
                         ),
                         minHeight: 4,
                         borderRadius: BorderRadius.circular(2),

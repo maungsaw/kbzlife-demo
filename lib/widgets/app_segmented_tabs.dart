@@ -28,7 +28,7 @@ class AppSegmentedTabs<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     final strip = Container(
       decoration: BoxDecoration(
-        color: AppColors.cream,
+        color: context.colors.cream,
         borderRadius: BorderRadius.circular(8),
       ),
       padding: const EdgeInsets.all(4),
@@ -45,14 +45,6 @@ class AppSegmentedTabs<T> extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: value == v ? Colors.white : Colors.transparent,
                     borderRadius: BorderRadius.circular(6),
-                    boxShadow: value == v
-                        ? [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.08),
-                              blurRadius: 4,
-                            ),
-                          ]
-                        : null,
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -60,10 +52,10 @@ class AppSegmentedTabs<T> extends StatelessWidget {
                       if (icon != null) ...[
                         Icon(
                           icon,
-                          size: 14,
+                          size: context.iconMd,
                           color: value == v
-                              ? AppColors.primaryColor
-                              : AppColors.muted,
+                              ? context.colors.primaryColor
+                              : context.colors.muted,
                         ),
                         const SizedBox(width: 4),
                       ],
@@ -76,8 +68,8 @@ class AppSegmentedTabs<T> extends StatelessWidget {
                             fontSize: 12,
                             fontWeight: FontWeight.w600,
                             color: value == v
-                                ? AppColors.primaryColor
-                                : AppColors.muted,
+                                ? context.colors.primaryColor
+                                : context.colors.muted,
                           ),
                         ),
                       ),
@@ -97,10 +89,10 @@ class AppSegmentedTabs<T> extends StatelessWidget {
       children: [
         Text(
           label!,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.bold,
-            color: AppColors.accentNavy,
+            color: context.colors.accentNavy,
           ),
         ),
         const SizedBox(height: 6),

@@ -119,7 +119,7 @@ class _OtpBottomSheetState extends ConsumerState<OtpBottomSheet> {
             content: Text(
               'Maximum allowable SMS OTP requests (${widget.resendLimit}/${widget.resendLimit}) exceeded for this session.',
             ),
-            backgroundColor: AppColors.danger,
+            backgroundColor: context.colors.danger,
           ),
         );
       }
@@ -202,7 +202,7 @@ class _OtpBottomSheetState extends ConsumerState<OtpBottomSheet> {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: AppColors.border,
+                  color: context.colors.border,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -210,16 +210,16 @@ class _OtpBottomSheetState extends ConsumerState<OtpBottomSheet> {
             const SizedBox(height: 16),
             Text(
               widget.title,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
-                color: AppColors.accentNavy,
+                color: context.colors.accentNavy,
               ),
             ),
             const SizedBox(height: 6),
             Text(
               '${widget.description} Sent to ${widget.phoneNumber}',
-              style: const TextStyle(fontSize: 12, color: AppColors.muted),
+              style: TextStyle(fontSize: 12, color: context.colors.muted),
             ),
             const SizedBox(height: 24),
 
@@ -248,25 +248,25 @@ class _OtpBottomSheetState extends ConsumerState<OtpBottomSheet> {
                       keyboardType: TextInputType.number,
                       textAlign: TextAlign.center,
                       maxLength: 1,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: AppColors.accentNavy,
+                        color: context.colors.accentNavy,
                       ),
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       decoration: InputDecoration(
                         counterText: '',
                         contentPadding: EdgeInsets.zero,
                         filled: true,
-                        fillColor: AppColors.surfaceBg,
+                        fillColor: context.colors.surfaceBg,
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
-                          borderSide: const BorderSide(color: AppColors.border),
+                          borderSide: BorderSide(color: context.colors.border),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
-                          borderSide: const BorderSide(
-                            color: AppColors.primaryColor,
+                          borderSide: BorderSide(
+                            color: context.colors.primaryColor,
                             width: 2,
                           ),
                         ),
@@ -293,7 +293,7 @@ class _OtpBottomSheetState extends ConsumerState<OtpBottomSheet> {
                   _canResend
                       ? "Didn't receive the code?"
                       : 'Resend code in ${_startSeconds.toString().padLeft(2, '0')}s',
-                  style: const TextStyle(fontSize: 12, color: AppColors.muted),
+                  style: TextStyle(fontSize: 12, color: context.colors.muted),
                 ),
                 GestureDetector(
                   onTap: _canResend ? _resendOtp : null,
@@ -303,8 +303,8 @@ class _OtpBottomSheetState extends ConsumerState<OtpBottomSheet> {
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
                       color: _canResend
-                          ? AppColors.primaryColor
-                          : AppColors.muted,
+                          ? context.colors.primaryColor
+                          : context.colors.muted,
                     ),
                   ),
                 ),
@@ -318,7 +318,7 @@ class _OtpBottomSheetState extends ConsumerState<OtpBottomSheet> {
               height: 48,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primaryColor,
+                  backgroundColor: context.colors.primaryColor,
                   elevation: 0,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),

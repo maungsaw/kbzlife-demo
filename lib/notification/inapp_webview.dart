@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
+import '../const.dart';
+
 class AppWebViewScreen extends ConsumerStatefulWidget {
   final String url;
 
@@ -44,20 +46,20 @@ class _AppWebViewScreenState extends ConsumerState<AppWebViewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.colors.cream,
       appBar: AppBar(
         title: Text(
           widget.url,
-          style: const TextStyle(
-            color: Color(0xFF0F172A),
+          style: TextStyle(
+            color: context.colors.textPrimary,
             fontSize: 14,
             fontWeight: FontWeight.w600,
           ),
           overflow: TextOverflow.ellipsis,
         ),
         backgroundColor: Colors.white,
-        elevation: 0.5,
-        iconTheme: const IconThemeData(color: Color(0xFF0F172A)),
+        elevation: 0,
+        iconTheme: IconThemeData(color: context.colors.textPrimary),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh_rounded),
@@ -71,8 +73,8 @@ class _AppWebViewScreenState extends ConsumerState<AppWebViewScreen> {
           if (_loadingProgress < 100)
             LinearProgressIndicator(
               value: _loadingProgress / 100.0,
-              backgroundColor: const Color(0xFFE2E8F0),
-              color: const Color(0xFF2563EB),
+              backgroundColor: context.colors.border,
+              color: context.colors.infoText,
               minHeight: 3,
             ),
         ],

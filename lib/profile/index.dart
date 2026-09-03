@@ -53,17 +53,17 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: AppColors.border,
+                  color: context.colors.border,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
               const SizedBox(height: 20),
-              const Text(
+              Text(
                 'Update Photo',
                 style: TextStyle(
                   fontSize: 17,
                   fontWeight: FontWeight.w700,
-                  color: AppColors.accentNavy,
+                  color: context.colors.accentNavy,
                 ),
               ),
               const SizedBox(height: 16),
@@ -109,19 +109,19 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 16),
         decoration: BoxDecoration(
-          color: AppColors.cream,
+          color: context.colors.cream,
           borderRadius: BorderRadius.circular(12),
         ),
         child: Column(
           children: [
-            FaIcon(icon, size: 22, color: AppColors.primaryColor),
+            FaIcon(icon, size: context.iconXxl, color: context.colors.primaryColor),
             const SizedBox(height: 8),
             Text(
               label,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
-                color: AppColors.accentNavy,
+                color: context.colors.accentNavy,
               ),
             ),
           ],
@@ -136,7 +136,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final agentData = profileState.agentData;
 
     return Material(
-      color: AppColors.surfaceBg,
+      color: context.colors.surfaceBg,
       child: SafeArea(
         child: Column(
           children: [
@@ -146,24 +146,24 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
+                  Text(
                     'Profile',
                     style: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.w800,
-                      color: AppColors.accentNavy,
+                      color: context.colors.accentNavy,
                     ),
                   ),
                   Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: AppColors.cream,
+                      color: context.colors.cream,
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: const FaIcon(
+                    child: FaIcon(
                       FontAwesomeIcons.gear,
-                      size: 18,
-                      color: AppColors.muted,
+                      size: context.iconLg,
+                      color: context.colors.muted,
                     ),
                   ),
                 ],
@@ -190,8 +190,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                                   begin: Alignment.topLeft,
                                   end: Alignment.bottomRight,
                                   colors: [
-                                    AppColors.primaryColor,
-                                    AppColors.primaryColor.withValues(
+                                    context.colors.primaryColor,
+                                    context.colors.primaryColor.withValues(
                                       alpha: 0.6,
                                     ),
                                   ],
@@ -203,7 +203,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                               backgroundColor: Colors.white,
                               child: CircleAvatar(
                                 radius: 43,
-                                backgroundColor: AppColors.primaryColor
+                                backgroundColor: context.colors.primaryColor
                                     .withValues(alpha: 0.1),
                                 backgroundImage:
                                     profileState.selectedImage != null
@@ -211,10 +211,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                                           as ImageProvider
                                     : null,
                                 child: profileState.selectedImage == null
-                                    ? const FaIcon(
+                                    ? FaIcon(
                                         FontAwesomeIcons.solidUser,
                                         size: 30,
-                                        color: AppColors.primaryColor,
+                                        color: context.colors.primaryColor,
                                       )
                                     : null,
                               ),
@@ -244,16 +244,16 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                                 child: Container(
                                   padding: const EdgeInsets.all(7),
                                   decoration: BoxDecoration(
-                                    color: AppColors.primaryColor,
+                                    color: context.colors.primaryColor,
                                     shape: BoxShape.circle,
                                     border: Border.all(
                                       color: Colors.white,
                                       width: 2,
                                     ),
                                   ),
-                                  child: const FaIcon(
+                                  child: FaIcon(
                                     FontAwesomeIcons.camera,
-                                    size: 11,
+                                    size: context.iconXs,
                                     color: Colors.white,
                                   ),
                                 ),
@@ -264,18 +264,18 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         const SizedBox(height: 14),
                         Text(
                           agentData.fullName,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.w800,
-                            color: AppColors.accentNavy,
+                            color: context.colors.accentNavy,
                           ),
                         ),
                         const SizedBox(height: 4),
                         Text(
                           agentData.designation,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 14,
-                            color: AppColors.muted,
+                            color: context.colors.muted,
                           ),
                         ),
                       ],
@@ -292,12 +292,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
+                        Text(
                           'Quick Links',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w800,
-                            color: AppColors.accentNavy,
+                            color: context.colors.accentNavy,
                           ),
                         ),
                         const SizedBox(height: 14),
@@ -307,7 +307,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                               child: _buildActionCard(
                                 icon: FontAwesomeIcons.fileSignature,
                                 label: 'e-App',
-                                color: AppColors.primaryColor,
+                                color: context.colors.primaryColor,
                                 onTap: () => context.push(RoutePaths.eapp),
                               ),
                             ),
@@ -316,7 +316,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                               child: _buildActionCard(
                                 icon: FontAwesomeIcons.listCheck,
                                 label: 'Tasks',
-                                color: AppColors.mint,
+                                color: context.colors.mint,
                                 onTap: () => context.push(RoutePaths.taskList),
                               ),
                             ),
@@ -325,7 +325,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                               child: _buildActionCard(
                                 icon: FontAwesomeIcons.fileContract,
                                 label: 'Policy',
-                                color: AppColors.warn,
+                                color: context.colors.warn,
                                 onTap: () =>
                                     context.push(RoutePaths.policyList),
                               ),
@@ -346,12 +346,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
+                        Text(
                           'Account',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w800,
-                            color: AppColors.accentNavy,
+                            color: context.colors.accentNavy,
                           ),
                         ),
                         const SizedBox(height: 8),
@@ -359,7 +359,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           FontAwesomeIcons.idBadge,
                           'License No.',
                           agentData.agentCode,
-                          AppColors.primaryColor,
+                          context.colors.primaryColor,
                           showDivider: false,
                           onTap: () => context.push('/account'),
                         ),
@@ -377,12 +377,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
+                        Text(
                           'Settings',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w800,
-                            color: AppColors.accentNavy,
+                            color: context.colors.accentNavy,
                           ),
                         ),
                         const SizedBox(height: 8),
@@ -390,24 +390,24 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           FontAwesomeIcons.lock,
                           'Change Password',
                           null,
-                          AppColors.primaryColor,
+                          context.colors.primaryColor,
                           onTap: () => context.push(RoutePaths.changePassword),
                         ),
                         _buildMenuTile(
                           FontAwesomeIcons.globe,
                           'Language',
                           null,
-                          AppColors.mint,
+                          context.colors.mint,
                           onTap: () => context.push(RoutePaths.language),
                         ),
                         _buildMenuTile(
                           FontAwesomeIcons.bell,
                           'Notifications',
                           null,
-                          AppColors.warn,
+                          context.colors.warn,
                           trailing: Switch.adaptive(
                             value: true,
-                            activeThumbColor: AppColors.primaryColor,
+                            activeThumbColor: context.colors.primaryColor,
                             onChanged: (v) {},
                           ),
                         ),
@@ -415,10 +415,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           FontAwesomeIcons.fingerprint,
                           'Biometric',
                           null,
-                          AppColors.mint,
+                          context.colors.mint,
                           trailing: Switch.adaptive(
                             value: profileState.biometricEnabled,
-                            activeThumbColor: AppColors.primaryColor,
+                            activeThumbColor: context.colors.primaryColor,
                             onChanged: (v) => ref
                                 .read(profileProvider.notifier)
                                 .toggleBiometric(v),
@@ -428,21 +428,21 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           FontAwesomeIcons.shieldHalved,
                           'Privacy',
                           null,
-                          AppColors.primaryColor,
+                          context.colors.primaryColor,
                           onTap: () {},
                         ),
                         _buildMenuTile(
                           FontAwesomeIcons.circleQuestion,
                           'Help & Support',
                           null,
-                          AppColors.deep,
+                          context.colors.deep,
                           onTap: () {},
                         ),
                         _buildMenuTile(
                           FontAwesomeIcons.circleInfo,
                           'About',
                           null,
-                          AppColors.muted,
+                          context.colors.muted,
                           showDivider: false,
                         ),
                       ],
@@ -465,24 +465,24 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       width: double.infinity,
                       padding: const EdgeInsets.symmetric(vertical: 15),
                       decoration: BoxDecoration(
-                        color: AppColors.danger.withValues(alpha: 0.08),
+                        color: context.colors.danger.withValues(alpha: 0.08),
                         borderRadius: BorderRadius.circular(14),
                       ),
-                      child: const Row(
+                      child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           FaIcon(
                             FontAwesomeIcons.rightFromBracket,
                             size: 15,
-                            color: AppColors.danger,
+                            color: context.colors.danger,
                           ),
-                          SizedBox(width: 10),
+                          const SizedBox(width: 10),
                           Text(
                             'Logout',
                             style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.w600,
-                              color: AppColors.danger,
+                              color: context.colors.danger,
                             ),
                           ),
                         ],
@@ -503,13 +503,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   BoxDecoration _cardDecoration() => BoxDecoration(
     color: Colors.white,
     borderRadius: BorderRadius.circular(16),
-    boxShadow: [
-      BoxShadow(
-        color: AppColors.deep.withValues(alpha: 0.05),
-        blurRadius: 12,
-        offset: const Offset(0, 2),
-      ),
-    ],
   );
 
   Widget _buildActionCard({
@@ -529,7 +522,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               color: color.withValues(alpha: 0.09),
               borderRadius: BorderRadius.circular(14),
             ),
-            child: Center(child: FaIcon(icon, size: 24, color: color)),
+            child: Center(child: FaIcon(icon, size: context.iconXxxl, color: color)),
           ),
           const SizedBox(height: 6),
           Text(
@@ -537,10 +530,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             textAlign: TextAlign.center,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w600,
-              color: AppColors.accentNavy,
+              color: context.colors.accentNavy,
             ),
           ),
         ],
@@ -574,25 +567,25 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       color: color.withValues(alpha: 0.10),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: Center(child: FaIcon(icon, size: 15, color: color)),
+                    child: Center(child: FaIcon(icon, size: context.iconBase, color: color)),
                   ),
                   const SizedBox(width: 14),
                   Expanded(
                     child: Text(
                       title,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w500,
-                        color: AppColors.accentNavy,
+                        color: context.colors.accentNavy,
                       ),
                     ),
                   ),
                   if (value != null)
                     Text(
                       value,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 13,
-                        color: AppColors.muted,
+                        color: context.colors.muted,
                       ),
                     ),
                   if (trailing != null) ...[
@@ -600,10 +593,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     trailing,
                   ] else if (onTap != null) ...[
                     const SizedBox(width: 8),
-                    const FaIcon(
+                    FaIcon(
                       FontAwesomeIcons.chevronRight,
-                      size: 11,
-                      color: AppColors.border,
+                      size: context.iconXs,
+                      color: context.colors.border,
                     ),
                   ],
                 ],
@@ -612,7 +605,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           ),
         ),
         if (showDivider)
-          Divider(height: 1, color: AppColors.border.withValues(alpha: 0.5)),
+          Divider(height: 1, color: context.colors.border.withValues(alpha: 0.5)),
       ],
     );
   }

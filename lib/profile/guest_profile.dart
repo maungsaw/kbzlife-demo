@@ -13,7 +13,7 @@ class GuestProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: AppColors.surfaceBg,
+      color: context.colors.surfaceBg,
       child: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -37,34 +37,27 @@ class GuestProfileScreen extends StatelessWidget {
                         Container(
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            border: Border.all(color: AppColors.border, width: 3),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.2),
-                                blurRadius: 12,
-                                offset: const Offset(0, 4),
-                              ),
-                            ],
+                            border: Border.all(color: context.colors.border, width: 3),
                           ),
                           child: CircleAvatar(
                             radius: 45,
-                            backgroundColor: AppColors.primaryColor.withValues(alpha: 0.1),
+                            backgroundColor: context.colors.primaryColor.withValues(alpha: 0.1),
                             child: Icon(
                               Icons.person_outline_rounded,
                               size: 45,
-                              color: AppColors.primaryColor,
+                              color: context.colors.primaryColor,
                             ),
                           ),
                         ),
                       ],
                     ),
                     const SizedBox(height: 14),
-                    const Text(
+                    Text(
                       'Guest Agent',
                       style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF0F172A),
+                        color: context.colors.textPrimary,
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -82,7 +75,7 @@ class GuestProfileScreen extends StatelessWidget {
                         vertical: 4,
                       ),
                       decoration: BoxDecoration(
-                        color: AppColors.primaryColor.withValues(alpha: 0.08),
+                        color: context.colors.primaryColor.withValues(alpha: 0.08),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Row(
@@ -111,12 +104,12 @@ class GuestProfileScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       'Quick Links',
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w700,
-                        color: Color(0xFF0F172A),
+                        color: context.colors.textPrimary,
                       ),
                     ),
                     const SizedBox(height: 12),
@@ -127,7 +120,7 @@ class GuestProfileScreen extends StatelessWidget {
                             context,
                             Icons.shopping_bag_outlined,
                             'Products',
-                            const Color(0xFF6366F1),
+                            context.colors.indigoAccent,
                             () => context.go('/guest/products'),
                           ),
                         ),
@@ -137,7 +130,7 @@ class GuestProfileScreen extends StatelessWidget {
                             context,
                             Icons.calculate_outlined,
                             'Calculator',
-                            const Color(0xFF10B981),
+                            context.colors.emeraldAccent,
                             () => context.push(RoutePaths.calculator),
                           ),
                         ),
@@ -147,7 +140,7 @@ class GuestProfileScreen extends StatelessWidget {
                             context,
                             Icons.language_outlined,
                             'Online',
-                            const Color(0xFF3B82F6),
+                            context.colors.infoText,
                             () => context.push(
                               '${RoutePaths.webview}?url=${Uri.encodeComponent("https://selfservice.kbzlife.com/")}',
                             ),
@@ -165,32 +158,32 @@ class GuestProfileScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       'Settings',
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
-                        color: AppColors.muted,
+                        color: context.colors.muted,
                       ),
                     ),
                     const SizedBox(height: 8),
                     _buildIOSSettingsGroup([
                       _buildIOSSettingTile(
                         icon: Icons.language_rounded,
-                        iconColor: const Color(0xFF10B981),
-                        iconBg: const Color(0xFFECFDF5),
+                        iconColor: context.colors.emeraldAccent,
+                        iconBg: context.colors.emeraldLight,
                         title: 'Language',
                       ),
                       _buildIOSSettingTile(
                         icon: Icons.help_outline_rounded,
-                        iconColor: const Color(0xFF8B5CF6),
-                        iconBg: const Color(0xFFF5F3FF),
+                        iconColor: context.colors.purpleAccent,
+                        iconBg: context.colors.purpleLight,
                         title: 'Help & Support',
                       ),
                       _buildIOSSettingTile(
                         icon: Icons.info_outline_rounded,
-                        iconColor: const Color(0xFF6B7280),
-                        iconBg: const Color(0xFFF3F4F6),
+                        iconColor: context.colors.muted,
+                        iconBg: context.colors.chipBg,
                         title: 'About',
                         showDivider: false,
                       ),
@@ -207,7 +200,7 @@ class GuestProfileScreen extends StatelessWidget {
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton.icon(
-                        icon: const Icon(Icons.login_rounded, size: 18),
+                        icon: Icon(Icons.login_rounded, size: context.iconLg),
                         label: const Text('Sign In'),
                         onPressed: onLogin ?? () => context.push(RoutePaths.login),
                       ),
@@ -216,12 +209,12 @@ class GuestProfileScreen extends StatelessWidget {
                     SizedBox(
                       width: double.infinity,
                       child: OutlinedButton.icon(
-                        icon: const Icon(Icons.person_add_outlined, size: 18),
+                        icon: Icon(Icons.person_add_outlined, size: context.iconLg),
                         label: const Text('Create Account'),
                         onPressed: onRegister ?? () => context.push(RoutePaths.register),
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: AppColors.primaryColor,
-                          side: const BorderSide(color: AppColors.primaryColor),
+                          foregroundColor: context.colors.primaryColor,
+                          side: BorderSide(color: context.colors.primaryColor),
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
@@ -256,7 +249,7 @@ class GuestProfileScreen extends StatelessWidget {
         ),
         child: Column(
           children: [
-            Icon(icon, size: 24, color: color),
+            Icon(icon, size: context.iconXxxl, color: color),
             const SizedBox(height: 6),
             Text(
               label,
@@ -314,20 +307,20 @@ class GuestProfileScreen extends StatelessWidget {
                   Expanded(
                     child: Text(
                       title,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w400,
-                        color: Color(0xFF0F172A),
+                        color: kAppColors.textPrimary,
                       ),
                     ),
                   ),
                   if (trailing != null)
                     trailing
                   else
-                    const Icon(
+                    Icon(
                       Icons.chevron_right_rounded,
                       size: 20,
-                      color: Color(0xFFC7C7CC),
+                      color: kAppColors.divider,
                     ),
                 ],
               ),
@@ -335,7 +328,7 @@ class GuestProfileScreen extends StatelessWidget {
           ),
         ),
         if (showDivider)
-          const Divider(height: 1, indent: 62, color: Color(0xFFE5E5EA)),
+          Divider(height: 1, indent: 62, color: kAppColors.divider),
       ],
     );
   }

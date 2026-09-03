@@ -32,14 +32,14 @@ class _ModernTaskCalendarScreenState extends ConsumerState<ModernTaskCalendarScr
         'time': '09:00 AM',
         'title': 'Meeting Appointment',
         'subtitle': 'Meeting • HIGH Priority',
-        'color': AppColors.primaryColor,
+        'color': kAppColors.primaryColor,
         'assignees': ['David Miller'],
       },
       {
         'time': '11:00 AM',
         'title': 'Customer Follow-up',
         'subtitle': 'Follow-up • MEDIUM Priority',
-        'color': const Color(0xFFF59E0B),
+        'color': kAppColors.warn,
         'assignees': ['Emma Watson', 'James Wilson'],
       },
     ],
@@ -48,7 +48,7 @@ class _ModernTaskCalendarScreenState extends ConsumerState<ModernTaskCalendarScr
         'time': '10:00 AM',
         'title': 'Sprint Planning',
         'subtitle': 'Meeting • MEDIUM Priority',
-        'color': AppColors.primaryColor,
+        'color': kAppColors.primaryColor,
         'assignees': ['Alex Morgan', 'Emma Watson'],
       },
     ],
@@ -57,14 +57,14 @@ class _ModernTaskCalendarScreenState extends ConsumerState<ModernTaskCalendarScr
         'time': '09:30 AM',
         'title': 'Code Review Session',
         'subtitle': 'Meeting • LOW Priority',
-        'color': const Color(0xFF10B981),
+        'color': kAppColors.emeraldAccent,
         'assignees': ['David Miller', 'James Wilson'],
       },
       {
         'time': '02:00 PM',
         'title': 'Client Demo',
         'subtitle': 'Demo • HIGH Priority',
-        'color': const Color(0xFF0265DC),
+        'color': kAppColors.infoText,
         'assignees': ['Sarah Chen'],
       },
     ],
@@ -73,7 +73,7 @@ class _ModernTaskCalendarScreenState extends ConsumerState<ModernTaskCalendarScr
         'time': '11:00 AM',
         'title': 'Monthly Review',
         'subtitle': 'Meeting • HIGH Priority',
-        'color': AppColors.primaryColor,
+        'color': kAppColors.primaryColor,
         'assignees': ['Alex Morgan', 'Sarah Chen', 'David Miller'],
       },
     ],
@@ -101,20 +101,20 @@ class _ModernTaskCalendarScreenState extends ConsumerState<ModernTaskCalendarScr
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.accentNavy),
+          icon: Icon(Icons.arrow_back, color: context.colors.accentNavy),
           onPressed: () => context.pop(),
         ),
-        title: const Text(
+        title: Text(
           'Tasks',
           style: TextStyle(
-            color: AppColors.accentNavy,
+            color: context.colors.accentNavy,
             fontWeight: FontWeight.bold,
             fontSize: 20,
           ),
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.search, color: AppColors.accentNavy),
+            icon: Icon(Icons.search, color: context.colors.accentNavy),
             onPressed: () {},
           ),
         ],
@@ -125,9 +125,9 @@ class _ModernTaskCalendarScreenState extends ConsumerState<ModernTaskCalendarScr
           onPressed: () {
             context.push(RoutePaths.taskCreate);
           },
-          backgroundColor: AppColors.primaryColor,
+          backgroundColor: context.colors.primaryColor,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          child: const Icon(Icons.add, color: Colors.white, size: 28),
+          child: Icon(Icons.add, color: Colors.white, size: context.icon4xl),
         ),
       ),
       body: Column(
@@ -176,23 +176,23 @@ class _ModernTaskCalendarScreenState extends ConsumerState<ModernTaskCalendarScr
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           IconButton(
-            icon: const Icon(Icons.chevron_left, color: AppColors.muted),
+            icon: Icon(Icons.chevron_left, color: context.colors.muted),
             onPressed: () {},
           ),
           Row(
             children: [
-              const Icon(
+              Icon(
                 Icons.calendar_today_outlined,
-                size: 18,
-                color: AppColors.primaryColor,
+                size: context.iconLg,
+                color: context.colors.primaryColor,
               ),
               const SizedBox(width: 8),
               Text(
                 headerText,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.primaryColor,
+                  color: context.colors.primaryColor,
                 ),
               ),
             ],
@@ -200,11 +200,11 @@ class _ModernTaskCalendarScreenState extends ConsumerState<ModernTaskCalendarScr
           Row(
             children: [
               IconButton(
-                icon: const Icon(Icons.chevron_right, color: AppColors.muted),
+                icon: Icon(Icons.chevron_right, color: context.colors.muted),
                 onPressed: () {},
               ),
               IconButton(
-                icon: const Icon(Icons.tune_rounded, color: AppColors.muted),
+                icon: Icon(Icons.tune_rounded, color: context.colors.muted),
                 onPressed: () {},
               ),
             ],
@@ -220,7 +220,7 @@ class _ModernTaskCalendarScreenState extends ConsumerState<ModernTaskCalendarScr
       margin: const EdgeInsets.symmetric(horizontal: 16),
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: AppColors.surfaceBg,
+        color: context.colors.surfaceBg,
         borderRadius: BorderRadius.circular(24),
       ),
       child: Row(
@@ -241,7 +241,7 @@ class _ModernTaskCalendarScreenState extends ConsumerState<ModernTaskCalendarScr
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
-            color: isSelected ? AppColors.primaryColor : Colors.transparent,
+            color: isSelected ? context.colors.primaryColor : Colors.transparent,
             borderRadius: BorderRadius.circular(20),
           ),
           child: Center(
@@ -250,7 +250,7 @@ class _ModernTaskCalendarScreenState extends ConsumerState<ModernTaskCalendarScr
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                color: isSelected ? Colors.white : AppColors.muted,
+                color: isSelected ? Colors.white : context.colors.muted,
               ),
             ),
           ),
@@ -269,10 +269,10 @@ class _ModernTaskCalendarScreenState extends ConsumerState<ModernTaskCalendarScr
       ),
       child: Row(
         children: [
-          Expanded(child: _buildMetricColumn('6', 'Total Tasks', AppColors.accentNavy)),
-          Expanded(child: _buildMetricColumn('2', 'Open', AppColors.primaryColor)),
-          Expanded(child: _buildMetricColumn('1', 'In Progress', const Color(0xFFF59E0B))),
-          Expanded(child: _buildMetricColumn('1', 'Completed', const Color(0xFF10B981))),
+          Expanded(child: _buildMetricColumn('6', 'Total Tasks', context.colors.accentNavy)),
+          Expanded(child: _buildMetricColumn('2', 'Open', context.colors.primaryColor)),
+          Expanded(child: _buildMetricColumn('1', 'In Progress', context.colors.warn)),
+          Expanded(child: _buildMetricColumn('1', 'Completed', context.colors.emeraldAccent)),
         ],
       ),
     );
@@ -292,7 +292,7 @@ class _ModernTaskCalendarScreenState extends ConsumerState<ModernTaskCalendarScr
         const SizedBox(height: 4),
         Text(
           label,
-          style: const TextStyle(fontSize: 11, color: AppColors.muted),
+          style: TextStyle(fontSize: 11, color: context.colors.muted),
         ),
       ],
     );
@@ -314,10 +314,10 @@ class _ModernTaskCalendarScreenState extends ConsumerState<ModernTaskCalendarScr
                 .map(
                   (day) => Text(
                     day,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.bold,
-                      color: AppColors.muted,
+                      color: context.colors.muted,
                     ),
                   ),
                 )
@@ -361,7 +361,7 @@ class _ModernTaskCalendarScreenState extends ConsumerState<ModernTaskCalendarScr
                               height: cellSize.clamp(24.0, 40.0),
                               decoration: BoxDecoration(
                                 color: isSelected
-                                    ? AppColors.primaryColor
+                                    ? context.colors.primaryColor
                                     : Colors.transparent,
                                 borderRadius: BorderRadius.circular(8),
                               ),
@@ -375,7 +375,7 @@ class _ModernTaskCalendarScreenState extends ConsumerState<ModernTaskCalendarScr
                                         : FontWeight.normal,
                                     color: isSelected
                                         ? Colors.white
-                                        : AppColors.accentNavy,
+                                        : context.colors.accentNavy,
                                   ),
                                 ),
                               ),
@@ -389,8 +389,8 @@ class _ModernTaskCalendarScreenState extends ConsumerState<ModernTaskCalendarScr
                                     Container(
                                       width: 3,
                                       height: 3,
-                                      decoration: const BoxDecoration(
-                                        color: AppColors.primaryColor,
+                                       decoration: BoxDecoration(
+                                        color: context.colors.primaryColor,
                                         shape: BoxShape.circle,
                                       ),
                                     ),
@@ -398,8 +398,8 @@ class _ModernTaskCalendarScreenState extends ConsumerState<ModernTaskCalendarScr
                                     Container(
                                       width: 3,
                                       height: 3,
-                                      decoration: const BoxDecoration(
-                                        color: Color(0xFFF59E0B),
+                                       decoration: BoxDecoration(
+                                        color: context.colors.warn,
                                         shape: BoxShape.circle,
                                       ),
                                     ),
@@ -453,9 +453,9 @@ class _ModernTaskCalendarScreenState extends ConsumerState<ModernTaskCalendarScr
               children: [
                 Text(
                   d['day'].toString(),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 10,
-                    color: AppColors.muted,
+                    color: context.colors.muted,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -465,7 +465,7 @@ class _ModernTaskCalendarScreenState extends ConsumerState<ModernTaskCalendarScr
                   height: 28,
                   decoration: BoxDecoration(
                     color: isActive
-                        ? AppColors.primaryColor
+                        ? context.colors.primaryColor
                         : Colors.transparent,
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -475,7 +475,7 @@ class _ModernTaskCalendarScreenState extends ConsumerState<ModernTaskCalendarScr
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
-                        color: isActive ? Colors.white : AppColors.primaryColor,
+                        color: isActive ? Colors.white : context.colors.primaryColor,
                       ),
                     ),
                   ),
@@ -497,15 +497,15 @@ class _ModernTaskCalendarScreenState extends ConsumerState<ModernTaskCalendarScr
       children: [
         Text(
           '$dayName, $_selectedDay August 2026',
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.bold,
-            color: AppColors.primaryColor,
+            color: context.colors.primaryColor,
           ),
         ),
         Text(
           '${tasks.length} Tasks',
-          style: const TextStyle(fontSize: 12, color: AppColors.muted),
+          style: TextStyle(fontSize: 12, color: context.colors.muted),
         ),
       ],
     );
@@ -521,10 +521,10 @@ class _ModernTaskCalendarScreenState extends ConsumerState<ModernTaskCalendarScr
             color: Colors.white,
             borderRadius: BorderRadius.circular(12),
           ),
-          child: const Center(
+          child: Center(
             child: Text(
               'No tasks for this day',
-              style: TextStyle(fontSize: 13, color: AppColors.muted),
+              style: TextStyle(fontSize: 13, color: context.colors.muted),
             ),
           ),
         ),
@@ -585,18 +585,18 @@ class _ModernTaskCalendarScreenState extends ConsumerState<ModernTaskCalendarScr
                 children: [
                   Text(
                     title,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.bold,
-                      color: AppColors.primaryColor,
+                      color: context.colors.primaryColor,
                     ),
                   ),
                   const SizedBox(height: 2),
                   Text(
                     subtitle,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 11,
-                      color: Color(0xFF94A3B8),
+                      color: context.colors.textMuted,
                     ),
                   ),
                 ],
@@ -604,7 +604,7 @@ class _ModernTaskCalendarScreenState extends ConsumerState<ModernTaskCalendarScr
             ),
             _buildStackedAssignees(assignees),
             const SizedBox(width: 8),
-            const Icon(Icons.chevron_right, size: 18, color: Color(0xFFCBD5E1)),
+            Icon(Icons.chevron_right, size: context.iconLg, color: context.colors.border),
           ],
         ),
       ),
@@ -620,8 +620,8 @@ class _ModernTaskCalendarScreenState extends ConsumerState<ModernTaskCalendarScr
           'Overdue: Policy Follow-up',
           'All Day',
           'OVERDUE',
-          const Color(0xFFFFF1F2),
-          const Color(0xFFFDA4AF),
+          context.colors.roseLight,
+          context.colors.roseAccent,
           Colors.red,
           ['Alex Morgan', 'Sarah Chen'],
         ),
@@ -632,9 +632,9 @@ class _ModernTaskCalendarScreenState extends ConsumerState<ModernTaskCalendarScr
           'Meeting Appointment',
           '09:00 - 10:00',
           'OPEN',
-          const Color(0xFFA0E5FF),
-          const Color(0xFFBAE6FD),
-          const Color(0xFF0265DC),
+          context.colors.infoLight,
+          context.colors.infoBorder,
+          context.colors.infoText,
           ['David Miller'],
         ),
       ),
@@ -645,9 +645,9 @@ class _ModernTaskCalendarScreenState extends ConsumerState<ModernTaskCalendarScr
           'Customer Follow-up',
           '11:00 - 12:00',
           'INPROGRESS',
-          const Color(0xFFFEF3C7),
-          const Color(0xFFFDE68A),
-          const Color(0xFFD97706),
+          context.colors.warningLight,
+          context.colors.warn,
+          context.colors.statusLead,
           ['Emma Watson', 'James Wilson'],
         ),
       ),
@@ -659,8 +659,8 @@ class _ModernTaskCalendarScreenState extends ConsumerState<ModernTaskCalendarScr
           'Policy Review',
           'All Day',
           'OVERDUE',
-          const Color(0xFFFFF1F2),
-          const Color(0xFFFDA4AF),
+          context.colors.roseLight,
+          context.colors.roseAccent,
           Colors.red,
           ['Sarah Chen'],
         ),
@@ -671,9 +671,9 @@ class _ModernTaskCalendarScreenState extends ConsumerState<ModernTaskCalendarScr
           'Submit Policy Document',
           '15:00 - 16:00',
           'COMPLETED',
-          const Color(0xFFDCFCE7),
-          const Color(0xFFBBF7D0),
-          const Color(0xFF16A34A),
+          context.colors.successAccentLight,
+          context.colors.successAccent,
+          context.colors.successAccent,
           ['Alex Morgan'],
         ),
       ),
@@ -691,9 +691,9 @@ class _ModernTaskCalendarScreenState extends ConsumerState<ModernTaskCalendarScr
             width: 65,
             child: Text(
               time,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 11,
-                color: AppColors.muted,
+                color: context.colors.muted,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -703,9 +703,9 @@ class _ModernTaskCalendarScreenState extends ConsumerState<ModernTaskCalendarScr
                 card ??
                 Container(
                   height: 36,
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     border: Border(
-                      bottom: BorderSide(color: AppColors.surfaceBg),
+                      bottom: BorderSide(color: context.colors.surfaceBg),
                     ),
                   ),
                 ),
@@ -751,9 +751,9 @@ class _ModernTaskCalendarScreenState extends ConsumerState<ModernTaskCalendarScr
                 const SizedBox(height: 2),
                 Text(
                   timeRange,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 11,
-                    color: AppColors.muted,
+                    color: context.colors.muted,
                   ),
                 ),
               ],
@@ -803,7 +803,7 @@ class _ModernTaskCalendarScreenState extends ConsumerState<ModernTaskCalendarScr
                 backgroundColor: Colors.white,
                 child: CircleAvatar(
                   radius: 10,
-                  backgroundColor: AppColors.primaryColor,
+                  backgroundColor: context.colors.primaryColor,
                   child: Text(
                     assignees[i][0],
                     style: const TextStyle(
@@ -820,10 +820,10 @@ class _ModernTaskCalendarScreenState extends ConsumerState<ModernTaskCalendarScr
               padding: const EdgeInsets.only(left: 6.0),
               child: Text(
                 '+${assignees.length - 3}',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 10,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.muted,
+                  color: context.colors.muted,
                 ),
               ),
             ),

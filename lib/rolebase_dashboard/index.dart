@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../const.dart';
+import '../widgets/pill_tabs.dart';
 import 'data.dart';
 import 'model.dart';
 import 'overview.dart';
@@ -21,7 +22,6 @@ class PerformanceDashboardPage extends ConsumerStatefulWidget {
 class _PerformanceDashboardPageState
     extends ConsumerState<PerformanceDashboardPage> {
   late List<HierarchyNodeModel> _breadcrumbs;
-  int _tabIndex = 0;
   String _selectedChannel = 'All';
   String _selectedProduct = 'All';
   String _selectedBranch = 'All';
@@ -38,7 +38,6 @@ class _PerformanceDashboardPageState
   void _openDirectMember(HierarchyNodeModel member) {
     setState(() {
       _breadcrumbs.add(member);
-      _tabIndex = 0;
     });
   }
 
@@ -46,7 +45,6 @@ class _PerformanceDashboardPageState
     if (_breadcrumbs.length <= 1) return;
     setState(() {
       _breadcrumbs.removeLast();
-      _tabIndex = 0;
     });
   }
 
@@ -54,39 +52,37 @@ class _PerformanceDashboardPageState
     if (index < 0 || index >= _breadcrumbs.length) return;
     setState(() {
       _breadcrumbs = _breadcrumbs.sublist(0, index + 1);
-      _tabIndex = 0;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.cream,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        scrolledUnderElevation: 0.5,
+        scrolledUnderElevation: 0,
         leading: _breadcrumbs.length > 1
             ? IconButton(
-                icon: const Icon(
+                icon: Icon(
                   Icons.arrow_back_ios_new_rounded,
-                  size: 18,
-                  color: AppColors.accentNavy,
+                  size: context.iconLg,
+                  color: context.colors.accentNavy,
                 ),
                 onPressed: _goBack,
               )
             : IconButton(
-                icon: const Icon(
+                icon: Icon(
                   Icons.arrow_back_ios_new_rounded,
-                  size: 18,
-                  color: AppColors.accentNavy,
+                  size: context.iconLg,
+                  color: context.colors.accentNavy,
                 ),
                 onPressed: () => context.pop(),
               ),
         title: Text(
           _currentNode.isFA ? 'My Dashboard' : 'Performance Dashboard',
-          style: const TextStyle(
-            color: AppColors.accentNavy,
+          style: TextStyle(
+            color: context.colors.accentNavy,
             fontSize: 18,
             fontWeight: FontWeight.bold,
           ),
@@ -94,13 +90,13 @@ class _PerformanceDashboardPageState
         actions: [
           if (_currentNode.isLeader)
             IconButton(
-              icon: const Icon(Icons.tune_rounded, color: AppColors.muted),
+              icon: Icon(Icons.tune_rounded, color: context.colors.muted),
               onPressed: _showFiltersSheet,
             ),
           IconButton(
-            icon: const Icon(
+            icon: Icon(
               Icons.notifications_none_rounded,
-              color: AppColors.muted,
+              color: context.colors.muted,
             ),
             onPressed: () {},
           ),
@@ -109,31 +105,36 @@ class _PerformanceDashboardPageState
       body: Column(
         children: [
           _buildBreadcrumbs(),
-          if (!_currentNode.isFA) ...[
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-              child: _buildProfileCard(),
-            ),
-          ],
+          // if (!_currentNode.isFA) ...[
+          //   Padding(
+          //     padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+          //     child: _buildProfileCard(),
+          //   ),
+          // ],
+          const SizedBox(height: 6),
           if (_currentNode.isLeader)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: _buildTabs(),
-            ),
-          if (_currentNode.isLeader) const SizedBox(height: 8),
-          Expanded(
-            child: IndexedStack(
-              index: _tabIndex,
-              children: [
-                OverviewTabPage(node: _currentNode),
-                if (_currentNode.isLeader)
-                  TeamStructureTabPage(
-                    node: _currentNode,
-                    onSelectMember: _openDirectMember,
-                  ),
-              ],
-            ),
-          ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: PillTabs(
+                  tabs: [
+                    PillTab(
+                      label: 'Overview',
+                      child: OverviewTabPage(node: _currentNode),
+                    ),
+                    PillTab(
+                      label: 'Team Hierarchy',
+                      child: TeamStructureTabPage(
+                        node: _currentNode,
+                        onSelectMember: _openDirectMember,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          else
+            Expanded(child: OverviewTabPage(node: _currentNode)),
         ],
       ),
     );
@@ -165,8 +166,8 @@ class _PerformanceDashboardPageState
                       node.name,
                       style: TextStyle(
                         color: isLast
-                            ? AppColors.primaryColor
-                            : AppColors.muted,
+                            ? context.colors.primaryColor
+                            : context.colors.muted,
                         fontSize: 11,
                         fontWeight: isLast ? FontWeight.bold : FontWeight.w500,
                       ),
@@ -174,10 +175,10 @@ class _PerformanceDashboardPageState
                   ),
                 ),
                 if (!isLast)
-                  const Icon(
+                  Icon(
                     Icons.chevron_right_rounded,
-                    color: AppColors.muted,
-                    size: 16,
+                    color: context.colors.muted,
+                    size: context.iconBase,
                   ),
               ],
             );
@@ -187,217 +188,165 @@ class _PerformanceDashboardPageState
     );
   }
 
-  Widget _buildProfileCard() {
-    final node = _currentNode;
-    final metrics = node.metrics;
+  // Widget _buildProfileCard() {
+  //   final node = _currentNode;
+  //   final metrics = node.metrics;
 
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [AppColors.accentNavy, AppColors.primaryColor],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.accentNavy.withValues(alpha: 0.15),
-            blurRadius: 12,
-            offset: const Offset(0, 6),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              _whiteAvatar(node.name),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      node.name,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 3),
-                    Text(
-                      node.designation,
-                      style: const TextStyle(
-                        color: Colors.white70,
-                        fontSize: 11,
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      node.id,
-                      style: const TextStyle(
-                        color: Colors.white54,
-                        fontSize: 9,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              if (metrics.isRedFlag)
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFFFEBEE),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: const Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.warning_amber_rounded,
-                        size: 12,
-                        color: Color(0xFFC62828),
-                      ),
-                      SizedBox(width: 4),
-                      Text(
-                        'RED FLAG',
-                        style: TextStyle(
-                          fontSize: 9,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFFC62828),
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-              else
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    metrics.apeMomGrowth >= 0
-                        ? '+${metrics.apeMomGrowth}%'
-                        : '${metrics.apeMomGrowth}%',
-                    style: TextStyle(
-                      color: metrics.apeMomGrowth >= 0
-                          ? Colors.greenAccent
-                          : Colors.redAccent,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 10,
-                    ),
-                  ),
-                ),
-            ],
-          ),
-          const SizedBox(height: 15),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.08),
-              borderRadius: BorderRadius.circular(11),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _heroStat('APE', '${metrics.ape}M'),
-                _heroDivider(),
-                _heroStat('FYP', '${metrics.fyp.totalFyp}M'),
-                _heroDivider(),
-                _heroStat('Policies', '${metrics.policyCount.totalCount}'),
-                _heroDivider(),
-                _heroStat(
-                  'Commission',
-                  '${metrics.commission.totalCommission}M',
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  //   return Container(
+  //     padding: const EdgeInsets.all(16),
+  //     decoration: BoxDecoration(
+  //       gradient: LinearGradient(
+  //         colors: [context.colors.accentNavy, context.colors.primaryColor],
+  //         begin: Alignment.topLeft,
+  //         end: Alignment.bottomRight,
+  //       ),
+  //       borderRadius: BorderRadius.circular(16),
+  //     ),
+  //     child: Column(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children: [
+  //         Row(
+  //           children: [
+  //             _whiteAvatar(node.name),
+  //             const SizedBox(width: 12),
+  //             Expanded(
+  //               child: Column(
+  //                 crossAxisAlignment: CrossAxisAlignment.start,
+  //                 children: [
+  //                   Text(
+  //                     node.name,
+  //                     style: const TextStyle(
+  //                       color: Colors.white,
+  //                       fontSize: 18,
+  //                       fontWeight: FontWeight.bold,
+  //                     ),
+  //                   ),
+  //                   const SizedBox(height: 3),
+  //                   Text(
+  //                     node.designation,
+  //                     style: const TextStyle(
+  //                       color: Colors.white70,
+  //                       fontSize: 11,
+  //                     ),
+  //                   ),
+  //                   const SizedBox(height: 2),
+  //                   Text(
+  //                     node.id,
+  //                     style: const TextStyle(
+  //                       color: Colors.white54,
+  //                       fontSize: 9,
+  //                     ),
+  //                   ),
+  //                 ],
+  //               ),
+  //             ),
+  //             if (metrics.isRedFlag)
+  //               Container(
+  //                 padding: const EdgeInsets.symmetric(
+  //                   horizontal: 8,
+  //                   vertical: 4,
+  //                 ),
+  //                 decoration: BoxDecoration(
+  //                   color: context.colors.errorLight,
+  //                   borderRadius: BorderRadius.circular(8),
+  //                 ),
+  //                 child: Row(
+  //                   mainAxisSize: MainAxisSize.min,
+  //                   children: [
+  //                     Icon(
+  //                       Icons.warning_amber_rounded,
+  //                       size: context.iconSm,
+  //                       color: context.colors.errorText,
+  //                     ),
+  //                     SizedBox(width: 4),
+  //                     Text(
+  //                       'RED FLAG',
+  //                       style: TextStyle(
+  //                         fontSize: 9,
+  //                         fontWeight: FontWeight.bold,
+  //                         color: context.colors.errorText,
+  //                       ),
+  //                     ),
+  //                   ],
+  //                 ),
+  //               )
+  //             else
+  //               Container(
+  //                 padding: const EdgeInsets.symmetric(
+  //                   horizontal: 8,
+  //                   vertical: 4,
+  //                 ),
+  //                 decoration: BoxDecoration(
+  //                   color: Colors.white.withValues(alpha: 0.1),
+  //                   borderRadius: BorderRadius.circular(8),
+  //                 ),
+  //                 child: Text(
+  //                   metrics.apeMomGrowth >= 0
+  //                       ? '+${metrics.apeMomGrowth}%'
+  //                       : '${metrics.apeMomGrowth}%',
+  //                   style: TextStyle(
+  //                     color: metrics.apeMomGrowth >= 0
+  //                         ? Colors.greenAccent
+  //                         : Colors.redAccent,
+  //                     fontWeight: FontWeight.bold,
+  //                     fontSize: 10,
+  //                   ),
+  //                 ),
+  //               ),
+  //           ],
+  //         ),
+  //         const SizedBox(height: 15),
+  //         Container(
+  //           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+  //           decoration: BoxDecoration(
+  //             color: Colors.white.withValues(alpha: 0.08),
+  //             borderRadius: BorderRadius.circular(11),
+  //           ),
+  //           child: Row(
+  //             mainAxisAlignment: MainAxisAlignment.spaceAround,
+  //             children: [
+  //               _heroStat('APE', '${metrics.ape}M'),
+  //               _heroDivider(),
+  //               _heroStat('FYP', '${metrics.fyp.totalFyp}M'),
+  //               _heroDivider(),
+  //               _heroStat('Policies', '${metrics.policyCount.totalCount}'),
+  //               _heroDivider(),
+  //               _heroStat(
+  //                 'Commission',
+  //                 '${metrics.commission.totalCommission}M',
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
-  Widget _heroStat(String title, String value) {
-    return Column(
-      children: [
-        Text(
-          value,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 13,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 2),
-        Text(title, style: const TextStyle(color: Colors.white70, fontSize: 9)),
-      ],
-    );
-  }
+  // Widget _heroStat(String title, String value) {
+  //   return Column(
+  //     children: [
+  //       Text(
+  //         value,
+  //         style: const TextStyle(
+  //           color: Colors.white,
+  //           fontSize: 13,
+  //           fontWeight: FontWeight.bold,
+  //         ),
+  //       ),
+  //       const SizedBox(height: 2),
+  //       Text(title, style: const TextStyle(color: Colors.white70, fontSize: 9)),
+  //     ],
+  //   );
+  // }
 
-  Widget _heroDivider() {
-    return Container(
-      width: 1,
-      height: 20,
-      color: Colors.white.withValues(alpha: 0.15),
-    );
-  }
-
-  Widget _buildTabs() {
-    return Container(
-      padding: const EdgeInsets.all(4),
-      decoration: BoxDecoration(
-        color: AppColors.border.withValues(alpha: 0.5),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        children: [
-          Expanded(child: _tabButton(index: 0, label: 'Overview')),
-          Expanded(child: _tabButton(index: 1, label: 'Team Hierarchy')),
-        ],
-      ),
-    );
-  }
-
-  Widget _tabButton({required int index, required String label}) {
-    final selected = _tabIndex == index;
-
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          _tabIndex = index;
-        });
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 10),
-        decoration: BoxDecoration(
-          color: selected ? AppColors.primaryColor : Colors.transparent,
-          borderRadius: BorderRadius.circular(9),
-        ),
-        child: Center(
-          child: Text(
-            label,
-            style: TextStyle(
-              color: selected ? Colors.white : AppColors.muted,
-              fontWeight: FontWeight.bold,
-              fontSize: 13,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+  // Widget _heroDivider() {
+  //   return Container(
+  //     width: 1,
+  //     height: 20,
+  //     color: Colors.white.withValues(alpha: 0.15),
+  //   );
+  // }
 
   void _showFiltersSheet() {
     showModalBottomSheet(
@@ -431,12 +380,12 @@ class _PerformanceDashboardPageState
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
+                    Text(
                       'Filters',
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF0F172A),
+                        color: context.colors.textPrimary,
                       ),
                     ),
                     TextButton(
@@ -449,10 +398,10 @@ class _PerformanceDashboardPageState
                         });
                         setState(() {});
                       },
-                      child: const Text(
+                      child: Text(
                         'Reset all',
                         style: TextStyle(
-                          color: AppColors.primaryColor,
+                          color: context.colors.primaryColor,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -506,7 +455,7 @@ class _PerformanceDashboardPageState
                   child: ElevatedButton(
                     onPressed: () => context.pop(),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primaryColor,
+                      backgroundColor: context.colors.primaryColor,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -540,10 +489,10 @@ class _PerformanceDashboardPageState
       children: [
         Text(
           title,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
-            color: Color(0xFF0F172A),
+            color: context.colors.textPrimary,
           ),
         ),
         const SizedBox(height: 10),
@@ -560,12 +509,14 @@ class _PerformanceDashboardPageState
                   vertical: 10,
                 ),
                 decoration: BoxDecoration(
-                  color: isSelected ? AppColors.primaryColor : Colors.white,
+                  color: isSelected
+                      ? context.colors.primaryColor
+                      : Colors.white,
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
                     color: isSelected
-                        ? AppColors.primaryColor
-                        : const Color(0xFFE2E8F0),
+                        ? context.colors.primaryColor
+                        : context.colors.border,
                   ),
                 ),
                 child: Text(
@@ -573,7 +524,9 @@ class _PerformanceDashboardPageState
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
-                    color: isSelected ? Colors.white : const Color(0xFF0F172A),
+                    color: isSelected
+                        ? Colors.white
+                        : context.colors.textPrimary,
                   ),
                 ),
               ),
@@ -584,28 +537,28 @@ class _PerformanceDashboardPageState
     );
   }
 
-  Widget _whiteAvatar(String name) {
-    final initial = name.trim().isEmpty
-        ? '?'
-        : name.trim().substring(0, 1).toUpperCase();
+  // Widget _whiteAvatar(String name) {
+  //   final initial = name.trim().isEmpty
+  //       ? '?'
+  //       : name.trim().substring(0, 1).toUpperCase();
 
-    return Container(
-      width: 46,
-      height: 46,
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.12),
-        shape: BoxShape.circle,
-        border: Border.all(color: Colors.white.withValues(alpha: 0.15)),
-      ),
-      alignment: Alignment.center,
-      child: Text(
-        initial,
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 17,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    );
-  }
+  //   return Container(
+  //     width: 46,
+  //     height: 46,
+  //     decoration: BoxDecoration(
+  //       color: Colors.white.withValues(alpha: 0.12),
+  //       shape: BoxShape.circle,
+  //       border: Border.all(color: Colors.white.withValues(alpha: 0.15)),
+  //     ),
+  //     alignment: Alignment.center,
+  //     child: Text(
+  //       initial,
+  //       style: const TextStyle(
+  //         color: Colors.white,
+  //         fontSize: 17,
+  //         fontWeight: FontWeight.bold,
+  //       ),
+  //     ),
+  //   );
+  // }
 }

@@ -43,9 +43,9 @@ class ProductVisuals {
   /// as grey at the 12% plate alpha; primaryColor keeps the largest group on the
   /// brand primary, and the soft red carries the medical association.
   static Color colorFor(ProductCategory category) => switch (category) {
-    ProductCategory.protection => AppColors.primaryColor,
-    ProductCategory.saving => AppColors.mint,
-    ProductCategory.health => AppColors.danger,
+    ProductCategory.protection => kAppColors.primaryColor,
+    ProductCategory.saving => kAppColors.mint,
+    ProductCategory.health => kAppColors.danger,
   };
 
   static String labelFor(ProductCategory category) => switch (category) {
@@ -100,7 +100,7 @@ class ProductIllustration extends StatelessWidget {
       height: size,
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-        color: AppColors.primaryColor.withValues(alpha: 0.10),
+        color: context.colors.primaryColor.withValues(alpha: 0.10),
         borderRadius: BorderRadius.circular(size * 0.22),
       ),
       child: asset == null

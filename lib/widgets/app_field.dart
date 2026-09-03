@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../const.dart';
 
 class AppsTextField extends ConsumerStatefulWidget {
   const AppsTextField({
@@ -102,7 +103,7 @@ class _AppsTextFieldState extends ConsumerState<AppsTextField> {
               _obscured
                   ? Icons.visibility_off_outlined
                   : Icons.visibility_outlined,
-              size: 18,
+              size: context.iconLg,
             ),
             onPressed: () => setState(() => _obscured = !_obscured),
           )
@@ -134,7 +135,7 @@ class _AppsTextFieldState extends ConsumerState<AppsTextField> {
         counterText: widget.counterText,
         contentPadding: widget.contentPadding,
         prefixIcon: widget.prefixIcon != null
-            ? Icon(widget.prefixIcon, size: 18)
+            ? Icon(widget.prefixIcon, size: context.iconLg)
             : null,
         suffixIcon: effectiveSuffix,
         suffixText: effectiveSuffix == null ? widget.suffixText : null,

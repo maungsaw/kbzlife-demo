@@ -48,17 +48,17 @@ class _CRMDetailViewScreenState extends ConsumerState<CRMDetailViewScreen>
   Color _getStageColor(String stageLabel) {
     switch (stageLabel.toUpperCase()) {
       case 'QUALIFIED':
-        return const Color(0xFF2E7D32);
+        return context.colors.successText;
       case 'UNQUALIFIED':
-        return const Color(0xFFC62828);
+        return context.colors.errorText;
       case 'HALF-QUALIFIED':
-        return const Color(0xFF7C3AED);
+        return context.colors.statusUnderwriting;
       case 'PENDING':
-        return const Color(0xFFD97706);
+        return context.colors.statusLead;
       case 'LOST':
-        return const Color(0xFF64748B);
+        return context.colors.muted;
       default:
-        return AppColors.primaryColor;
+        return context.colors.primaryColor;
     }
   }
 
@@ -73,7 +73,7 @@ class _CRMDetailViewScreenState extends ConsumerState<CRMDetailViewScreen>
     final stageColor = _getStageColor(effectiveStageLabel);
 
     return Scaffold(
-      backgroundColor: AppColors.cream,
+      backgroundColor: context.colors.cream,
       appBar: AppBar(
         automaticallyImplyActions: true,
         title: const Text(
@@ -82,7 +82,7 @@ class _CRMDetailViewScreenState extends ConsumerState<CRMDetailViewScreen>
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.edit, color: Color(0xFF0F172A)),
+            icon: Icon(Icons.edit, color: context.colors.textPrimary),
             onPressed: () {},
           ),
         ],
@@ -101,13 +101,13 @@ class _CRMDetailViewScreenState extends ConsumerState<CRMDetailViewScreen>
                       children: [
                         CircleAvatar(
                           radius: 24,
-                          backgroundColor: AppColors.primaryColor.withValues(
+                          backgroundColor: context.colors.primaryColor.withValues(
                             alpha: 0.1,
                           ),
                           child: Text(
                             initials,
-                            style: const TextStyle(
-                              color: AppColors.primaryColor,
+                            style: TextStyle(
+                              color: context.colors.primaryColor,
                               fontSize: 18,
                               fontWeight: FontWeight.w800,
                             ),
@@ -120,8 +120,8 @@ class _CRMDetailViewScreenState extends ConsumerState<CRMDetailViewScreen>
                             children: [
                               Text(
                                 contact.name,
-                                style: const TextStyle(
-                                  color: Color(0xFF0F172A),
+                                style: TextStyle(
+                                  color: context.colors.textPrimary,
                                   fontSize: 18,
                                   fontWeight: FontWeight.w800,
                                 ),
@@ -227,7 +227,7 @@ class _CRMDetailViewScreenState extends ConsumerState<CRMDetailViewScreen>
     required VoidCallback onTap,
   }) {
     return Material(
-      color: AppColors.primaryColor.withValues(alpha: 0.08),
+      color: context.colors.primaryColor.withValues(alpha: 0.08),
       borderRadius: BorderRadius.circular(12),
       child: InkWell(
         onTap: onTap,
@@ -236,12 +236,12 @@ class _CRMDetailViewScreenState extends ConsumerState<CRMDetailViewScreen>
           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
           child: Column(
             children: [
-              Icon(icon, color: AppColors.primaryColor, size: 26),
+              Icon(icon, color: context.colors.primaryColor, size: 26),
               const SizedBox(height: 4),
               Text(
                 label,
-                style: const TextStyle(
-                  color: AppColors.primaryColor,
+                style: TextStyle(
+                  color: context.colors.primaryColor,
                   fontSize: 11,
                   fontWeight: FontWeight.w700,
                 ),
@@ -268,7 +268,7 @@ class _CRMDetailViewScreenState extends ConsumerState<CRMDetailViewScreen>
                 child: _buildMetricCard(
                   '${contact.products.length}',
                   'Products',
-                  AppColors.primaryColor,
+                  context.colors.primaryColor,
                 ),
               ),
             ),
@@ -292,17 +292,17 @@ class _CRMDetailViewScreenState extends ConsumerState<CRMDetailViewScreen>
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.border),
+            border: Border.all(color: context.colors.border),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+              Text(
                 'Personal Information',
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w800,
-                  color: AppColors.primaryColor,
+                  color: context.colors.primaryColor,
                 ),
               ),
               const SizedBox(height: 16),
@@ -334,7 +334,7 @@ class _CRMDetailViewScreenState extends ConsumerState<CRMDetailViewScreen>
         if (effectiveStageLabel == 'HALF-QUALIFIED')
           _buildBanner(
             icon: Icons.star_half_rounded,
-            color: const Color(0xFF7C3AED),
+            color: context.colors.statusUnderwriting,
             message:
                 'This contact has products across different opportunity stages.',
           ),
@@ -342,7 +342,7 @@ class _CRMDetailViewScreenState extends ConsumerState<CRMDetailViewScreen>
         if (effectiveStageLabel == 'UNQUALIFIED')
           _buildBanner(
             icon: Icons.cancel_outlined,
-            color: const Color(0xFFC62828),
+            color: context.colors.errorText,
             message:
                 'All linked products for this contact are currently unqualified.',
           ),
@@ -356,7 +356,7 @@ class _CRMDetailViewScreenState extends ConsumerState<CRMDetailViewScreen>
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.colors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -394,7 +394,7 @@ class _CRMDetailViewScreenState extends ConsumerState<CRMDetailViewScreen>
       ),
       child: Row(
         children: [
-          Icon(icon, color: color, size: 22),
+          Icon(icon, color: color, size: context.iconXxl),
           const SizedBox(width: 10),
           Expanded(
             child: Text(
@@ -413,10 +413,10 @@ class _CRMDetailViewScreenState extends ConsumerState<CRMDetailViewScreen>
 
   Widget _buildProductsTab(CRMContactModel contact) {
     if (contact.products.isEmpty) {
-      return const Center(
+      return Center(
         child: Text(
           'No product opportunities linked.',
-          style: TextStyle(color: AppColors.muted, fontWeight: FontWeight.w500),
+          style: TextStyle(color: context.colors.muted, fontWeight: FontWeight.w500),
         ),
       );
     }
@@ -435,7 +435,7 @@ class _CRMDetailViewScreenState extends ConsumerState<CRMDetailViewScreen>
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.border),
+            border: Border.all(color: context.colors.border),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -446,10 +446,10 @@ class _CRMDetailViewScreenState extends ConsumerState<CRMDetailViewScreen>
                   children: [
                     Text(
                       product.productName,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 14,
-                        color: Color(0xFF0F172A),
+                        color: context.colors.textPrimary,
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -490,10 +490,10 @@ class _CRMDetailViewScreenState extends ConsumerState<CRMDetailViewScreen>
 
   Widget _buildHistoryTab(CRMContactModel contact) {
     if (contact.activities.isEmpty) {
-      return const Center(
+      return Center(
         child: Text(
           'No activity history recorded.',
-          style: TextStyle(color: AppColors.muted, fontWeight: FontWeight.w500),
+          style: TextStyle(color: context.colors.muted, fontWeight: FontWeight.w500),
         ),
       );
     }
@@ -509,7 +509,7 @@ class _CRMDetailViewScreenState extends ConsumerState<CRMDetailViewScreen>
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.border),
+            border: Border.all(color: context.colors.border),
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -517,13 +517,13 @@ class _CRMDetailViewScreenState extends ConsumerState<CRMDetailViewScreen>
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: AppColors.primaryColor.withValues(alpha: 0.1),
+                  color: context.colors.primaryColor.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   activity.icon,
-                  color: AppColors.primaryColor,
-                  size: 18,
+                  color: context.colors.primaryColor,
+                  size: context.iconLg,
                 ),
               ),
               const SizedBox(width: 12),
@@ -536,10 +536,10 @@ class _CRMDetailViewScreenState extends ConsumerState<CRMDetailViewScreen>
                       children: [
                         Text(
                           activity.title,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 14,
-                            color: Color(0xFF0F172A),
+                            color: context.colors.textPrimary,
                           ),
                         ),
                         Text(
@@ -584,10 +584,10 @@ class _CRMDetailViewScreenState extends ConsumerState<CRMDetailViewScreen>
         const SizedBox(height: 2),
         Text(
           value,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.w600,
-            color: Color(0xFF0F172A),
+            color: context.colors.textPrimary,
           ),
         ),
       ],

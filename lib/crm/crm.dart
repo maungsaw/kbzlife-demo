@@ -7,7 +7,7 @@ import 'package:go_router/go_router.dart';
 import '../const.dart';
 import '../providers/crm_providers.dart';
 import '../providers/router_provider.dart';
-import '../widgets/app_segmented_tabs.dart';
+import '../widgets/pill_tabs.dart';
 import '../widgets/app_selection_chip.dart';
 import 'count_mill.dart';
 import 'model.dart';
@@ -357,7 +357,7 @@ class _UserDashboardScreenState extends ConsumerState<UserDashboardScreen>
                       width: double.infinity,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primaryColor,
+                          backgroundColor: context.colors.primaryColor,
                           padding: const EdgeInsets.symmetric(vertical: 12),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
@@ -393,9 +393,9 @@ class _UserDashboardScreenState extends ConsumerState<UserDashboardScreen>
         _buildBreadcrumbs(),
         Expanded(
           child: isLoading
-              ? const Center(
+              ? Center(
                   child: CircularProgressIndicator(
-                    color: AppColors.primaryColor,
+                    color: context.colors.primaryColor,
                   ),
                 )
               : showTeamTab
@@ -427,7 +427,7 @@ class _UserDashboardScreenState extends ConsumerState<UserDashboardScreen>
         }
       },
       child: Material(
-        color: AppColors.surfaceBg,
+        color: context.colors.surfaceBg,
         child: CustomScrollView(
           slivers: [
             SliverAppBar(
@@ -456,7 +456,7 @@ class _UserDashboardScreenState extends ConsumerState<UserDashboardScreen>
                             (s) => s.hasActiveFilters,
                           ),
                         )
-                        ? AppColors.primaryColor
+                        ? context.colors.primaryColor
                         : Colors.grey.shade700,
                   ),
                 ),
@@ -511,7 +511,7 @@ class _UserDashboardScreenState extends ConsumerState<UserDashboardScreen>
                     child: Text(
                       user.name,
                       style: TextStyle(
-                        color: isLast ? AppColors.primaryColor : Colors.grey,
+                        color: isLast ? context.colors.primaryColor : Colors.grey,
                         fontSize: 11,
                         fontWeight: isLast ? FontWeight.bold : FontWeight.w500,
                       ),
@@ -519,10 +519,10 @@ class _UserDashboardScreenState extends ConsumerState<UserDashboardScreen>
                   ),
                 ),
                 if (!isLast)
-                  const Icon(
+                  Icon(
                     Icons.chevron_right_rounded,
                     color: Colors.grey,
-                    size: 16,
+                    size: context.iconBase,
                   ),
               ],
             );
@@ -603,7 +603,7 @@ class _UserDashboardScreenState extends ConsumerState<UserDashboardScreen>
                           )
                           .isNotEmpty
                       ? IconButton(
-                          icon: const Icon(Icons.clear, size: 18),
+                          icon: Icon(Icons.clear, size: context.iconLg),
                           onPressed: () {
                             _searchController.clear();
                             ref
@@ -662,14 +662,14 @@ class _UserDashboardScreenState extends ConsumerState<UserDashboardScreen>
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        AppSegmentedTabs<GroupScope>(
-          value: selectedGroupScope,
-          options: const [
-            (GroupScope.personalGroup, 'Personal Group', Icons.people_outline),
-            (GroupScope.totalGroup, 'Total Group', Icons.group_outlined),
+        PillTabs(
+          initialIndex: selectedGroupScope == GroupScope.personalGroup ? 0 : 1,
+          tabs: const [
+            PillTab(label: 'Personal Group', icon: Icons.people_outline),
+            PillTab(label: 'Total Group', icon: Icons.group_outlined),
           ],
-          onChanged: (scope) =>
-              ref.read(crmDashboardProvider.notifier).setGroupScope(scope),
+          onPageChanged: (i) =>
+              ref.read(crmDashboardProvider.notifier).setGroupScope(i == 0 ? GroupScope.personalGroup : GroupScope.totalGroup),
         ),
         const SizedBox(height: 16),
 
@@ -679,9 +679,9 @@ class _UserDashboardScreenState extends ConsumerState<UserDashboardScreen>
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const FaIcon(
+                FaIcon(
                   FontAwesomeIcons.userGroup,
-                  size: 32,
+                   size: context.iconXxxl,
                   color: Colors.grey,
                 ),
                 const SizedBox(height: 12),
@@ -717,38 +717,32 @@ class _UserDashboardScreenState extends ConsumerState<UserDashboardScreen>
                 .length;
 
             return Container(
-              margin: const EdgeInsets.only(bottom: 12),
+              margin: const EdgeInsets.only(bottom: 10),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(color: Colors.grey.shade200),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.02),
-                    blurRadius: 6,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
+
               ),
               child: Material(
                 color: Colors.transparent,
                 child: ListTile(
                   contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
+                    horizontal: 14,
+                    vertical: 6,
                   ),
                   onTap: () {
                     ref.read(crmDashboardProvider.notifier).pushUser(member);
                     _tabController.index = 0;
                   },
                   leading: CircleAvatar(
-                    backgroundColor: AppColors.primaryColor.withValues(
+                    backgroundColor: context.colors.primaryColor.withValues(
                       alpha: 0.1,
                     ),
-                    child: const FaIcon(
+                    child: FaIcon(
                       FontAwesomeIcons.user,
-                      size: 14,
-                      color: AppColors.primaryColor,
+                      size: context.iconMd,
+                      color: context.colors.primaryColor,
                     ),
                   ),
                   title: Text(
@@ -789,9 +783,9 @@ class _UserDashboardScreenState extends ConsumerState<UserDashboardScreen>
                         ),
                       ),
                       const SizedBox(width: 3),
-                      const Icon(
+                      Icon(
                         Icons.chevron_right,
-                        size: 18,
+                        size: context.iconLg,
                         color: Colors.grey,
                       ),
                     ],
@@ -849,15 +843,15 @@ class _UserDashboardScreenState extends ConsumerState<UserDashboardScreen>
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                 decoration: BoxDecoration(
-                  color: AppColors.primaryColor.withValues(alpha: 0.1),
+                  color: context.colors.primaryColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
                   stageLabel,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.primaryColor,
+                    color: context.colors.primaryColor,
                   ),
                 ),
               ),

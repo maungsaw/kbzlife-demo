@@ -154,7 +154,7 @@ class _OverviewPageState extends ConsumerState<OverviewPage> {
                         label: Text(status),
                         showCheckmark: false,
                         selected: isSelected,
-                        selectedColor: AppColors.primaryColor,
+                        selectedColor: context.colors.primaryColor,
                         labelStyle: TextStyle(
                           color: isSelected ? Colors.white : Colors.black,
                           fontWeight: FontWeight.w600,
@@ -195,7 +195,7 @@ class _OverviewPageState extends ConsumerState<OverviewPage> {
                   onChanged: _onSearchChanged,
                   decoration: InputDecoration(
                     hintText: 'Search policy no, client or plan...',
-                    prefixIcon: const Icon(Icons.search, size: 20),
+                    prefixIcon: Icon(Icons.search, size: context.iconXl),
                     isDense: true,
                     filled: true,
                     fillColor: Colors.white,
@@ -226,10 +226,10 @@ class _OverviewPageState extends ConsumerState<OverviewPage> {
                     ),
                     child: Stack(
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.filter_list,
-                          color: AppColors.primaryColor,
-                          size: 22,
+                          color: context.colors.primaryColor,
+                          size: context.iconXxl,
                         ),
                         if (_selectedStatusFilter != 'All')
                           Positioned(
@@ -360,8 +360,8 @@ class _OverviewPageState extends ConsumerState<OverviewPage> {
                     Flexible(
                       child: Text(
                         'Next Due: ${policy.nextDue}',
-                        style: const TextStyle(
-                          color: AppColors.primaryColor,
+                        style: TextStyle(
+                          color: context.colors.primaryColor,
                           fontWeight: FontWeight.w600,
                           fontSize: 11,
                         ),
@@ -382,7 +382,7 @@ class _OverviewPageState extends ConsumerState<OverviewPage> {
               ],
             ),
           ),
-          trailing: const Icon(Icons.chevron_right, size: 18, color: Colors.grey),
+          trailing: Icon(Icons.chevron_right, size: context.iconLg, color: Colors.grey),
         ),
       ),
     );

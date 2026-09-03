@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../const.dart';
+
 import '../providers/router_provider.dart';
 import 'model.dart';
 
@@ -13,33 +15,33 @@ class AnnouncementDetailH5Screen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: context.colors.cream,
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Announcement Detail',
           style: TextStyle(
-            color: Color(0xFF0F172A),
+            color: context.colors.textPrimary,
             fontSize: 16,
             fontWeight: FontWeight.bold,
           ),
         ),
         backgroundColor: Colors.white,
         elevation: 0,
-        scrolledUnderElevation: 0.5,
-        iconTheme: const IconThemeData(color: Color(0xFF0F172A)),
+        scrolledUnderElevation: 0,
+        iconTheme: IconThemeData(color: context.colors.textPrimary),
         actions: [
           Container(
             margin: const EdgeInsets.only(right: 16),
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
             decoration: BoxDecoration(
               color: announcement.isPrivate
-                  ? const Color(0xFFFFF7ED)
-                  : const Color(0xFFF0FDF4),
+                  ? context.colors.warningLight
+                  : context.colors.successLight,
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
                 color: announcement.isPrivate
-                    ? const Color(0xFFFFEDD5)
-                    : const Color(0xFFDCFCE7),
+                    ? context.colors.warningBorder
+                    : context.colors.successAccentLight,
               ),
             ),
             child: Text(
@@ -48,8 +50,8 @@ class AnnouncementDetailH5Screen extends ConsumerWidget {
                 fontSize: 10,
                 fontWeight: FontWeight.bold,
                 color: announcement.isPrivate
-                    ? const Color(0xFFC2410C)
-                    : const Color(0xFF15803D),
+                    ? context.colors.warningText
+                    : context.colors.successText,
               ),
             ),
           ),
@@ -68,24 +70,24 @@ class AnnouncementDetailH5Screen extends ConsumerWidget {
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFE2E8F0),
+                    color: context.colors.border,
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: Text(
                     announcement.category,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
-                      color: Color(0xFF334155),
+                      color: context.colors.textSecondary,
                     ),
                   ),
                 ),
                 const Spacer(),
                 Text(
                   announcement.publishDate,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 12,
-                    color: Color(0xFF94A3B8),
+                    color: context.colors.textMuted,
                   ),
                 ),
               ],
@@ -93,10 +95,10 @@ class AnnouncementDetailH5Screen extends ConsumerWidget {
             const SizedBox(height: 16),
             Text(
               announcement.title,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w800,
-                color: Color(0xFF0F172A),
+                color: context.colors.textPrimary,
                 height: 1.3,
               ),
             ),
@@ -110,7 +112,7 @@ class AnnouncementDetailH5Screen extends ConsumerWidget {
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) => Container(
                   height: 200,
-                  color: const Color(0xFFF1F5F9),
+                  color: context.colors.chipBg,
                   child: const Center(
                     child: Icon(Icons.broken_image_rounded, color: Colors.grey),
                   ),
@@ -124,24 +126,24 @@ class AnnouncementDetailH5Screen extends ConsumerWidget {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: const Color(0xFFE2E8F0)),
+                border: Border.all(color: context.colors.border),
               ),
               child: Text(
                 announcement.bodyContent,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14,
                   height: 1.6,
-                  color: Color(0xFF334155),
+                  color: context.colors.textSecondary,
                 ),
               ),
             ),
             const SizedBox(height: 24),
-            const Text(
+            Text(
               'Web Link Action',
               style: TextStyle(
                 fontWeight: FontWeight.w700,
                 fontSize: 14,
-                color: Color(0xFF0F172A),
+                color: context.colors.textPrimary,
               ),
             ),
             const SizedBox(height: 8),
@@ -153,33 +155,33 @@ class AnnouncementDetailH5Screen extends ConsumerWidget {
               child: Container(
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFEFF6FF),
+                  color: context.colors.infoLight,
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: const Color(0xFFBFDBFE)),
+                  border: Border.all(color: context.colors.infoBorder),
                 ),
                 child: Row(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.language_rounded,
-                      color: Color(0xFF2563EB),
+                      color: context.colors.infoText,
                     ),
                     const SizedBox(width: 10),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
+                          Text(
                             'Open In-App Web View',
                             style: TextStyle(
-                              color: Color(0xFF2563EB),
+                              color: context.colors.infoText,
                               fontWeight: FontWeight.bold,
                               fontSize: 13,
                             ),
                           ),
                           Text(
                             announcement.embeddedLink,
-                            style: const TextStyle(
-                              color: Color(0xFF3B82F6),
+                            style: TextStyle(
+                              color: context.colors.infoText,
                               fontSize: 11,
                             ),
                             overflow: TextOverflow.ellipsis,
@@ -187,10 +189,10 @@ class AnnouncementDetailH5Screen extends ConsumerWidget {
                         ],
                       ),
                     ),
-                    const Icon(
+                    Icon(
                       Icons.arrow_forward_ios_rounded,
-                      size: 14,
-                      color: Color(0xFF2563EB),
+                      size: context.iconMd,
+                      color: context.colors.infoText,
                     ),
                   ],
                 ),

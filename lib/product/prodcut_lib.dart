@@ -57,23 +57,23 @@ class _ProductScreenState extends State<ProductScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.colors.cream,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
         scrolledUnderElevation: 0,
         automaticallyImplyLeading: false,
-        title: const Text(
+        title: Text(
           'Products',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 18,
-            color: Color(0xFF0F172A),
+            color: context.colors.textPrimary,
           ),
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.search, size: 22, color: Colors.black87),
+            icon: Icon(Icons.search, size: context.iconXxl, color: Colors.black87),
             onPressed: () {},
           ),
         ],
@@ -81,9 +81,9 @@ class _ProductScreenState extends State<ProductScreen>
       body: CustomTabView(
         controller: _tabController,
         isScrollable: true,
-        labelColor: AppColors.primaryColor,
+        labelColor: context.colors.primaryColor,
         unselectedLabelColor: Colors.grey.shade600,
-        indicatorColor: AppColors.primaryColor,
+        indicatorColor: context.colors.primaryColor,
         tabs: _categories.map((cat) => TabItemData(label: cat)).toList(),
         tabViews: _categories.map((cat) {
           if (_filteredProducts.isEmpty) {
@@ -117,14 +117,7 @@ class _ProductScreenState extends State<ProductScreen>
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: const Color(0xFFE2E8F0), width: 1),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.04),
-              blurRadius: 10,
-              offset: const Offset(0, 2),
-            ),
-          ],
+          border: Border.all(color: context.colors.border, width: 1),
         ),
         child: Row(
           children: [
@@ -145,12 +138,12 @@ class _ProductScreenState extends State<ProductScreen>
                         fit: BoxFit.cover,
                       )
                     : Container(
-                        color: const Color(0xFFEFF6FF),
+                        color: context.colors.infoLight,
                         child: Center(
                           child: Icon(
                             product.icon,
                             size: 36,
-                            color: AppColors.primaryColor,
+                            color: context.colors.primaryColor,
                           ),
                         ),
                       ),
@@ -169,10 +162,10 @@ class _ProductScreenState extends State<ProductScreen>
                       product.title,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w700,
-                        color: Color(0xFF0F172A),
+                        color: context.colors.textPrimary,
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -180,9 +173,9 @@ class _ProductScreenState extends State<ProductScreen>
                       product.shortDescription,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 12,
-                        color: Color(0xFF64748B),
+                        color: context.colors.muted,
                         height: 1.3,
                       ),
                     ),
@@ -194,14 +187,14 @@ class _ProductScreenState extends State<ProductScreen>
                           style: TextStyle(
                             fontSize: 11,
                             fontWeight: FontWeight.w600,
-                            color: AppColors.primaryColor,
+                            color: context.colors.primaryColor,
                           ),
                         ),
                         const SizedBox(width: 4),
                         Icon(
-                          Icons.arrow_forward,
-                          size: 14,
-                          color: AppColors.primaryColor,
+                        Icons.arrow_forward,
+                        size: context.iconMd,
+                          color: context.colors.primaryColor,
                         ),
                       ],
                     ),
@@ -222,7 +215,7 @@ class _ProductScreenState extends State<ProductScreen>
         children: [
           Icon(
             Icons.search_off_outlined,
-            size: 48,
+            size: context.icon7xl,
             color: Colors.grey.shade400,
           ),
           const SizedBox(height: 12),
