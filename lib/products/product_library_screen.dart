@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../data/mock/mock_data.dart';
@@ -9,6 +10,7 @@ import '../quote/quote_providers.dart';
 import '../widgets/app_selection_chip.dart';
 import '../widgets/soft_card.dart';
 import 'product_icons.dart';
+import 'product_scene.dart';
 import 'product_view_preferences.dart';
 
 class ProductsLibraryScreen extends ConsumerStatefulWidget {
@@ -40,8 +42,9 @@ class _ProductLibraryScreenState extends ConsumerState<ProductsLibraryScreen> {
             children: [
               IconButton(
                 tooltip: 'Saved quotes',
+                color: AppColors.primaryColor,
                 onPressed: () => context.push('/quote/drafts'),
-                icon: const Icon(Icons.description_outlined),
+                icon: const FaIcon(FontAwesomeIcons.fileLines),
               ),
               if (draftCount > 0)
                 Positioned(
@@ -111,14 +114,15 @@ class _ProductLibraryScreenState extends ConsumerState<ProductsLibraryScreen> {
                   // a shape switch: rich one-per-row cards, or a compact
                   // list. There is no two-up grid any more.
                   tooltip: isGrid ? 'Compact list' : 'Product cards',
+                  color: AppColors.primaryColor,
                   onPressed: () => ref
                       .read(productGridViewProvider.notifier)
                       .setGridView(!isGrid),
-                  icon: Icon(
+                  icon: FaIcon(
                     isGrid
-                        ? Icons.view_list_outlined
-                        : Icons.view_agenda_outlined,
-                    size: 20,
+                        ? FontAwesomeIcons.list
+                        : FontAwesomeIcons.tableColumns,
+                    size: 18,
                   ),
                 ),
               ],
@@ -151,86 +155,116 @@ class _ProductRowCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final asset = ProductIllustration.assetFor(product);
+    final color = ProductVisuals.colorFor(product.category);
     return SoftCard(
       onTap: onTap,
-      padding: const EdgeInsets.all(14),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ProductIllustration(product: product, size: 88),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 7,
-                    vertical: 2,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.deepAlpha(0.05),
-                    borderRadius: BorderRadius.circular(999),
-                  ),
-                  child: Text(
-                    ProductVisuals.labelFor(product.category),
-                    style: TextStyle(
-                      fontSize: 9,
-                      letterSpacing: 0.3,
-                      fontWeight: FontWeight.w800,
-                      color: AppColors.deepAlpha(0.5),
-                    ),
-                  ),
+      padding: EdgeInsets.zero,
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Container(
+              width: 88,
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.10),
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(14),
+                  bottomLeft: Radius.circular(14),
                 ),
-                const SizedBox(height: 6),
-                // The name is the headline of the row.
-                Text(
-                  product.name,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w800,
-                    fontSize: 15,
-                    height: 1.25,
-                    color: AppColors.deep,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  product.tagline,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 11.5,
-                    height: 1.35,
-                    color: AppColors.deepAlpha(0.55),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                // One clear call to action per row.
-                Row(
-                  children: [
-                    const Text(
-                      'View details',
-                      style: TextStyle(
-                        fontSize: 11.5,
-                        fontWeight: FontWeight.w800,
-                        color: AppColors.primaryColor,
+              ),
+              child: asset == null
+                  ? ProductScene(product: product, size: 88)
+                  : ClipRRect(
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(14),
+                        bottomLeft: Radius.circular(14),
+                      ),
+                      child: Image.asset(
+                        asset,
+                        fit: BoxFit.cover,
+                        alignment: Alignment.topCenter,
+                        filterQuality: FilterQuality.medium,
+                        errorBuilder: (context, _, _) =>
+                            ProductScene(product: product, size: 88),
                       ),
                     ),
-                    const SizedBox(width: 3),
-                    Icon(
-                      Icons.arrow_forward_rounded,
-                      size: 14,
-                      color: AppColors.primaryColor.withValues(alpha: 0.8),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 7,
+                        vertical: 2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.deepAlpha(0.05),
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                      child: Text(
+                        ProductVisuals.labelFor(product.category),
+                        style: TextStyle(
+                          fontSize: 9,
+                          letterSpacing: 0.3,
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.deepAlpha(0.5),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      product.name,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w800,
+                        fontSize: 15,
+                        height: 1.25,
+                        color: AppColors.deep,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      product.tagline,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 11.5,
+                        height: 1.35,
+                        color: AppColors.deepAlpha(0.55),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        const Text(
+                          'View details',
+                          style: TextStyle(
+                            fontSize: 11.5,
+                            fontWeight: FontWeight.w800,
+                            color: AppColors.primaryColor,
+                          ),
+                        ),
+                        const SizedBox(width: 3),
+                        FaIcon(
+                          FontAwesomeIcons.arrowRight,
+                          size: 12,
+                          color: AppColors.primaryColor.withValues(alpha: 0.8),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -282,7 +316,7 @@ class _ProductList extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 8),
-          Icon(Icons.chevron_right, color: AppColors.deepAlpha(0.3)),
+          FaIcon(FontAwesomeIcons.chevronRight, color: AppColors.deepAlpha(0.3)),
         ],
       ),
     ),

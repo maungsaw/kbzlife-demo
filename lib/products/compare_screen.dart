@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../data/mock/mock_data.dart';
@@ -160,27 +161,54 @@ class _CompareHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SoftCard(
+      padding: const EdgeInsets.all(12),
       onTap: onChange,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            product.name,
-            style: const TextStyle(
-              fontWeight: FontWeight.w800,
-              fontSize: 13,
-              color: AppColors.deep,
-            ),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  product.name,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w800,
+                    fontSize: 13,
+                    color: AppColors.deep,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              const SizedBox(width: 4),
+              FaIcon(
+                FontAwesomeIcons.rightLeft,
+                size: 14,
+                color: AppColors.primaryColor,
+              ),
+            ],
           ),
-          const SizedBox(height: 4),
-          Text(
-            'Change',
-            style: TextStyle(
-              fontSize: 10.5,
-              fontWeight: FontWeight.w700,
-              color: AppColors.primaryColor,
+          const SizedBox(height: 6),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: AppColors.primaryColor.withValues(alpha: 0.08),
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                FaIcon(FontAwesomeIcons.handPointer, size: 11, color: AppColors.primaryColor),
+                const SizedBox(width: 4),
+                Text(
+                  'Tap to change',
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.primaryColor,
+                  ),
+                ),
+              ],
             ),
           ),
           const SizedBox(height: 8),
@@ -194,13 +222,24 @@ class _CompareHeader extends StatelessWidget {
                     : AppColors.deepAlpha(0.06),
                 borderRadius: BorderRadius.circular(999),
               ),
-              child: Text(
-                pinned ? 'Pinned' : 'Pin',
-                style: TextStyle(
-                  fontSize: 10,
-                  fontWeight: FontWeight.w800,
-                  color: pinned ? Colors.white : AppColors.deepAlpha(0.5),
-                ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  FaIcon(
+                    pinned ? FontAwesomeIcons.thumbtack : FontAwesomeIcons.thumbtack,
+                    size: 10,
+                    color: pinned ? Colors.white : AppColors.deepAlpha(0.5),
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    pinned ? 'Pinned' : 'Pin',
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w800,
+                      color: pinned ? Colors.white : AppColors.deepAlpha(0.5),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -295,8 +334,8 @@ class _ChangeSheet extends StatelessWidget {
                   color: Colors.transparent,
                   child: ListTile(
                     contentPadding: EdgeInsets.zero,
-                    leading: Icon(
-                      Icons.hexagon_outlined,
+                    leading: FaIcon(
+                      FontAwesomeIcons.hexagon,
                       color: AppColors.primaryColor,
                     ),
                     title: Text(
@@ -315,7 +354,7 @@ class _ChangeSheet extends StatelessWidget {
                       ),
                     ),
                     trailing: p.code == currentCode
-                        ? const Icon(Icons.check, color: AppColors.mint)
+                        ? const FaIcon(FontAwesomeIcons.solidCircleCheck, color: AppColors.mint)
                         : null,
                     onTap: () => Navigator.pop(context, p.code),
                   ),

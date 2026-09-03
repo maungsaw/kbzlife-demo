@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../data/models/product.dart';
 import '../const.dart';
@@ -29,7 +30,7 @@ class ProductScene extends ConsumerWidget {
             ),
             Padding(
               padding: EdgeInsets.only(bottom: size * 0.05),
-              child: Icon(
+              child: FaIcon(
                 ProductVisuals.iconFor(product),
                 size: size * 0.26,
                 color: Colors.white,
