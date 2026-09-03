@@ -2954,7 +2954,6 @@ class _ProductChoiceTile extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
           child: Row(
             children: [
-              // Doc 130 §4 — shared illustration, at list-row size.
               ProductIllustration(product: product, size: 34),
               const SizedBox(width: 10),
               Expanded(

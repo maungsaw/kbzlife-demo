@@ -35,16 +35,20 @@ class _AppSelectionChipState extends ConsumerState<AppSelectionChip> {
         showCheckmark: true,
         checkmarkColor: Colors.white,
         avatar: widget.icon == null ? null : Icon(widget.icon, size: 16),
-        selectedColor: AppColors.deep,
+        selectedColor: AppColors.primaryColor,
         backgroundColor: AppColors.paper,
         side: BorderSide(
-          color: widget.selected ? AppColors.deep : AppColors.deepAlpha(0.10),
+          color: widget.selected
+              ? AppColors.primaryColor
+              : AppColors.primaryColor.withValues(alpha: 0.10),
           width: 1,
         ),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         labelStyle: TextStyle(
-          color: widget.selected ? Colors.white : AppColors.deepAlpha(0.68),
+          color: widget.selected
+              ? Colors.white
+              : AppColors.primaryColor.withValues(alpha: 0.68),
           fontWeight: FontWeight.w700,
           fontSize: 12,
         ),

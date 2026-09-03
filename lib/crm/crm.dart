@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import '../const.dart';
 import '../providers/crm_providers.dart';
 import '../providers/router_provider.dart';
+import '../widgets/app_segmented_tabs.dart';
 import 'count_mill.dart';
 import 'model.dart';
 import 'role_bradge.dart';
@@ -664,42 +665,14 @@ class _UserDashboardScreenState extends ConsumerState<UserDashboardScreen>
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        Container(
-          width: double.infinity,
-          color: Colors.white,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: GroupScope.values.map((scope) {
-              return Padding(
-                padding: const EdgeInsets.only(right: 8.0),
-                child: ChoiceChip(
-                  showCheckmark: false,
-                  label: Text(
-                    scope == GroupScope.personalGroup
-                        ? 'Personal Group'
-                        : 'Total Group',
-                  ),
-                  avatar: FaIcon(
-                    selectedGroupScope == GroupScope.personalGroup
-                        ? FontAwesomeIcons.users
-                        : FontAwesomeIcons.userGroup,
-                    size: 12,
-                  ),
-                  selected: selectedGroupScope == scope,
-                  selectedColor: AppColors.primaryColor,
-                  labelStyle: TextStyle(
-                    color: selectedGroupScope == scope
-                        ? Colors.white
-                        : Colors.black,
-                    fontSize: 12,
-                  ),
-                  onSelected: (_) => ref
-                      .read(crmDashboardProvider.notifier)
-                      .setGroupScope(scope),
-                ),
-              );
-            }).toList(),
-          ),
+        AppSegmentedTabs<GroupScope>(
+          value: selectedGroupScope,
+          options: const [
+            (GroupScope.personalGroup, 'Personal Group', Icons.people_outline),
+            (GroupScope.totalGroup, 'Total Group', Icons.group_outlined),
+          ],
+          onChanged: (scope) =>
+              ref.read(crmDashboardProvider.notifier).setGroupScope(scope),
         ),
         const SizedBox(height: 16),
 

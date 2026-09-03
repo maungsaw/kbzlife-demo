@@ -1,12 +1,12 @@
-// ignore_for_file: unused_field
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../const.dart';
 import '../providers/router_provider.dart';
+import '../widgets/app_segmented_tabs.dart';
 import '../widgets/app_text_field.dart';
+import '../eapp/pickers.dart';
 import 'create_model.dart';
 
 class CreateLeadScreen extends ConsumerStatefulWidget {
@@ -18,30 +18,45 @@ class CreateLeadScreen extends ConsumerStatefulWidget {
 
 class _CreateLeadScreenState extends ConsumerState<CreateLeadScreen> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _nrcController = TextEditingController();
-  final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _roomController = TextEditingController();
-  final TextEditingController _buildingController = TextEditingController();
-  final TextEditingController _houseController = TextEditingController();
-  final TextEditingController _streetController = TextEditingController();
-  final TextEditingController _wardController = TextEditingController();
-  final TextEditingController _townshipController = TextEditingController();
-  final TextEditingController _companyController = TextEditingController();
-  final TextEditingController _headcountController = TextEditingController();
-  final TextEditingController _jobTitleController = TextEditingController();
+  LeadType _leadType = LeadType.individual;
 
+  // Personal Information
+  final _nameController = TextEditingController();
+  final _nrcController = TextEditingController();
+  final _phoneController = TextEditingController();
+  final _emailController = TextEditingController();
   String? _maritalStatus;
-  String? _stateRegion;
-  String? _industry;
-  String? _leadType;
+  final _jobTitleController = TextEditingController();
 
-  // Selected products state
+  // Address Information
+  final _roomController = TextEditingController();
+  final _buildingController = TextEditingController();
+  final _houseController = TextEditingController();
+  final _streetController = TextEditingController();
+  final _wardController = TextEditingController();
+  final _townController = TextEditingController();
+  final _townshipController = TextEditingController();
+  String? _stateRegion;
+
+  // Company Information
+  final _companyController = TextEditingController();
+  final _headcountController = TextEditingController();
+  final _industryController = TextEditingController();
+
+  // Policy Details
+  PolicyType? _policyType;
+  final _premiumAmountController = TextEditingController();
+  LeadStatus? _leadStatus;
+  LeadPriority? _priority;
+  final _affordabilityController = TextEditingController();
+
+  // Products
   List<ProductModel> _selectedProducts = [];
 
-  // Available products master list
-  // KBZ Life Insurance products master list
+  // Additional
+  final _remarkController = TextEditingController();
+  final _tagsController = TextEditingController();
+
   final List<ProductModel> _availableProducts = [
     ProductModel(id: 'P01', name: 'Short Term Endowment', category: 'Savings'),
     ProductModel(id: 'P02', name: 'Universal Life', category: 'Savings'),
@@ -53,6 +68,46 @@ class _CreateLeadScreenState extends ConsumerState<CreateLeadScreen> {
     ProductModel(id: 'P08', name: 'Credit Life', category: 'Protections'),
   ];
 
+  bool get _isIndividual => _leadType == LeadType.individual;
+
+  String? get _addressSummary {
+    final parts = [
+      if (_roomController.text.isNotEmpty) 'Room ${_roomController.text}',
+      if (_buildingController.text.isNotEmpty) 'Bldg ${_buildingController.text}',
+      if (_houseController.text.isNotEmpty) 'No.${_houseController.text}',
+      if (_streetController.text.isNotEmpty) '${_streetController.text} St',
+      if (_wardController.text.isNotEmpty) 'Ward ${_wardController.text}',
+      if (_townController.text.isNotEmpty) _townController.text,
+      if (_townshipController.text.isNotEmpty) _townshipController.text,
+      if (_stateRegion != null) _stateRegion!,
+    ];
+    return parts.isEmpty ? null : parts.join(', ');
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _nrcController.dispose();
+    _phoneController.dispose();
+    _emailController.dispose();
+    _jobTitleController.dispose();
+    _roomController.dispose();
+    _buildingController.dispose();
+    _houseController.dispose();
+    _streetController.dispose();
+    _wardController.dispose();
+    _townController.dispose();
+    _townshipController.dispose();
+    _companyController.dispose();
+    _headcountController.dispose();
+    _industryController.dispose();
+    _premiumAmountController.dispose();
+    _affordabilityController.dispose();
+    _remarkController.dispose();
+    _tagsController.dispose();
+    super.dispose();
+  }
+
   void _showProductBottomSheet() {
     showModalBottomSheet(
       context: context,
@@ -62,13 +117,118 @@ class _CreateLeadScreenState extends ConsumerState<CreateLeadScreen> {
         return _ProductMultiSelectBottomSheet(
           availableProducts: _availableProducts,
           initiallySelected: List.from(_selectedProducts),
-          onConfirm: (selected) {
-            setState(() {
-              _selectedProducts = selected;
-            });
-          },
+          onConfirm: (selected) => setState(() => _selectedProducts = selected),
         );
       },
+    );
+  }
+
+  void _showAddressSheet() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: AppColors.paper,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (context) => Padding(
+        padding: EdgeInsets.only(
+          left: 16,
+          right: 16,
+          top: 16,
+          bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Address',
+                style: TextStyle(
+                  fontWeight: FontWeight.w800,
+                  fontSize: 16,
+                  color: AppColors.deep,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Expanded(
+                    child: AppTextField(
+                      controller: _roomController,
+                      label: 'Room No',
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: AppTextField(
+                      controller: _buildingController,
+                      label: 'Building No',
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  Expanded(
+                    child: AppTextField(
+                      controller: _houseController,
+                      label: 'House No *',
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: AppTextField(
+                      controller: _streetController,
+                      label: 'Street *',
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  Expanded(
+                    child: AppTextField(
+                      controller: _wardController,
+                      label: 'Ward *',
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: AppTextField(
+                      controller: _townController,
+                      label: 'Town',
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              AppTextField(
+                controller: _townshipController,
+                label: 'Township *',
+              ),
+              const SizedBox(height: 10),
+              _buildDropdownField(
+                'State/Region *',
+                'Select',
+                ['Yangon', 'Mandalay', 'Naypyidaw'],
+                (val) => setState(() => _stateRegion = val),
+              ),
+              const SizedBox(height: 18),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('Done'),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -79,7 +239,7 @@ class _CreateLeadScreenState extends ConsumerState<CreateLeadScreen> {
       appBar: AppBar(
         automaticallyImplyActions: true,
         backgroundColor: Colors.white,
-        title: Text(
+        title: const Text(
           'New Lead',
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
         ),
@@ -92,6 +252,7 @@ class _CreateLeadScreenState extends ConsumerState<CreateLeadScreen> {
               child: ListView(
                 padding: const EdgeInsets.all(16),
                 children: [
+                  // Offline Banner
                   Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 14,
@@ -122,376 +283,278 @@ class _CreateLeadScreenState extends ConsumerState<CreateLeadScreen> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  const Text(
-                    'PERSONAL INFORMATION',
-                    style: TextStyle(
-                      color: AppColors.primaryColor,
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.03),
-                          blurRadius: 8,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildTextField(
-                          'LEAD PERSON NAME *',
-                          'Enter full name',
-                          _nameController,
-                        ),
-                        const SizedBox(height: 14),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: _buildTextField(
-                                'NRC',
-                                '12/ABC(N)123456',
-                                _nrcController,
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: _buildTextField(
-                                'PHONE NO *',
-                                '09xxxxxxxxx',
-                                _phoneController,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 14),
-                        _buildTextField(
-                          'EMAIL',
-                          'email@example.com',
-                          _emailController,
-                        ),
-                        const SizedBox(height: 14),
-                        _buildDropdownField('MARITAL STATUS', 'Select status', [
-                          'Single',
-                          'Married',
-                          'Divorced',
-                        ], (val) => setState(() => _maritalStatus = val)),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  const Text(
-                    'ADDRESS INFORMATION',
-                    style: TextStyle(
-                      color: AppColors.primaryColor,
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.03),
-                          blurRadius: 8,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              child: _buildTextField(
-                                'ROOM NO',
-                                'Room',
-                                _roomController,
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: _buildTextField(
-                                'BUILDING NO',
-                                'Building',
-                                _buildingController,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 14),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: _buildTextField(
-                                'HOUSE NO',
-                                'House',
-                                _houseController,
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: _buildTextField(
-                                'STREET NO',
-                                'Street',
-                                _streetController,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 14),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: _buildTextField(
-                                'WARD NO',
-                                'Ward',
-                                _wardController,
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: _buildTextField(
-                                'TOWNSHIP *',
-                                'Township',
-                                _townshipController,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 14),
-                        _buildDropdownField(
-                          'STATE/REGION *',
-                          'Select state/region',
-                          ['Yangon', 'Mandalay', 'Naypyidaw'],
-                          (val) => setState(() => _stateRegion = val),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  const Text(
-                    'COMPANY & JOB',
-                    style: TextStyle(
-                      color: AppColors.primaryColor,
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.03),
-                          blurRadius: 8,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      children: [
-                        _buildTextField(
-                          'COMPANY NAME *',
-                          'Company name',
-                          _companyController,
-                        ),
-                        const SizedBox(height: 14),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: _buildTextField(
-                                'HEAD COUNTS *',
-                                'e.g. 50',
-                                _headcountController,
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: _buildTextField(
-                                'JOB TITLE *',
-                                'Job title',
-                                _jobTitleController,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  // Products Interest Section
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        'INTERESTED PRODUCTS',
-                        style: TextStyle(
-                          color: AppColors.primaryColor,
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: _showProductBottomSheet,
-                        child: Text(
-                          _selectedProducts.isEmpty
-                              ? '+ Add Products'
-                              : 'Edit Products',
-                          style: const TextStyle(
-                            color: AppColors.primaryColor,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+
+                  // Lead Type Segmented Tabs
+                  AppSegmentedTabs<LeadType>(
+                    label: 'Lead Type *',
+                    value: _leadType,
+                    options: [
+                      (LeadType.individual, 'Individual', Icons.person_outline),
+                      (
+                        LeadType.corporate,
+                        'Corporate',
+                        Icons.business_outlined,
                       ),
                     ],
+                    onChanged: (val) => setState(() => _leadType = val),
                   ),
-                  const SizedBox(height: 8),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.03),
-                          blurRadius: 8,
-                          offset: const Offset(0, 2),
+                  const SizedBox(height: 20),
+
+                  // Personal Information
+                  _buildSectionHeader('PERSONAL INFORMATION'),
+                  _buildCard([
+                    _buildTextField(
+                      'LEAD PERSON NAME *',
+                      'Enter full name',
+                      _nameController,
+                    ),
+                    const SizedBox(height: 14),
+                    if (_isIndividual) ...[
+                      AppTextField(
+                        controller: _nrcController,
+                        label: 'Identification *',
+                        hint: '12/KaMaNa(N)127487',
+                        readOnly: true,
+                        suffixIcon: const Icon(Icons.chevron_right),
+                        onTap: () async {
+                          final result = await showIdentificationPickerSheet(
+                            context,
+                            initial: _nrcController.text,
+                          );
+                          if (result != null) {
+                            setState(() => _nrcController.text = result);
+                          }
+                        },
+                      ),
+                      const SizedBox(height: 14),
+                    ],
+                    Row(
+                      children: [
+                        Expanded(
+                          child: AppTextField(
+                            controller: _phoneController,
+                            label: 'Mobile Phone No *',
+                            hint: '',
+                            keyboardType: TextInputType.phone,
+                            showFlag: true,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: _buildTextField(
+                            'EMAIL',
+                            'email@example.com',
+                            _emailController,
+                          ),
                         ),
                       ],
                     ),
-                    child: _selectedProducts.isEmpty
-                        ? InkWell(
-                            onTap: _showProductBottomSheet,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 8.0,
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Icon(
-                                    Icons.add_shopping_cart_rounded,
-                                    size: 18,
-                                    color: AppColors.muted,
-                                  ),
-                                  const SizedBox(width: 8),
-                                  const Text(
-                                    'Tap to select products',
-                                    style: TextStyle(
-                                      color: AppColors.muted,
-                                      fontSize: 13,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                    if (_isIndividual) ...[
+                      const SizedBox(height: 14),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _buildDropdownField(
+                              'MARITAL STATUS',
+                              'Select',
+                              ['Single', 'Married', 'Divorced'],
+                              (val) => setState(() => _maritalStatus = val),
                             ),
-                          )
-                        : Wrap(
-                            spacing: 8,
-                            runSpacing: 8,
-                            children: _selectedProducts.map((prod) {
-                              return Chip(
-                                label: Text(
-                                  prod.name,
-                                  style: const TextStyle(fontSize: 12),
-                                ),
-                                backgroundColor: AppColors.primaryColor
-                                    .withValues(alpha: 0.08),
-                                side: BorderSide(
-                                  color: AppColors.primaryColor.withValues(
-                                    alpha: 0.2,
-                                  ),
-                                ),
-                                deleteIcon: const Icon(Icons.close, size: 14),
-                                onDeleted: () {
-                                  setState(() {
-                                    _selectedProducts.removeWhere(
-                                      (p) => p.id == prod.id,
-                                    );
-                                  });
-                                },
-                              );
-                            }).toList(),
                           ),
-                  ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: _buildTextField(
+                              'JOB TITLE',
+                              'Job title',
+                              _jobTitleController,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ]),
+                  const SizedBox(height: 20),
+
+                  // Address Information
+                  _buildSectionHeader('ADDRESS INFORMATION'),
+                  _buildCard([
+                    AppTextField(
+                      label: 'Address',
+                      hint: 'Tap to enter address',
+                      readOnly: true,
+                      controller: TextEditingController(text: _addressSummary ?? ''),
+                      suffixIcon: const Icon(Icons.chevron_right),
+                      onTap: () => _showAddressSheet(),
+                    ),
+                  ]),
+                  const SizedBox(height: 20),
+
+                  // Company & Job
+                  _buildSectionHeader('COMPANY & JOB'),
+                  _buildCard([
+                    _buildTextField(
+                      'COMPANY NAME *',
+                      'Company name',
+                      _companyController,
+                    ),
+                    const SizedBox(height: 14),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _buildTextField(
+                            'HEAD COUNTS *',
+                            'e.g. 50',
+                            _headcountController,
+                          ),
+                        ),
+                        if (!_isIndividual) ...[
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: _buildTextField(
+                              'INDUSTRY *',
+                              'Industry type',
+                              _industryController,
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ]),
+                  const SizedBox(height: 20),
+
+                  // Policy Details
+                  _buildSectionHeader('POLICY DETAILS'),
+                  _buildCard([
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _buildDropdownField(
+                            'POLICY TYPE *',
+                            'Select',
+                            ['New', 'Renewal'],
+                            (val) => setState(
+                              () => _policyType = val == 'New'
+                                  ? PolicyType.newPolicy
+                                  : PolicyType.renewal,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: _buildTextField(
+                            'PREMIUM AMOUNT',
+                            'Estimated',
+                            _premiumAmountController,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 14),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _buildDropdownField(
+                            'STATUS *',
+                            'Select',
+                            [
+                              'New Lead',
+                              'Contacted',
+                              'Qualified',
+                              'Negotiation',
+                              'Won',
+                              'Lost',
+                            ],
+                            (val) {
+                              final statusMap = {
+                                'New Lead': LeadStatus.newLead,
+                                'Contacted': LeadStatus.contacted,
+                                'Qualified': LeadStatus.qualified,
+                                'Negotiation': LeadStatus.negotiation,
+                                'Won': LeadStatus.won,
+                                'Lost': LeadStatus.lost,
+                              };
+                              setState(() => _leadStatus = statusMap[val]);
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: _buildDropdownField(
+                            'PRIORITY *',
+                            'Select',
+                            ['Low', 'Medium', 'High'],
+                            (val) {
+                              final priorityMap = {
+                                'Low': LeadPriority.low,
+                                'Medium': LeadPriority.medium,
+                                'High': LeadPriority.high,
+                              };
+                              setState(() => _priority = priorityMap[val]);
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 14),
+                    _buildTextField(
+                      'AFFORDABILITY',
+                      'Free text',
+                      _affordabilityController,
+                    ),
+                  ]),
+                  const SizedBox(height: 20),
+
+                  // Products
+                  _buildProductsSection(),
+                  const SizedBox(height: 20),
+
+                  // Additional
+                  _buildSectionHeader('ADDITIONAL INFO'),
+                  _buildCard([
+                    _buildTextField('REMARK', 'Add remark', _remarkController),
+                    const SizedBox(height: 14),
+                    _buildTextField('TAGS', 'Field and Value', _tagsController),
+                  ]),
                   const SizedBox(height: 30),
                 ],
               ),
             ),
           ),
-          Container(
-            padding: const EdgeInsets.all(16),
-            color: Colors.white,
-            child: Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      side: const BorderSide(color: AppColors.border),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    onPressed: () => context.pop(),
-                    child: const Text(
-                      'Save Draft',
-                      style: TextStyle(
-                        color: AppColors.primaryColor,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  flex: 2,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primaryColor,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    onPressed: () async {
-                      if (_nameController.text.isNotEmpty &&
-                          _phoneController.text.isNotEmpty) {
-                        if (context.mounted) context.pop(true);
-                      }
-                    },
-                    child: const Text(
-                      'Create Lead',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+          _buildBottomButtons(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSectionHeader(String title) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Text(
+        title,
+        style: const TextStyle(
+          color: AppColors.primaryColor,
+          fontSize: 12,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCard(List<Widget> children) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.03),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
+      child: Column(children: children),
     );
   }
 
@@ -557,9 +620,164 @@ class _CreateLeadScreenState extends ConsumerState<CreateLeadScreen> {
       ],
     );
   }
+
+  Widget _buildProductsSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text(
+              'INTERESTED PRODUCTS',
+              style: TextStyle(
+                color: AppColors.primaryColor,
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            GestureDetector(
+              onTap: _showProductBottomSheet,
+              child: Text(
+                _selectedProducts.isEmpty ? '+ Add Products' : 'Edit Products',
+                style: const TextStyle(
+                  color: AppColors.primaryColor,
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.03),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: _selectedProducts.isEmpty
+              ? InkWell(
+                  onTap: _showProductBottomSheet,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.add_shopping_cart_rounded,
+                          size: 18,
+                          color: Colors.grey.shade400,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Tap to select products',
+                          style: TextStyle(
+                            color: Colors.grey.shade400,
+                            fontSize: 13,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              : Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: _selectedProducts.map((prod) {
+                    return Chip(
+                      label: Text(
+                        prod.name,
+                        style: const TextStyle(fontSize: 12),
+                      ),
+                      backgroundColor: AppColors.primaryColor.withValues(
+                        alpha: 0.08,
+                      ),
+                      side: BorderSide(
+                        color: AppColors.primaryColor.withValues(alpha: 0.2),
+                      ),
+                      deleteIcon: const Icon(Icons.close, size: 14),
+                      onDeleted: () => setState(
+                        () => _selectedProducts.removeWhere(
+                          (p) => p.id == prod.id,
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildBottomButtons() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      color: Colors.white,
+      child: Row(
+        children: [
+          Expanded(
+            child: OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                side: const BorderSide(color: AppColors.border),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              onPressed: () => context.pop(),
+              child: const Text(
+                'Cancel',
+                style: TextStyle(
+                  color: AppColors.primaryColor,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            flex: 2,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primaryColor,
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              onPressed: () async {
+                if (_nameController.text.isNotEmpty &&
+                    _phoneController.text.isNotEmpty) {
+                  if (context.mounted) context.pop(true);
+                }
+              },
+              child: const Text(
+                'Create Lead',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
-// Multi-Select Bottom Sheet Widget
+// ==========================================
+// PRODUCT MULTI-SELECT BOTTOM SHEET
+// ==========================================
 class _ProductMultiSelectBottomSheet extends StatefulWidget {
   final List<ProductModel> availableProducts;
   final List<ProductModel> initiallySelected;
@@ -579,7 +797,7 @@ class _ProductMultiSelectBottomSheet extends StatefulWidget {
 class _ProductMultiSelectBottomSheetState
     extends State<_ProductMultiSelectBottomSheet> {
   late List<ProductModel> _tempSelected;
-  final TextEditingController _searchController = TextEditingController();
+  final _searchController = TextEditingController();
   String _searchQuery = '';
 
   @override
@@ -670,7 +888,6 @@ class _ProductMultiSelectBottomSheetState
                     final isSelected = _tempSelected.any(
                       (p) => p.id == item.id,
                     );
-
                     return CheckboxListTile(
                       activeColor: AppColors.primaryColor,
                       value: isSelected,
@@ -735,7 +952,7 @@ class _ProductMultiSelectBottomSheetState
 }
 
 // ==========================================
-// 4. CRM CONTACTS LIST VIEW SCREEN
+// CRM CONTACTS LIST VIEW SCREEN
 // ==========================================
 class CRMContactsScreen extends ConsumerStatefulWidget {
   const CRMContactsScreen({super.key});
@@ -790,7 +1007,7 @@ class _CRMContactsScreenState extends ConsumerState<CRMContactsScreen> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         automaticallyImplyLeading: true,
-        title: Text(
+        title: const Text(
           'New Lead',
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
         ),
@@ -802,7 +1019,6 @@ class _CRMContactsScreenState extends ConsumerState<CRMContactsScreen> {
           : ListView(
               padding: const EdgeInsets.all(16),
               children: [
-                // Toggle Tabs
                 Row(
                   children: [
                     Expanded(
@@ -869,9 +1085,7 @@ class _CRMContactsScreenState extends ConsumerState<CRMContactsScreen> {
           child: const Icon(Icons.add_rounded, color: Colors.white),
           onPressed: () async {
             final result = await context.push<bool>(RoutePaths.crmCreateLead);
-            if (result == true) {
-              _fetchContacts();
-            }
+            if (result == true) _fetchContacts();
           },
         ),
       ),

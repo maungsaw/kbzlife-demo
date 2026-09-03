@@ -4,7 +4,73 @@
 
 enum ContactType { lead, client }
 
+enum LeadType { individual, corporate }
+
+enum PolicyType { newPolicy, renewal }
+
+enum LeadPriority { low, medium, high }
+
+enum LeadStatus { newLead, contacted, qualified, negotiation, won, lost }
+
 enum ActivityType { call, meeting, note, email }
+
+// ==========================================
+// 2. ENUM EXTENSIONS
+// ==========================================
+
+extension LeadTypeExtension on LeadType {
+  String get label {
+    switch (this) {
+      case LeadType.individual:
+        return 'Individual';
+      case LeadType.corporate:
+        return 'Corporate';
+    }
+  }
+}
+
+extension PolicyTypeExtension on PolicyType {
+  String get label {
+    switch (this) {
+      case PolicyType.newPolicy:
+        return 'New';
+      case PolicyType.renewal:
+        return 'Renewal';
+    }
+  }
+}
+
+extension LeadPriorityExtension on LeadPriority {
+  String get label {
+    switch (this) {
+      case LeadPriority.low:
+        return 'Low';
+      case LeadPriority.medium:
+        return 'Medium';
+      case LeadPriority.high:
+        return 'High';
+    }
+  }
+}
+
+extension LeadStatusExtension on LeadStatus {
+  String get label {
+    switch (this) {
+      case LeadStatus.newLead:
+        return 'New Lead';
+      case LeadStatus.contacted:
+        return 'Contacted';
+      case LeadStatus.qualified:
+        return 'Qualified';
+      case LeadStatus.negotiation:
+        return 'Negotiation';
+      case LeadStatus.won:
+        return 'Won';
+      case LeadStatus.lost:
+        return 'Lost';
+    }
+  }
+}
 
 // ==========================================
 // 2. DATA MODELS
@@ -86,19 +152,37 @@ class CRMContactModel {
   final List<ActivityModel> activities;
   final List<ProductModel> products;
 
-  // Additional detail fields
+  // Personal Information
   final String? nrc;
   final String? maritalStatus;
+  final String? jobTitle;
+
+  // Address Information
   final String? roomNo;
   final String? buildingNo;
   final String? houseNo;
   final String? streetNo;
   final String? wardNo;
+  final String? town;
   final String? township;
   final String? stateRegion;
+
+  // Company Information
   final String? companyName;
   final String? headcounts;
-  final String? jobTitle;
+  final String? industry;
+
+  // Lead Specific Fields
+  final LeadType? leadType;
+  final String? saleAttachment;
+  final PolicyType? policyType;
+  final double? premiumAmountEstimated;
+  final String? realizationOfInsuranceNeed;
+  final LeadStatus? leadStatus;
+  final LeadPriority? priority;
+  final String? affordability;
+  final String? remark;
+  final String? tags;
 
   CRMContactModel({
     required this.id,
@@ -112,16 +196,28 @@ class CRMContactModel {
     this.products = const [],
     this.nrc,
     this.maritalStatus,
+    this.jobTitle,
     this.roomNo,
     this.buildingNo,
     this.houseNo,
     this.streetNo,
     this.wardNo,
+    this.town,
     this.township,
     this.stateRegion,
     this.companyName,
     this.headcounts,
-    this.jobTitle,
+    this.industry,
+    this.leadType,
+    this.saleAttachment,
+    this.policyType,
+    this.premiumAmountEstimated,
+    this.realizationOfInsuranceNeed,
+    this.leadStatus,
+    this.priority,
+    this.affordability,
+    this.remark,
+    this.tags,
   });
 
   factory CRMContactModel.fromJson(Map<String, dynamic> json) {
@@ -148,16 +244,48 @@ class CRMContactModel {
           [],
       nrc: json['nrc'] as String?,
       maritalStatus: json['maritalStatus'] as String?,
+      jobTitle: json['jobTitle'] as String?,
       roomNo: json['roomNo'] as String?,
       buildingNo: json['buildingNo'] as String?,
       houseNo: json['houseNo'] as String?,
       streetNo: json['streetNo'] as String?,
       wardNo: json['wardNo'] as String?,
+      town: json['town'] as String?,
       township: json['township'] as String?,
       stateRegion: json['stateRegion'] as String?,
       companyName: json['companyName'] as String?,
       headcounts: json['headcounts'] as String?,
-      jobTitle: json['jobTitle'] as String?,
+      industry: json['industry'] as String?,
+      leadType: json['leadType'] != null
+          ? LeadType.values.firstWhere(
+              (e) => e.name == json['leadType'],
+              orElse: () => LeadType.individual,
+            )
+          : null,
+      saleAttachment: json['saleAttachment'] as String?,
+      policyType: json['policyType'] != null
+          ? PolicyType.values.firstWhere(
+              (e) => e.name == json['policyType'],
+              orElse: () => PolicyType.newPolicy,
+            )
+          : null,
+      premiumAmountEstimated: (json['premiumAmountEstimated'] as num?)?.toDouble(),
+      realizationOfInsuranceNeed: json['realizationOfInsuranceNeed'] as String?,
+      leadStatus: json['leadStatus'] != null
+          ? LeadStatus.values.firstWhere(
+              (e) => e.name == json['leadStatus'],
+              orElse: () => LeadStatus.newLead,
+            )
+          : null,
+      priority: json['priority'] != null
+          ? LeadPriority.values.firstWhere(
+              (e) => e.name == json['priority'],
+              orElse: () => LeadPriority.medium,
+            )
+          : null,
+      affordability: json['affordability'] as String?,
+      remark: json['remark'] as String?,
+      tags: json['tags'] as String?,
     );
   }
 
@@ -174,16 +302,28 @@ class CRMContactModel {
       'products': products.map((e) => e.toJson()).toList(),
       if (nrc != null) 'nrc': nrc,
       if (maritalStatus != null) 'maritalStatus': maritalStatus,
+      if (jobTitle != null) 'jobTitle': jobTitle,
       if (roomNo != null) 'roomNo': roomNo,
       if (buildingNo != null) 'buildingNo': buildingNo,
       if (houseNo != null) 'houseNo': houseNo,
       if (streetNo != null) 'streetNo': streetNo,
       if (wardNo != null) 'wardNo': wardNo,
+      if (town != null) 'town': town,
       if (township != null) 'township': township,
       if (stateRegion != null) 'stateRegion': stateRegion,
       if (companyName != null) 'companyName': companyName,
       if (headcounts != null) 'headcounts': headcounts,
-      if (jobTitle != null) 'jobTitle': jobTitle,
+      if (industry != null) 'industry': industry,
+      if (leadType != null) 'leadType': leadType!.name,
+      if (saleAttachment != null) 'saleAttachment': saleAttachment,
+      if (policyType != null) 'policyType': policyType!.name,
+      if (premiumAmountEstimated != null) 'premiumAmountEstimated': premiumAmountEstimated,
+      if (realizationOfInsuranceNeed != null) 'realizationOfInsuranceNeed': realizationOfInsuranceNeed,
+      if (leadStatus != null) 'leadStatus': leadStatus!.name,
+      if (priority != null) 'priority': priority!.name,
+      if (affordability != null) 'affordability': affordability,
+      if (remark != null) 'remark': remark,
+      if (tags != null) 'tags': tags,
     };
   }
 }
@@ -202,20 +342,27 @@ class CRMRepository {
       type: ContactType.lead,
       timeAgo: '10 mins ago',
       assignedAgentId: 'AGENT-01',
+      leadType: LeadType.corporate,
       companyName: 'Apex Logistics Co., Ltd',
       jobTitle: 'Managing Director',
+      headcounts: '50',
+      industry: 'Logistics',
       township: 'Kamayut',
       stateRegion: 'Yangon',
+      leadStatus: LeadStatus.newLead,
+      priority: LeadPriority.high,
+      policyType: PolicyType.newPolicy,
+      premiumAmountEstimated: 500000,
       products: [
         ProductModel(
           id: 'P01',
-          name: 'ERP Software Suite',
-          category: 'Software',
+          name: 'Group Life',
+          category: 'Group Insurance',
         ),
         ProductModel(
           id: 'P02',
-          name: 'POS Terminal System',
-          category: 'Hardware',
+          name: 'Credit Life',
+          category: 'Protections',
         ),
       ],
       activities: [
@@ -235,15 +382,24 @@ class CRMRepository {
       type: ContactType.client,
       timeAgo: '2 hours ago',
       assignedAgentId: 'AGENT-02',
+      leadType: LeadType.individual,
+      nrc: '12/KaMaYa(N)334455',
+      maritalStatus: 'Single',
       companyName: 'TechHub Retail Group',
       jobTitle: 'Head of Operations',
+      headcounts: '25',
+      industry: 'Technology',
       township: 'Bahan',
       stateRegion: 'Yangon',
+      leadStatus: LeadStatus.won,
+      priority: LeadPriority.medium,
+      policyType: PolicyType.newPolicy,
+      premiumAmountEstimated: 250000,
       products: [
         ProductModel(
           id: 'P04',
-          name: 'CRM Enterprise License',
-          category: 'Software',
+          name: 'Universal Life',
+          category: 'Savings',
         ),
       ],
       activities: [],
