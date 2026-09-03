@@ -8,6 +8,7 @@ import '../const.dart';
 import '../providers/crm_providers.dart';
 import '../providers/router_provider.dart';
 import '../widgets/app_segmented_tabs.dart';
+import '../widgets/app_selection_chip.dart';
 import 'count_mill.dart';
 import 'model.dart';
 import 'role_bradge.dart';
@@ -273,12 +274,10 @@ class _UserDashboardScreenState extends ConsumerState<UserDashboardScreen>
                             break;
                         }
 
-                        return ChoiceChip(
-                          label: Text(label),
+                        return AppSelectionChip(
+                          label: label,
                           selected: isSelected,
-                          selectedColor: AppColors.primaryColor.withValues(
-                            alpha: 0.2,
-                          ),
+
                           onSelected: (selected) {
                             ref
                                 .read(crmDashboardProvider.notifier)
@@ -303,12 +302,10 @@ class _UserDashboardScreenState extends ConsumerState<UserDashboardScreen>
                       runSpacing: 4,
                       children: ProductStage.values.map((stage) {
                         final isSelected = state.selectedStageFilter == stage;
-                        return ChoiceChip(
-                          label: Text(stage.name.toUpperCase()),
+                        return AppSelectionChip(
+                          label: stage.name.toUpperCase(),
                           selected: isSelected,
-                          selectedColor: AppColors.primaryColor.withValues(
-                            alpha: 0.2,
-                          ),
+
                           onSelected: (selected) {
                             ref
                                 .read(crmDashboardProvider.notifier)

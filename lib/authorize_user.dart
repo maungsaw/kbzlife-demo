@@ -140,7 +140,7 @@ class _AuthorizedAgentScreenState extends ConsumerState<AuthorizedAgentScreen> {
                   IconButton(
                     icon: const Icon(
                       Icons.notifications_active_rounded,
-                      color: Colors.blue,
+                      color: AppColors.primaryColor,
                     ),
                     onPressed: () {
                       context.push(RoutePaths.notificationInbox);
