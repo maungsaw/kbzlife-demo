@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
 import '../providers/router_provider.dart';
+import '../widgets/app_selection_chip.dart';
 import 'model.dart';
 import 'data.dart';
 
@@ -21,7 +21,8 @@ class NotificationInboxScreen extends ConsumerStatefulWidget {
       _NotificationInboxScreenState();
 }
 
-class _NotificationInboxScreenState extends ConsumerState<NotificationInboxScreen> {
+class _NotificationInboxScreenState
+    extends ConsumerState<NotificationInboxScreen> {
   late List<AnnouncementModel> _announcements;
   String _selectedTypeFilter = 'All';
 
@@ -121,27 +122,11 @@ class _NotificationInboxScreenState extends ConsumerState<NotificationInboxScree
                       final isSelected = _selectedTypeFilter == type;
                       return Padding(
                         padding: const EdgeInsets.only(right: 8.0),
-                        child: ChoiceChip(
-                          label: Text(type),
-                          selected: isSelected,
-                          selectedColor: const Color(0xFF1E293B),
-                          backgroundColor: const Color(0xFFF1F5F9),
-                          showCheckmark: false,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                            side: BorderSide.none,
-                          ),
-                          labelStyle: TextStyle(
-                            color: isSelected
-                                ? Colors.white
-                                : const Color(0xFF475569),
-                            fontWeight: isSelected
-                                ? FontWeight.w600
-                                : FontWeight.w500,
-                            fontSize: 13,
-                          ),
+                        child: AppSelectionChip(
                           onSelected: (_) =>
                               setState(() => _selectedTypeFilter = type),
+                          label: type,
+                          selected: isSelected,
                         ),
                       );
                     }).toList(),

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../const.dart';
+import '../data/mock/mock_products.dart';
 import '../providers/router_provider.dart';
 import '../widgets/app_segmented_tabs.dart';
 import '../widgets/app_text_field.dart';
@@ -57,16 +58,13 @@ class _CreateLeadScreenState extends ConsumerState<CreateLeadScreen> {
   final _remarkController = TextEditingController();
   final _tagsController = TextEditingController();
 
-  final List<ProductModel> _availableProducts = [
-    ProductModel(id: 'P01', name: 'Short Term Endowment', category: 'Savings'),
-    ProductModel(id: 'P02', name: 'Universal Life', category: 'Savings'),
-    ProductModel(id: 'P03', name: 'Education Life', category: 'Savings'),
-    ProductModel(id: 'P04', name: 'Personal Accident', category: 'Protections'),
-    ProductModel(id: 'P05', name: 'Critical Illness', category: 'Protections'),
-    ProductModel(id: 'P06', name: 'Health', category: 'Medical Care'),
-    ProductModel(id: 'P07', name: 'Group Life', category: 'Group Insurance'),
-    ProductModel(id: 'P08', name: 'Credit Life', category: 'Protections'),
-  ];
+  final List<ProductModel> _availableProducts = MockProducts.all
+      .map((p) => ProductModel(
+            id: p.code,
+            name: p.name,
+            category: p.category.name,
+          ))
+      .toList();
 
   bool get _isIndividual => _leadType == LeadType.individual;
 
@@ -328,48 +326,32 @@ class _CreateLeadScreenState extends ConsumerState<CreateLeadScreen> {
                       ),
                       const SizedBox(height: 14),
                     ],
-                    Row(
-                      children: [
-                        Expanded(
-                          child: AppTextField(
-                            controller: _phoneController,
-                            label: 'Mobile Phone No *',
-                            hint: '',
-                            keyboardType: TextInputType.phone,
-                            showFlag: true,
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: _buildTextField(
-                            'EMAIL',
-                            'email@example.com',
-                            _emailController,
-                          ),
-                        ),
-                      ],
+                    AppTextField(
+                      controller: _phoneController,
+                      label: 'Mobile Phone No *',
+                      hint: '',
+                      keyboardType: TextInputType.phone,
+                      showFlag: true,
+                    ),
+                    const SizedBox(height: 14),
+                    _buildTextField(
+                      'EMAIL',
+                      'email@example.com',
+                      _emailController,
                     ),
                     if (_isIndividual) ...[
                       const SizedBox(height: 14),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: _buildDropdownField(
-                              'MARITAL STATUS',
-                              'Select',
-                              ['Single', 'Married', 'Divorced'],
-                              (val) => setState(() => _maritalStatus = val),
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: _buildTextField(
-                              'JOB TITLE',
-                              'Job title',
-                              _jobTitleController,
-                            ),
-                          ),
-                        ],
+                      _buildDropdownField(
+                        'MARITAL STATUS',
+                        'Select',
+                        ['Single', 'Married', 'Divorced'],
+                        (val) => setState(() => _maritalStatus = val),
+                      ),
+                      const SizedBox(height: 14),
+                      _buildTextField(
+                        'JOB TITLE',
+                        'Job title',
+                        _jobTitleController,
                       ),
                     ],
                   ]),
@@ -398,102 +380,78 @@ class _CreateLeadScreenState extends ConsumerState<CreateLeadScreen> {
                       _companyController,
                     ),
                     const SizedBox(height: 14),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _buildTextField(
-                            'HEAD COUNTS *',
-                            'e.g. 50',
-                            _headcountController,
-                          ),
-                        ),
-                        if (!_isIndividual) ...[
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: _buildTextField(
-                              'INDUSTRY *',
-                              'Industry type',
-                              _industryController,
-                            ),
-                          ),
-                        ],
-                      ],
+                    _buildTextField(
+                      'HEAD COUNTS *',
+                      'e.g. 50',
+                      _headcountController,
                     ),
+                    if (!_isIndividual) ...[
+                      const SizedBox(height: 14),
+                      _buildTextField(
+                        'INDUSTRY *',
+                        'Industry type',
+                        _industryController,
+                      ),
+                    ],
                   ]),
                   const SizedBox(height: 20),
 
                   // Policy Details
                   _buildSectionHeader('POLICY DETAILS'),
                   _buildCard([
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _buildDropdownField(
-                            'POLICY TYPE *',
-                            'Select',
-                            ['New', 'Renewal'],
-                            (val) => setState(
-                              () => _policyType = val == 'New'
-                                  ? PolicyType.newPolicy
-                                  : PolicyType.renewal,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: _buildTextField(
-                            'PREMIUM AMOUNT',
-                            'Estimated',
-                            _premiumAmountController,
-                          ),
-                        ),
-                      ],
+                    _buildDropdownField(
+                      'POLICY TYPE *',
+                      'Select',
+                      ['New', 'Renewal'],
+                      (val) => setState(
+                        () => _policyType = val == 'New'
+                            ? PolicyType.newPolicy
+                            : PolicyType.renewal,
+                      ),
                     ),
                     const SizedBox(height: 14),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _buildDropdownField(
-                            'STATUS *',
-                            'Select',
-                            [
-                              'New Lead',
-                              'Contacted',
-                              'Qualified',
-                              'Negotiation',
-                              'Won',
-                              'Lost',
-                            ],
-                            (val) {
-                              final statusMap = {
-                                'New Lead': LeadStatus.newLead,
-                                'Contacted': LeadStatus.contacted,
-                                'Qualified': LeadStatus.qualified,
-                                'Negotiation': LeadStatus.negotiation,
-                                'Won': LeadStatus.won,
-                                'Lost': LeadStatus.lost,
-                              };
-                              setState(() => _leadStatus = statusMap[val]);
-                            },
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: _buildDropdownField(
-                            'PRIORITY *',
-                            'Select',
-                            ['Low', 'Medium', 'High'],
-                            (val) {
-                              final priorityMap = {
-                                'Low': LeadPriority.low,
-                                'Medium': LeadPriority.medium,
-                                'High': LeadPriority.high,
-                              };
-                              setState(() => _priority = priorityMap[val]);
-                            },
-                          ),
-                        ),
+                    _buildTextField(
+                      'PREMIUM AMOUNT',
+                      'Estimated',
+                      _premiumAmountController,
+                    ),
+                    const SizedBox(height: 14),
+                    _buildDropdownField(
+                      'STATUS *',
+                      'Select',
+                      [
+                        'New Lead',
+                        'Contacted',
+                        'Qualified',
+                        'Negotiation',
+                        'Won',
+                        'Lost',
                       ],
+                      (val) {
+                        final statusMap = {
+                          'New Lead': LeadStatus.newLead,
+                          'Contacted': LeadStatus.contacted,
+                          'Qualified': LeadStatus.qualified,
+                          'Negotiation': LeadStatus.negotiation,
+                          'Won': LeadStatus.won,
+                          'Lost': LeadStatus.lost,
+                        };
+                        setState(() => _leadStatus = statusMap[val]);
+                      },
+                    ),
+                    const SizedBox(height: 14),
+                    _buildDropdownField(
+                      'PRIORITY *',
+                      'Select',
+                      ['Low', 'Medium', 'High'],
+                      (val) {
+                        final priorityMap = {
+                          'Low': LeadPriority.low,
+                          'Medium': LeadPriority.medium,
+                          'High': LeadPriority.high,
+                        };
+                        setState(() => _priority = priorityMap[val]);
+                      },
                     ),
                     const SizedBox(height: 14),
                     _buildTextField(

@@ -142,7 +142,9 @@ class _AuthorizedAgentScreenState extends ConsumerState<AuthorizedAgentScreen> {
                       Icons.notifications_active_rounded,
                       color: Colors.blue,
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      context.push(RoutePaths.notificationInbox);
+                    },
                   ),
                   Positioned(
                     right: 8,
