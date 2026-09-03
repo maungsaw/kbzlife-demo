@@ -39,3 +39,14 @@ const kSalePersons = [
   'Nay Lin Tun (FA-3388)',
 ];
 const kSaleAttachments = ['Direct', 'Referral Partner', 'Roadshow', 'Branch'];
+
+/// An FA can be attached to more than one branch, so the Proposal tab picks
+/// one rather than showing a single Core-sourced read-out.
+const kBranchOffices = [
+  'Yangon HQ',
+  'Yangon - Hlaing Branch',
+  'Mandalay Branch',
+  'Nay Pyi Taw Branch',
+  'Mawlamyine Branch',
+  'Taunggyi Branch',
+];

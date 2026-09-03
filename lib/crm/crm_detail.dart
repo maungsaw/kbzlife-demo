@@ -175,6 +175,7 @@ class _CRMDetailViewScreenState extends ConsumerState<CRMDetailViewScreen>
                             label: 'Start e-App',
                             onTap: () {
                               final params = {
+                                'customerId': contact.id,
                                 'crmName': contact.name,
                                 'crmPhone': contact.phone,
                                 'crmEmail': contact.email,

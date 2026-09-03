@@ -96,6 +96,23 @@ class CRMContactModel {
   final List<ActivityLog> activities;
   final String timeAgo;
 
+  /// KYC detail the CRM screens never render — it exists so "Start e-App"
+  /// can hand the proposal a filled Policy Holder card instead of a name
+  /// and a phone number. Nullable: an early lead has none of it yet.
+  final String? fatherName;
+  final DateTime? dob;
+  final String? gender;
+  final String? nrc;
+  final String? occupation;
+  final String? maritalStatus;
+  final String? houseNo;
+  final String? streetNo;
+  final String? wardNo;
+  final String? town;
+  final String? township;
+  final String? district;
+  final String? stateRegion;
+
   CRMContactModel({
     required this.id,
     required this.name,
@@ -105,6 +122,19 @@ class CRMContactModel {
     required this.products,
     required this.activities,
     required this.timeAgo,
+    this.fatherName,
+    this.dob,
+    this.gender,
+    this.nrc,
+    this.occupation,
+    this.maritalStatus,
+    this.houseNo,
+    this.streetNo,
+    this.wardNo,
+    this.town,
+    this.township,
+    this.district,
+    this.stateRegion,
   });
 
   /// Evaluates product stages to derive overall classification
@@ -218,6 +248,19 @@ class CRMRepository {
       // 1. Half-Qualified Lead: 2 products (1 Qualified + 1 Unqualified)
       CRMContactModel(
         id: 'CONTACT-2024-001',
+        fatherName: 'U Kyaw Win',
+        dob: DateTime(1988, 3, 14),
+        gender: 'Male',
+        nrc: '12/MaBaNa(N)123456',
+        occupation: 'Shop Owner',
+        maritalStatus: 'Married',
+        houseNo: '25',
+        streetNo: 'Bogyoke',
+        wardNo: '7',
+        town: 'Hlaing',
+        township: 'Hlaing',
+        district: 'West Yangon',
+        stateRegion: 'Yangon Region',
         name: 'Aung Kyaw Moe',
         phone: '09-123-456-789',
         email: 'aung.kyaw@example.com',
@@ -243,6 +286,19 @@ class CRMRepository {
       // 2. Fully Qualified Client: 1 product (Qualified)
       CRMContactModel(
         id: 'CONTACT-2024-002',
+        fatherName: 'U Tin Maung',
+        dob: DateTime(1992, 11, 2),
+        gender: 'Female',
+        nrc: '12/KaMaYa(N)334455',
+        occupation: 'Teacher',
+        maritalStatus: 'Single',
+        houseNo: '102/B',
+        streetNo: 'Pyay',
+        wardNo: '3',
+        town: 'Kamayut',
+        township: 'Kamayut',
+        district: 'West Yangon',
+        stateRegion: 'Yangon Region',
         name: 'Daw Su Su',
         phone: '09-222-333-444',
         email: 'susu@example.com',
@@ -262,6 +318,19 @@ class CRMRepository {
       // 3. Unqualified Lead: 1 product (Unqualified)
       CRMContactModel(
         id: 'CONTACT-2024-003',
+        fatherName: 'U Hla Myint',
+        dob: DateTime(1995, 6, 21),
+        gender: 'Female',
+        nrc: '9/MaHaMa(N)778899',
+        occupation: 'Nurse',
+        maritalStatus: 'Single',
+        houseNo: '48',
+        streetNo: '62nd',
+        wardNo: '11',
+        town: 'Chanmyathazi',
+        township: 'Chanmyathazi',
+        district: 'Mandalay',
+        stateRegion: 'Mandalay Region',
         name: 'Thida Win',
         phone: '09-987-654-321',
         email: 'thida.win@example.com',
@@ -281,6 +350,19 @@ class CRMRepository {
       // 4. Fully Qualified Client: 2 products (Both Qualified)
       CRMContactModel(
         id: 'CONTACT-2024-004',
+        fatherName: 'U Sein Hlaing',
+        dob: DateTime(1980, 1, 9),
+        gender: 'Female',
+        nrc: '12/BaHaNa(N)221100',
+        occupation: 'Business Owner',
+        maritalStatus: 'Married',
+        houseNo: '7',
+        streetNo: 'Kabar Aye Pagoda',
+        wardNo: '2',
+        town: 'Bahan',
+        township: 'Bahan',
+        district: 'East Yangon',
+        stateRegion: 'Yangon Region',
         name: 'Daw Khin Moe',
         phone: '09-777-888-999',
         email: 'khinmoe@example.com',
@@ -306,6 +388,19 @@ class CRMRepository {
       // 5. Unqualified Lead: 2 products (Both Pending/Unqualified)
       CRMContactModel(
         id: 'CONTACT-2024-005',
+        fatherName: 'U Zaw Naing',
+        dob: DateTime(1990, 8, 30),
+        gender: 'Male',
+        nrc: '13/TaKaNa(N)556677',
+        occupation: 'Engineer',
+        maritalStatus: 'Married',
+        houseNo: '19',
+        streetNo: 'Bogyoke Aung San',
+        wardNo: '5',
+        town: 'Taunggyi',
+        township: 'Taunggyi',
+        district: 'Taunggyi',
+        stateRegion: 'Shan State',
         name: 'Kyaw Zayar',
         phone: '09-555-666-777',
         email: 'kyaw.zayar@example.com',

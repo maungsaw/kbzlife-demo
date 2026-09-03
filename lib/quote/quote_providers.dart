@@ -16,7 +16,11 @@ class QuoteCalcResult {
 }
 
 class QuoteFormController extends StateNotifier<Map<String, dynamic>> {
-  QuoteFormController(this.product) : super(_defaults(product)) {
+  /// [blank] starts every field empty. The quote calculator seeds sensible
+  /// defaults so a figure appears at once, but the e-App is the customer's
+  /// own application — the FA types each value in, so nothing is pre-filled.
+  QuoteFormController(this.product, {bool blank = false})
+    : super(blank ? <String, dynamic>{} : _defaults(product)) {
     _recomputeComputedFields();
   }
 
@@ -55,8 +59,11 @@ class QuoteFormController extends StateNotifier<Map<String, dynamic>> {
 
   void _recomputeComputedFields() {
     if (product.code == 'UL-01') {
-      final annual = (state['baseAnnual'] as num?) ?? 0;
-      state = {...state, 'baseMonthly': (annual / 12).round()};
+      final annual = state['baseAnnual'] as num?;
+      state = {
+        ...state,
+        'baseMonthly': annual == null ? null : (annual / 12).round(),
+      };
     }
   }
 
@@ -158,7 +165,10 @@ class QuoteFormController extends StateNotifier<Map<String, dynamic>> {
         premium = (sum * 0.0001 * days).round();
         lines.add(('Coverage amount', '${_fmt(sum.round())} MMK'));
         lines.add(('Travel days', '$days days'));
-        lines.add(('Travel type', a['travelType'] == 'international' ? 'International' : 'Domestic'));
+        lines.add((
+          'Travel type',
+          a['travelType'] == 'international' ? 'International' : 'Domestic',
+        ));
       case 'STE-01':
         final sum = ((a['sumInsured'] as num?) ?? 0);
         final years = int.tryParse(a['policyTerm'] as String? ?? '5') ?? 5;
@@ -210,6 +220,15 @@ final quoteFormProvider =
       Map<String, dynamic>,
       Product
     >((ref, product) => QuoteFormController(product));
+
+/// The e-App's own copy of the calculator state: same fields, but starting
+/// empty and kept apart from whatever the FA last typed in the quote screen.
+final eappQuoteFormProvider =
+    StateNotifierProvider.family<
+      QuoteFormController,
+      Map<String, dynamic>,
+      Product
+    >((ref, product) => QuoteFormController(product, blank: true));
 
 /// Doc `draft-quotes-ux-brainstorm` — parked calculator sessions, separate
 /// from the product catalog. In-memory for this prototype (device-local
