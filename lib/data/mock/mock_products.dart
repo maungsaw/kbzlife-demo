@@ -1,0 +1,416 @@
+import '../models/product.dart';
+import '../models/quote_field.dart';
+
+const _dobField = QuoteFieldSpec(key: 'dob', label: 'Date of birth', type: QuoteFieldType.date, defaultNumber: 0);
+
+/// KBZ Life products — 12 products matching the updated product lineup.
+/// These are input *schemas* only — actual pricing comes from the Core system.
+class MockProducts {
+  MockProducts._();
+
+  static const all = <Product>[
+    // ── HEALTH ──────────────────────────────────────────────────────
+    Product(
+      code: 'HI-01',
+      name: 'Health',
+      category: ProductCategory.health,
+      tagline: 'In-patient coverage with optional surgery and clinic add-ons',
+      coverage: 'Death · Hospitalization + optional covers',
+      description: 'Individual health insurance for individuals aged 6-75 years, with parental/guardian coverage options for children aged 6-18 years. One-year policy term with flexible premium payment options.',
+      benefits: [
+        'Basic — hospitalization from disease or accident: 10,000 MMK/day for 1 unit, max 60 days',
+        'Basic — death: 1,000,000 MMK for 1 unit',
+        'Additional Cover 1 — surgeries/operations: 500,000 MMK for 1 unit; miscarriages: 300,000 MMK',
+        'Additional Cover 2 — clinic/hospital treatment expenses: 2,500-10,000 MMK per unit',
+      ],
+      eligibility: [
+        'Age 6-75 years (parent/guardian may insure a child aged 6-18)',
+        'Individual only',
+        'Sum insured 10,000 MMK to 50,000,000 MMK',
+        'Policy term 1 year from premium payment date',
+        'Annual or semi-annual premium payment',
+        'Annual premium 11,000-61,600 MMK for basic coverage (1 unit)',
+        '1 to 25 units available',
+      ],
+      calculatorFields: [
+        _dobField,
+        QuoteFieldSpec(
+          key: 'covers',
+          label: 'Type of covers (in unit)',
+          type: QuoteFieldType.multiSelect,
+          options: [
+            QuoteOption('Basic Cover (Death, Hospitalization)', 'basic'),
+            QuoteOption('Additional Cover 1 (Surgery, Miscarriage)', 'addl1'),
+            QuoteOption('Additional Cover 2 (Medical treatments in clinic/hospital)', 'addl2'),
+          ],
+        ),
+        QuoteFieldSpec(
+          key: 'paymentType',
+          label: 'Payment type',
+          type: QuoteFieldType.singleSelect,
+          options: [QuoteOption('6 Months', '6'), QuoteOption('12 Months', '12')],
+        ),
+      ],
+    ),
+    // ── I-MEDICAL ──────────────────────────────────────────────────
+    Product(
+      code: 'IM-01',
+      name: 'I-Medical',
+      category: ProductCategory.health,
+      tagline: 'Comprehensive individual medical insurance',
+      coverage: 'Hospitalization · Surgery · Outpatient',
+      description: 'Individual medical insurance providing comprehensive health coverage including hospitalization, surgery, and outpatient benefits.',
+      benefits: [
+        'Hospitalization coverage for disease or accident',
+        'Surgical and operation benefits',
+        'Outpatient treatment coverage',
+        'Death benefit',
+      ],
+      eligibility: [
+        'Individual only',
+        'Age 6-75 years',
+        'Policy term 1 year',
+        'Annual or semi-annual premium payment',
+      ],
+      calculatorFields: [
+        _dobField,
+        QuoteFieldSpec(key: 'sumInsured', label: 'Sum insured amount', type: QuoteFieldType.number, suffix: 'MMK', defaultNumber: 5000000),
+        QuoteFieldSpec(
+          key: 'paymentType',
+          label: 'Payment type',
+          type: QuoteFieldType.singleSelect,
+          options: [QuoteOption('6 Months', '6'), QuoteOption('12 Months', '12')],
+        ),
+      ],
+    ),
+    // ── MICRO HEALTH ───────────────────────────────────────────────
+    Product(
+      code: 'MH-01',
+      name: 'Micro Health',
+      category: ProductCategory.health,
+      tagline: 'Affordable basic health coverage for individuals',
+      coverage: 'Hospitalization · Basic medical',
+      description: 'Low-cost micro health insurance providing essential hospitalization and basic medical coverage.',
+      benefits: [
+        'Hospitalization coverage from disease or accident',
+        'Basic medical treatment benefits',
+        'Affordable premium starting from 5,500 MMK/year',
+      ],
+      eligibility: [
+        'Individual only',
+        'Age 6-65 years',
+        'Policy term 1 year',
+        'Annual premium payment',
+      ],
+      calculatorFields: [
+        _dobField,
+        QuoteFieldSpec(key: 'sumInsured', label: 'Sum insured amount', type: QuoteFieldType.number, suffix: 'MMK', defaultNumber: 500000),
+      ],
+    ),
+    // ── CRITICAL ILLNESS ──────────────────────────────────────────
+    Product(
+      code: 'CI-01',
+      name: 'Critical Illness',
+      category: ProductCategory.health,
+      tagline: 'Protection against critical illnesses and death',
+      coverage: 'Critical illness lump sum',
+      description: 'Individual coverage for individuals aged 6-60 years; parents/guardians may insure children aged 6-18. Policy term is 1 year from the premium payment date.',
+      benefits: [
+        'Death benefit — 1,000,000 MMK per unit',
+        'Treatment coverage for 10 critical illnesses: life-threatening cancer, stroke, heart attack, heart valve replacement, coronary artery bypass surgery, renal failure, bacterial meningitis, coma, major organ transplant, severe burns',
+        '1 to 10 units available',
+      ],
+      eligibility: [
+        'Age 6-60 years (parent/guardian may insure a child aged 6-18)',
+        'Individual only',
+        'Annual premium 8,800-37,400 MMK per unit',
+        'Annual or semi-annual payment',
+        'Premium rates vary by entry age and payment mode',
+      ],
+      exclusions: ['Pre-existing conditions', 'Mental disorders', 'Cosmetic procedures', 'Drug-related conditions', 'Suicide', 'War-related incidents', 'Fraud claims', 'Malignant tumors diagnosed within 90 days of policy issuance'],
+      calculatorFields: [
+        _dobField,
+        QuoteFieldSpec(key: 'unit', label: 'Unit', type: QuoteFieldType.number, defaultNumber: 1),
+        QuoteFieldSpec(
+          key: 'paymentType',
+          label: 'Payment type',
+          type: QuoteFieldType.singleSelect,
+          options: [QuoteOption('6 Months', '6'), QuoteOption('12 Months', '12')],
+        ),
+      ],
+    ),
+    // ── PROTECTIONS ────────────────────────────────────────────────
+    Product(
+      code: 'PA-01',
+      name: 'Personal Accident',
+      category: ProductCategory.protection,
+      tagline: 'Protection for accidental risks covering individuals aged 16-65 years',
+      coverage: 'Accident · Total Permanent Disability',
+      description: 'This policy provides comprehensive coverage for accidental injuries and related risks during the policy term, protecting against financial hardship resulting from unforeseen accidents.',
+      benefits: [
+        'Death benefit — full sum insured paid to beneficiary',
+        'Total Permanent Disability — full sum insured for inability to work',
+        'Injury benefits — payments based on injury severity table',
+        'Hospitalization — 3% of sum insured per week, up to 15%',
+        'Loss of income — weekly benefits up to 15% of sum insured during recovery',
+      ],
+      eligibility: [
+        'Age 16-65 years',
+        'Individual only',
+        'Sum insured 500,000 to 20,000,000 MMK',
+        'Policy term 3 months, 6 months, or 1 year',
+        'Premium rate 0.7% of sum insured (0.707% for risky occupations)',
+        'Lump-sum premium payment',
+      ],
+      exclusions: ['Self-inflicted injuries', 'Drug-related incidents', 'Disease-related deaths', 'War-related events', 'Criminal activities', 'Third-party involvement'],
+      calculatorFields: [
+        _dobField,
+        QuoteFieldSpec(key: 'sumInsured', label: 'Sum insured amount', type: QuoteFieldType.number, suffix: 'MMK', defaultNumber: 500000),
+        QuoteFieldSpec(
+          key: 'policyTerm',
+          label: 'Policy term',
+          type: QuoteFieldType.singleSelect,
+          options: [QuoteOption('3 Months', '3'), QuoteOption('6 Months', '6'), QuoteOption('12 Months', '12')],
+        ),
+      ],
+    ),
+    Product(
+      code: 'GL-01',
+      name: 'Group Life',
+      category: ProductCategory.protection,
+      tagline: 'Worker and family protection through group coverage',
+      coverage: 'Group life',
+      description: 'Coverage designed for groups of minimum 5 individuals aged 18-60 years, intended to provide peace of mind for employees from companies, factories, workshops, and associations.',
+      benefits: [
+        'Death benefit — full sum insured paid to beneficiary upon employee death during policy term',
+        'Injury coverage — benefits per rate table, suitable compensation per medical recommendation',
+        'Total and Permanent Disability — full sum insured if employee becomes unable to work due to injury',
+      ],
+      eligibility: [
+        'Minimum group size 5 individuals',
+        'Age 18-60 years',
+        'Individual only (group policy)',
+        'Sum insured 10,000 MMK to 50,000,000 MMK per employee',
+        'Policy term 1 year, lump-sum premium',
+        'Premium rate 1% of sum insured',
+      ],
+      exclusions: ['Suicide', 'Drug-related deaths', 'Post-resignation deaths', 'Criminal-related injuries', 'Self-inflicted injuries'],
+      calculatorFields: [
+        _dobField,
+        QuoteFieldSpec(key: 'sumInsured', label: 'Sum insured amount', type: QuoteFieldType.number, suffix: 'MMK', defaultNumber: 10000000),
+      ],
+    ),
+    Product(
+      code: 'CLS-01',
+      name: 'Short Term Single Premium Credit Life',
+      category: ProductCategory.protection,
+      tagline: 'Short-term borrower protection, decreasing or fixed premium rate',
+      coverage: 'Loan balance',
+      description: 'A short-term credit protection policy for short-term borrowers/debtors from banking and financial institutions, covering accidental risks during the policy term.',
+      benefits: [
+        'Death — full sum insured payable during policy term',
+        'Total and Permanent Disability — sum insured amount at time of TPD is paid if unable to work',
+      ],
+      eligibility: [
+        'Insured age 18-64, must be a short-term borrower/debtor from a bank or financial institution',
+        'Policy owner: individual or legal entity with insurable interest',
+        'Minimum sum insured 100,000 MMK',
+        'Policy term 1 to 2 years',
+        'Lump-sum premium payment; fixed or decreasing rate options',
+      ],
+      exclusions: ['Self-inflicted injuries', 'Suicide', 'Drug use/abuse', 'Intoxication', 'Criminal activity', 'Pre-existing undisclosed diseases'],
+      calculatorFields: [
+        _dobField,
+        QuoteFieldSpec(key: 'sumInsured', label: 'Sum insured amount', type: QuoteFieldType.number, suffix: 'MMK', defaultNumber: 100000),
+        QuoteFieldSpec(
+          key: 'productType',
+          label: 'Product type',
+          type: QuoteFieldType.singleSelect,
+          options: [QuoteOption('Decreasing Premium Rate', 'decreasing'), QuoteOption('Fixed Premium Rate', 'fixed')],
+        ),
+        QuoteFieldSpec(
+          key: 'policyTerm',
+          label: 'Policy term',
+          type: QuoteFieldType.singleSelect,
+          options: [QuoteOption('1 Year', '1'), QuoteOption('2 Years', '2')],
+        ),
+      ],
+    ),
+    Product(
+      code: 'CLP-01',
+      name: 'Single Premium Credit Life',
+      category: ProductCategory.protection,
+      tagline: 'Protection for long-term borrowers from banks and financial institutions',
+      coverage: 'Loan balance',
+      description: 'A single-premium life insurance policy for individuals aged 18-62 who maintain long-term debt relationships with financial institutions, covered during the policy term through a lump-sum premium payment.',
+      benefits: [
+        'Death — sum insured amount at time of death is payable',
+        'Total and Permanent Disability — sum insured amount at time of TPD becomes available',
+        'Surrender value — remaining surrender value claimable after loan repayment',
+      ],
+      eligibility: [
+        'Age 18-62, must be a borrower/debtor from a bank or financial institution',
+        'Minimum sum insured 1,000,000 MMK',
+        'Policy term 3 to 15 years',
+        'Lump-sum premium; varies by entry age, term, and sum insured',
+      ],
+      exclusions: ['Self-inflicted injuries', 'Suicide', 'Drug use', 'Criminal involvement', 'Undisclosed pre-existing diseases'],
+      calculatorFields: [
+        _dobField,
+        QuoteFieldSpec(key: 'sumInsured', label: 'Sum insured amount', type: QuoteFieldType.number, suffix: 'MMK', defaultNumber: 1000000),
+        QuoteFieldSpec(key: 'policyTermYears', label: 'Policy term', type: QuoteFieldType.number, suffix: 'years', defaultNumber: 3),
+      ],
+    ),
+    // ── TRAVEL ─────────────────────────────────────────────────────
+    Product(
+      code: 'TV-01',
+      name: 'Travel',
+      category: ProductCategory.protection,
+      tagline: 'Affordable daily travel insurance protection',
+      coverage: 'Travel accident · Medical · Baggage',
+      description: 'Travel insurance providing coverage for accidents, medical emergencies, and baggage loss during domestic or international travel.',
+      benefits: [
+        'Accidental death and disability coverage',
+        'Emergency medical treatment',
+        'Baggage loss or delay coverage',
+        'Flight delay compensation',
+        'Affordable daily premium starting from 100 MMK/day',
+      ],
+      eligibility: [
+        'Individual only',
+        'Age 16-65 years',
+        'Coverage from 500,000 to 10,000,000 MMK',
+        'Daily premium payment',
+        'Available for domestic and international travel',
+      ],
+      calculatorFields: [
+        _dobField,
+        QuoteFieldSpec(key: 'sumInsured', label: 'Coverage amount', type: QuoteFieldType.number, suffix: 'MMK', defaultNumber: 5000000),
+        QuoteFieldSpec(
+          key: 'travelType',
+          label: 'Travel type',
+          type: QuoteFieldType.singleSelect,
+          options: [QuoteOption('Domestic', 'domestic'), QuoteOption('International', 'international')],
+        ),
+        QuoteFieldSpec(key: 'travelDays', label: 'Number of days', type: QuoteFieldType.number, suffix: 'days', defaultNumber: 1),
+      ],
+    ),
+    // ── SAVINGS ────────────────────────────────────────────────────
+    Product(
+      code: 'UL-01',
+      name: 'Universal Life',
+      category: ProductCategory.saving,
+      tagline: 'Savings product combining wealth management with income protection',
+      coverage: 'Life + savings component',
+      description: 'A life insurance plan designed for individuals aged 18-65 seeking to accumulate guaranteed cash value while protecting dependents against income loss due to premature death or total permanent disability.',
+      benefits: [
+        'Wealth accumulation through guaranteed cash value growth',
+        'Death benefit protection for dependents',
+        'Total and permanent disability coverage',
+        'Survivor benefits — full savings if policy expires without a claim',
+        'Partial and full policy withdrawal options',
+        'Annual savings interest with minimum guaranteed rates',
+        'Policy reinstatement within 12 months of lapse',
+      ],
+      eligibility: [
+        'Age 18-65 years at purchase',
+        'Minimum policy term 15 years; maximum to age 62',
+        'Policy expires at age 80',
+        'Minimum premium 50,000 MMK/month (600,000 MMK/year)',
+        'Maximum premium 2,500,000 MMK/month',
+        'Monthly, quarterly, semi-annual, or annual payment',
+        '14-day free-look period',
+        '30-day grace period after sum insured reaches zero',
+      ],
+      exclusions: ['Pre-existing disease', 'Suicide', 'Drug/alcohol overuse', 'HIV/AIDS-related causes'],
+      calculatorFields: [
+        _dobField,
+        QuoteFieldSpec(key: 'baseAnnual', label: 'Base premium (annual)', type: QuoteFieldType.number, suffix: 'MMK', defaultNumber: 600000),
+        QuoteFieldSpec(key: 'baseMonthly', label: 'Base premium monthly', type: QuoteFieldType.computed, suffix: 'MMK'),
+        QuoteFieldSpec(key: 'dividendRate', label: 'Dividend rate', type: QuoteFieldType.number, suffix: '%', defaultNumber: 6.5, helperText: 'Used for benefit illustration, not premium'),
+      ],
+    ),
+    Product(
+      code: 'STE-01',
+      name: 'Short Term Endowment',
+      category: ProductCategory.saving,
+      tagline: 'Guaranteed cash accumulation with life protection over a defined period',
+      coverage: 'Savings milestone',
+      description: 'For individuals aged 10-60 seeking to build savings with guaranteed cash value while protecting dependents from income loss due to premature death or total permanent disability of the policyholder.',
+      benefits: [
+        'Death benefit — full sum insured paid to beneficiary',
+        'Total Permanent Disability benefit — full sum insured if unable to earn income',
+        'Maturity benefit — full sum insured if insured survives the policy term',
+        'Paid-up policy option if unable to continue premiums',
+        'Policy loan available for active policies',
+      ],
+      eligibility: [
+        'Age 10-60 years',
+        'Sum insured 1,000,000 to 50,000,000 MMK',
+        'Policy term 5, 7, or 10 years (varies by entry age)',
+        'Monthly, quarterly, semi-annual, or annual payment with 15-30 day grace periods',
+      ],
+      calculatorFields: [
+        _dobField,
+        QuoteFieldSpec(key: 'sumInsured', label: 'Sum insured amount', type: QuoteFieldType.number, suffix: 'MMK', defaultNumber: 1000000),
+        QuoteFieldSpec(
+          key: 'policyTerm',
+          label: 'Policy term',
+          type: QuoteFieldType.singleSelect,
+          options: [QuoteOption('5 Years', '5'), QuoteOption('7 Years', '7'), QuoteOption('10 Years', '10')],
+        ),
+        QuoteFieldSpec(
+          key: 'paymentType',
+          label: 'Payment type',
+          type: QuoteFieldType.singleSelect,
+          options: [QuoteOption('Monthly', 'monthly'), QuoteOption('Quarterly', 'quarterly'), QuoteOption('Semi Annually', 'semi'), QuoteOption('Annually', 'annual')],
+        ),
+      ],
+    ),
+    Product(
+      code: 'EL-01',
+      name: 'Education Life',
+      category: ProductCategory.saving,
+      tagline: 'A wealth management program for educational goals with financial protection',
+      coverage: 'Life + education savings',
+      description: "For individuals aged 18-56 who wish to save guaranteed cash value for children's education or protect against income loss from the policyholder's premature death or total permanent disability.",
+      benefits: [
+        'Basic Plan — 20% of sum insured paid every year from the end of the premium term',
+        'Basic Plan — premium waiver on death or total permanent disability',
+        'Basic Plan — paid-up conversion, surrender value, and policy loan available',
+        'Double Benefits Plan — includes all Basic Plan benefits, plus full sum insured on death during the policy term',
+        'Double Benefits Plan — full sum insured payable for a total permanent disability claim',
+      ],
+      eligibility: [
+        'Entry age 18-56 years',
+        'Sum insured 5,000,000 to 100,000,000 MMK',
+        'Policy term 9, 11, or 14 years',
+        'Monthly, quarterly, semi-annual, or annual payment',
+        'Grace period 30 days (annual/semi-annual/quarterly), 15 days (monthly)',
+        'Reinstatement available within 12 months of lapse',
+      ],
+      calculatorFields: [
+        _dobField,
+        QuoteFieldSpec(key: 'sumInsured', label: 'Sum insured amount', type: QuoteFieldType.number, suffix: 'MMK', defaultNumber: 5000000),
+        QuoteFieldSpec(
+          key: 'productType',
+          label: 'Product type',
+          type: QuoteFieldType.singleSelect,
+          options: [QuoteOption('Basic Plan', 'basic'), QuoteOption('Double Benefits Plan', 'double')],
+        ),
+        QuoteFieldSpec(
+          key: 'policyTerm',
+          label: 'Policy term',
+          type: QuoteFieldType.singleSelect,
+          options: [QuoteOption('9 Years', '9'), QuoteOption('11 Years', '11'), QuoteOption('14 Years', '14')],
+        ),
+        QuoteFieldSpec(
+          key: 'paymentType',
+          label: 'Payment type',
+          type: QuoteFieldType.singleSelect,
+          options: [QuoteOption('Monthly', 'monthly'), QuoteOption('Quarterly', 'quarterly'), QuoteOption('Semi Annually', 'semi'), QuoteOption('Annually', 'annual')],
+        ),
+      ],
+    ),
+  ];
+}
