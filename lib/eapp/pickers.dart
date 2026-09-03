@@ -115,11 +115,14 @@ class _SourceTile extends StatelessWidget {
   }
 }
 
-Future<String?> showIdentificationPickerSheet(
+/// Returns the display value *and* the identification type the FA picked
+/// ('NRC' / 'Old NRC' / 'Passport' / 'No ID'). The Documentation step keys
+/// off that type, so losing it here left the two steps free to disagree.
+Future<(String, String)?> showIdentificationPickerSheet(
   BuildContext context, {
   String? initial,
 }) {
-  return showModalBottomSheet<String>(
+  return showModalBottomSheet<(String, String)>(
     context: context,
     showDragHandle: true,
     isScrollControlled: true,
@@ -306,7 +309,7 @@ class _IdSheetState extends ConsumerState<_IdSheet> {
                   'Passport' => _numberController.text,
                   _ => 'No ID',
                 };
-                Navigator.pop(context, display);
+                Navigator.pop(context, (display, _type));
               },
               child: const Text('Done'),
             ),

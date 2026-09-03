@@ -138,7 +138,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       initial: _nrcController.text,
                     );
                     if (result != null) {
-                      _nrcController.text = result;
+                      _nrcController.text = result.$1;
                     }
                   },
                   validator: (val) => val == null || val.isEmpty

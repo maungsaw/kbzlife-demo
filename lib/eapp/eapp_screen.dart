@@ -155,10 +155,6 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
   DateTime? _requestPolicyDate;
   String _notifyType = 'Not Notify';
   final _notifyMobileController = TextEditingController();
-  String? _saleChannel;
-  String? _saleGroup;
-  String? _salePerson;
-  String? _saleAttachment;
   final _referralController = TextEditingController();
   bool _specialCase = false;
   final _specialRemarkController = TextEditingController();
@@ -581,6 +577,17 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
     });
   }
 
+  /// A signature counts either way it was given: drawn on the pad, or
+  /// uploaded as a photo. Only checking the ink left "Upload" looking
+  /// accepted while Continue stayed dead.
+  bool _signatureCaptured(bool isClient) {
+    final mode = isClient ? _clientSigMode : _agentSigMode;
+    if (mode == 'upload') {
+      return (isClient ? _clientSigPhoto : _agentSigPhoto) != null;
+    }
+    return isClient ? _clientHasInk : _agentHasInk;
+  }
+
   bool get _partiesValid => _holder.isValid;
 
   bool get _insuredValid => _insured.isValid;
@@ -613,21 +620,15 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
     _EStep.beneficiaries => _beneficiariesValid,
     _EStep.healthDeclaration => _healthDeclarationValid,
     _EStep.documentation => _documentsValid,
-    _EStep.sign => _clientHasInk && _agentHasInk,
+    _EStep.sign => _signatureCaptured(true) && _signatureCaptured(false),
     _EStep.proposal => _proposalValid,
     _EStep.review => false,
   };
 
-  /// Proposal tab — the four Sale* selections are the only unconditional
-  /// mandatories; Notify Mobile and Special Remark are conditional on the
-  /// choice above them (Proposal Required Field sheet).
+  /// Proposal tab — nothing here is unconditionally mandatory: Notify
+  /// Mobile and Special Remark are each conditional on the choice above
+  /// them, and Request Policy Date only has to be valid if it is set.
   bool get _proposalValid {
-    if (_saleChannel == null ||
-        _saleGroup == null ||
-        _salePerson == null ||
-        _saleAttachment == null) {
-      return false;
-    }
     if (_notifyType == 'SMS') {
       final v = _notifyMobileController.text.trim();
       if (v.isEmpty || ApplicantValidators.notifyMobile(v) != null) {
@@ -652,7 +653,7 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
     _EStep.beneficiaries => _beneficiariesValid,
     _EStep.healthDeclaration => _healthDeclarationValid,
     _EStep.documentation => _documentsValid,
-    _EStep.sign => _clientHasInk && _agentHasInk,
+    _EStep.sign => _signatureCaptured(true) && _signatureCaptured(false),
     _EStep.review => true,
   };
 
@@ -942,44 +943,6 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
                 date: _requestPolicyDate,
                 onPick: (d) => setState(() => _requestPolicyDate = d),
                 notPast: true,
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 14),
-        // 2. The mandatory block.
-        SoftCard(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const EappCardTitle('Sales Information'),
-              const SizedBox(height: 10),
-              EappDropdownField(
-                label: 'Sale Channel *',
-                value: _saleChannel,
-                options: kSaleChannels,
-                onChanged: (v) => setState(() => _saleChannel = v),
-              ),
-              const SizedBox(height: 10),
-              EappDropdownField(
-                label: 'Sale Group *',
-                value: _saleGroup,
-                options: kSaleGroups,
-                onChanged: (v) => setState(() => _saleGroup = v),
-              ),
-              const SizedBox(height: 10),
-              EappDropdownField(
-                label: 'Sale Person *',
-                value: _salePerson,
-                options: kSalePersons,
-                onChanged: (v) => setState(() => _salePerson = v),
-              ),
-              const SizedBox(height: 10),
-              EappDropdownField(
-                label: 'Sale Attachment *',
-                value: _saleAttachment,
-                options: kSaleAttachments,
-                onChanged: (v) => setState(() => _saleAttachment = v),
               ),
             ],
           ),
@@ -1350,6 +1313,7 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
     _insured.mobileController.text = _holder.mobileController.text;
     _insured.emailController.text = _holder.emailController.text;
     _insured.idType = _holder.idType;
+    _insured.documentType = _holder.documentType;
     _insured.idNoController.text = _holder.idNoController.text;
     _insured.occupationController.text = _holder.occupationController.text;
     _insured.weightController.text = _holder.weightController.text;
@@ -1546,8 +1510,10 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
             nrcFrontPhoto: _holder.nrcFrontPhoto,
             nrcBackPhoto: _holder.nrcBackPhoto,
             passportPhoto: _holder.passportPhoto,
-            onTypeChanged: (type) =>
-                setState(() => _holder.documentType = type),
+            idLabel: _holder.idType,
+            onEditIdentification: () => setState(
+              () => _step = _activeSteps.indexOf(_EStep.policyHolder),
+            ),
             onCapture: (part) => _captureDocument('holder', part),
             onRemove: (part) => _removeDocument(_holder, part),
           ),
@@ -1566,8 +1532,10 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
               nrcFrontPhoto: _insured.nrcFrontPhoto,
               nrcBackPhoto: _insured.nrcBackPhoto,
               passportPhoto: _insured.passportPhoto,
-              onTypeChanged: (type) =>
-                  setState(() => _insured.documentType = type),
+              idLabel: _insured.idType,
+              onEditIdentification: () => setState(
+                () => _step = _activeSteps.indexOf(_EStep.insuredPerson),
+              ),
               onCapture: (part) => _captureDocument('insured', part),
               onRemove: (part) => _removeDocument(_insured, part),
             ),
@@ -1591,8 +1559,10 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
               nrcFrontPhoto: _beneficiaries[i].nrcFrontPhoto,
               nrcBackPhoto: _beneficiaries[i].nrcBackPhoto,
               passportPhoto: _beneficiaries[i].passportPhoto,
-              onTypeChanged: (type) =>
-                  setState(() => _beneficiaries[i].documentType = type),
+              idLabel: _beneficiaries[i].idType,
+              onEditIdentification: () => setState(
+                () => _step = _activeSteps.indexOf(_EStep.beneficiaries),
+              ),
               onCapture: (part) =>
                   _captureBeneficiaryDocument(_beneficiaries[i], part),
               onRemove: (part) => _removeDocument(_beneficiaries[i], part),
@@ -1624,6 +1594,7 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
           agentController: _agentSig,
           clientHasInk: _clientHasInk,
           agentHasInk: _agentHasInk,
+          clientCaptured: _signatureCaptured(true),
           onClearClient: () => setState(_clearClient),
           onClearAgent: () => _agentSig.clear(),
           clientMode: _clientSigMode,
@@ -1772,6 +1743,25 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
           rows: healthRows,
         ),
       _ReviewSection(
+        title: 'Signatures',
+        editStep: _activeSteps.indexOf(_EStep.sign),
+        rows: const [],
+        signatures: [
+          _SignatureProof(
+            label: 'Client',
+            mode: _clientSigMode,
+            controller: _clientSig,
+            photo: _clientSigPhoto,
+          ),
+          _SignatureProof(
+            label: 'Agent',
+            mode: _agentSigMode,
+            controller: _agentSig,
+            photo: _agentSigPhoto,
+          ),
+        ],
+      ),
+      _ReviewSection(
         title: 'Documentation',
         editStep: _activeSteps.indexOf(_EStep.documentation),
         rows: const [],
@@ -1839,13 +1829,37 @@ class _ReviewSection {
     required this.editStep,
     required this.rows,
     this.docGroups = const [],
+    this.signatures = const [],
   });
   final String title;
   final int editStep;
   final List<(String, String)> rows;
 
+  /// The captured signatures, however they were given (doc 111 §7) — the
+  /// FA and the client should see on Review exactly what will be sent.
+  final List<_SignatureProof> signatures;
+
   /// Captured documents, grouped by the person they belong to (doc 118).
   final List<_DocGroup> docGroups;
+}
+
+/// A signature as the Review step shows it: whose it is, and either the
+/// ink still held by the pad's controller or the photo that replaced it.
+class _SignatureProof {
+  const _SignatureProof({
+    required this.label,
+    required this.mode,
+    required this.controller,
+    required this.photo,
+  });
+  final String label;
+
+  /// 'esign' or 'upload'.
+  final String mode;
+  final SignatureController controller;
+  final dynamic photo;
+
+  bool get captured => mode == 'upload' ? photo != null : controller.isNotEmpty;
 }
 
 /// One party's document block on the Review step: who they are, whether
@@ -2989,9 +3003,10 @@ class _DocsStep extends StatelessWidget {
     required this.nrcFrontPhoto,
     required this.nrcBackPhoto,
     required this.passportPhoto,
-    required this.onTypeChanged,
     required this.onCapture,
     required this.onRemove,
+    required this.idLabel,
+    required this.onEditIdentification,
   });
   final String title;
 
@@ -3003,7 +3018,12 @@ class _DocsStep extends StatelessWidget {
   final XFile? nrcFrontPhoto;
   final XFile? nrcBackPhoto;
   final XFile? passportPhoto;
-  final ValueChanged<String> onTypeChanged;
+
+  /// 'NRC' / 'Old NRC' / 'Passport' as chosen on the party's own card.
+  final String idLabel;
+
+  /// Jumps back to the step where that choice lives.
+  final VoidCallback onEditIdentification;
   final ValueChanged<String> onCapture;
   final ValueChanged<String> onRemove;
 
@@ -3036,16 +3056,38 @@ class _DocsStep extends StatelessWidget {
             style: TextStyle(fontSize: 11.5, color: AppColors.deepAlpha(0.55)),
           ),
           const SizedBox(height: 10),
-          // NRC or Passport is one exclusive choice over the same slot, so
-          // it reads as a two-tab segment — the control the Sign step uses
-          // for the same kind of either/or — rather than two loose chips.
-          AppSegmentedTabs<String>(
-            value: documentType,
-            options: const [
-              ('NRC', 'NRC', Icons.badge_outlined),
-              ('Passport', 'Passport', Icons.public_outlined),
+          // The identification type was already chosen on this party's own
+          // card; this step photographs that document, it does not offer a
+          // second, contradictory choice. Shown, not asked.
+          Row(
+            children: [
+              Icon(
+                documentType == 'Passport'
+                    ? Icons.public_outlined
+                    : Icons.badge_outlined,
+                size: 15,
+                color: AppColors.primaryColor,
+              ),
+              const SizedBox(width: 6),
+              Text(
+                idLabel,
+                style: const TextStyle(
+                  fontSize: 12.5,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.deep,
+                ),
+              ),
+              const Spacer(),
+              TextButton(
+                onPressed: onEditIdentification,
+                style: TextButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  minimumSize: Size.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                child: const Text('Change'),
+              ),
             ],
-            onChanged: onTypeChanged,
           ),
           const SizedBox(height: 12),
           // Doc 115 §1 — the NRC has two physical sides, so it gets two
@@ -3303,6 +3345,7 @@ class _SignStep extends StatelessWidget {
     required this.agentController,
     required this.clientHasInk,
     required this.agentHasInk,
+    required this.clientCaptured,
     required this.onClearClient,
     required this.onClearAgent,
     this.clientMode = 'esign',
@@ -3321,6 +3364,9 @@ class _SignStep extends StatelessWidget {
   final SignatureController agentController;
   final bool clientHasInk;
   final bool agentHasInk;
+
+  /// True once the client has signed *either way* — drawn or uploaded.
+  final bool clientCaptured;
   final VoidCallback onClearClient;
   final VoidCallback onClearAgent;
   final String clientMode;
@@ -3356,7 +3402,7 @@ class _SignStep extends StatelessWidget {
           title: 'Agent signature',
           controller: agentController,
           hasInk: agentHasInk,
-          locked: clientMode == 'esign' && !clientHasInk,
+          locked: !clientCaptured,
           lockedHint: 'Sign client first',
           onClear: onClearAgent,
           mode: agentMode,
@@ -3478,8 +3524,12 @@ class _SignaturePad extends StatelessWidget {
                               ? Stack(
                                   fit: StackFit.expand,
                                   children: [
-                                    Image.asset(
-                                      photo.path,
+                                    // A picked signature is a file on the
+                                    // device, not a bundled asset — as an
+                                    // asset it always fell through to the
+                                    // placeholder icon.
+                                    Image.file(
+                                      File(photo.path),
                                       fit: BoxFit.cover,
                                       errorBuilder: (_, _, _) => const Center(
                                         child: Icon(
@@ -3579,7 +3629,9 @@ class _ReviewStep extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 4),
-                if (section.rows.isEmpty)
+                if (section.rows.isEmpty &&
+                    section.docGroups.isEmpty &&
+                    section.signatures.isEmpty)
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 6),
                     child: Text(
@@ -3598,6 +3650,18 @@ class _ReviewStep extends StatelessWidget {
                     Divider(height: 20, color: AppColors.deepAlpha(0.06)),
                   _DocGroupBlock(group: section.docGroups[i]),
                 ],
+                if (section.signatures.isNotEmpty) ...[
+                  const SizedBox(height: 4),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      for (final (i, proof) in section.signatures.indexed) ...[
+                        if (i > 0) const SizedBox(width: 10),
+                        Expanded(child: _SignatureProofBlock(proof: proof)),
+                      ],
+                    ],
+                  ),
+                ],
               ],
             ),
           ),
@@ -3606,6 +3670,72 @@ class _ReviewStep extends StatelessWidget {
         Text(
           'By submitting, I confirm all information is accurate to the best of my knowledge.',
           style: TextStyle(fontSize: 11, color: AppColors.deepAlpha(0.5)),
+        ),
+      ],
+    );
+  }
+}
+
+/// Shows the signature itself rather than a "Signed: Yes" row — on a
+/// document the client is about to be bound by, the proof is the mark.
+class _SignatureProofBlock extends StatelessWidget {
+  const _SignatureProofBlock({required this.proof});
+  final _SignatureProof proof;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Text(
+              proof.label,
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w700,
+                color: AppColors.deepAlpha(0.55),
+              ),
+            ),
+            const SizedBox(width: 6),
+            if (proof.captured)
+              const Icon(Icons.check_circle, size: 13, color: AppColors.mint),
+          ],
+        ),
+        const SizedBox(height: 6),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: Container(
+            height: 86,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: proof.captured ? Colors.white : AppColors.cream,
+              border: Border.all(color: AppColors.deepAlpha(0.1)),
+            ),
+            child: !proof.captured
+                ? Center(
+                    child: Text(
+                      'Not signed',
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: AppColors.deepAlpha(0.4),
+                      ),
+                    ),
+                  )
+                : proof.mode == 'upload'
+                ? Image.file(File(proof.photo.path), fit: BoxFit.cover)
+                : IgnorePointer(
+                    child: Signature(
+                      controller: proof.controller,
+                      backgroundColor: Colors.white,
+                    ),
+                  ),
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          proof.mode == 'upload' ? 'Uploaded image' : 'Signed on screen',
+          style: TextStyle(fontSize: 10, color: AppColors.deepAlpha(0.45)),
         ),
       ],
     );

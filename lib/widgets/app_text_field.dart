@@ -84,30 +84,27 @@ class _AppTextFieldState extends ConsumerState<AppTextField> {
         if (widget.child != null)
           InputDecorator(
             decoration: _inputDecoration(),
-            child: InkWell(
-              onTap: widget.onTap,
-              child: widget.child,
-            ),
+            child: InkWell(onTap: widget.onTap, child: widget.child),
           )
         else
           TextFormField(
-          controller: widget.controller,
-          keyboardType: widget.keyboardType,
-          obscureText: widget.isPassword ? widget.obscureText : false,
-          maxLines: widget.maxLines,
-          enabled: widget.enabled,
-          readOnly: widget.readOnly,
-          initialValue: widget.initialValue,
-          focusNode: widget.focusNode,
-          textInputAction: widget.textInputAction,
-          onFieldSubmitted: widget.onFieldSubmitted,
-          onChanged: widget.onChanged,
-          inputFormatters: widget.inputFormatters,
-          onTap: widget.onTap,
-          style: const TextStyle(fontSize: 13, color: AppColors.accentNavy),
-          validator: widget.validator,
-          decoration: _inputDecoration(),
-        ),
+            controller: widget.controller,
+            keyboardType: widget.keyboardType,
+            obscureText: widget.isPassword ? widget.obscureText : false,
+            maxLines: widget.maxLines,
+            enabled: widget.enabled,
+            readOnly: widget.readOnly,
+            initialValue: widget.initialValue,
+            focusNode: widget.focusNode,
+            textInputAction: widget.textInputAction,
+            onFieldSubmitted: widget.onFieldSubmitted,
+            onChanged: widget.onChanged,
+            inputFormatters: widget.inputFormatters,
+            onTap: widget.onTap,
+            style: const TextStyle(fontSize: 13, color: AppColors.accentNavy),
+            validator: widget.validator,
+            decoration: _inputDecoration(),
+          ),
       ],
     );
   }
@@ -124,10 +121,9 @@ class _AppTextFieldState extends ConsumerState<AppTextField> {
       helperMaxLines: 2,
       errorText: widget.errorText,
       hintStyle: const TextStyle(fontSize: 12, color: AppColors.muted),
-      contentPadding: widget.contentPadding ?? const EdgeInsets.symmetric(
-        horizontal: 14,
-        vertical: 12,
-      ),
+      contentPadding:
+          widget.contentPadding ??
+          const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       filled: true,
       fillColor: widget.enabled ? Colors.white : AppColors.surfaceBg,
       enabledBorder: OutlineInputBorder(
