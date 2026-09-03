@@ -23,6 +23,7 @@ import '../widgets/app_text_field.dart';
 import '../widgets/app_selection_chip.dart';
 import '../widgets/chip.dart';
 import '../widgets/quote_field.dart';
+import '../widgets/app_segmented_tabs.dart';
 import '../widgets/soft_card.dart';
 import 'address_master.dart';
 import 'applicant.dart';
@@ -991,18 +992,17 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
             children: [
               const EappCardTitle('Notification'),
               const SizedBox(height: 10),
-              Row(
-                children: [
-                  for (final t in const ['SMS', 'Not Notify'])
-                    Padding(
-                      padding: const EdgeInsets.only(right: 8),
-                      child: AppSelectionChip(
-                        label: t,
-                        selected: _notifyType == t,
-                        onSelected: (_) => setState(() => _notifyType = t),
-                      ),
-                    ),
+              AppSegmentedTabs<String>(
+                value: _notifyType,
+                options: const [
+                  ('SMS', 'SMS', Icons.sms_outlined),
+                  (
+                    'Not Notify',
+                    'Not Notify',
+                    Icons.notifications_off_outlined,
+                  ),
                 ],
+                onChanged: (v) => setState(() => _notifyType = v),
               ),
               if (_notifyType == 'SMS') ...[
                 const SizedBox(height: 12),
@@ -2981,84 +2981,6 @@ class _ProductChoiceTile extends StatelessWidget {
   }
 }
 
-/// The Sign step's source switch, pulled out so the Documentation cards
-/// can wear the same control: one segmented row, the chosen half raised on
-/// white. Both places are answering the same question — draw/photograph it
-/// here, or pick a file the phone already holds.
-class _SourceSegments extends StatelessWidget {
-  const _SourceSegments({
-    required this.value,
-    required this.options,
-    required this.onChanged,
-  });
-
-  /// (value, label, icon) per segment.
-  final List<(String, String, IconData)> options;
-  final String value;
-  final ValueChanged<String>? onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.cream,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      padding: const EdgeInsets.all(4),
-      child: Row(
-        children: [
-          for (final (i, (v, label, icon)) in options.indexed) ...[
-            if (i > 0) const SizedBox(width: 4),
-            Expanded(
-              child: GestureDetector(
-                onTap: () => onChanged?.call(v),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  decoration: BoxDecoration(
-                    color: value == v ? Colors.white : Colors.transparent,
-                    borderRadius: BorderRadius.circular(6),
-                    boxShadow: value == v
-                        ? [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.08),
-                              blurRadius: 4,
-                            ),
-                          ]
-                        : null,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        icon,
-                        size: 14,
-                        color: value == v
-                            ? AppColors.primaryColor
-                            : AppColors.muted,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        label,
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: value == v
-                              ? AppColors.primaryColor
-                              : AppColors.muted,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-}
-
 class _DocsStep extends StatelessWidget {
   const _DocsStep({
     required this.title,
@@ -3117,7 +3039,7 @@ class _DocsStep extends StatelessWidget {
           // NRC or Passport is one exclusive choice over the same slot, so
           // it reads as a two-tab segment — the control the Sign step uses
           // for the same kind of either/or — rather than two loose chips.
-          _SourceSegments(
+          AppSegmentedTabs<String>(
             value: documentType,
             options: const [
               ('NRC', 'NRC', Icons.badge_outlined),
@@ -3497,7 +3419,7 @@ class _SignaturePad extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           if (!locked) ...[
-            _SourceSegments(
+            AppSegmentedTabs<String>(
               value: mode,
               options: const [
                 ('esign', 'E-Sign', Icons.draw),

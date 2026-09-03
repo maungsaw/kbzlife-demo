@@ -1,10 +1,10 @@
+import 'package:demo_ui/widgets/app_segmented_tabs.dart';
 import 'package:demo_ui/widgets/app_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 import '../const.dart';
-import '../widgets/app_selection_chip.dart';
 import '../widgets/soft_card.dart';
 import 'address_master.dart';
 import 'applicant.dart';
@@ -308,23 +308,14 @@ class EappGenderField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Gender *',
-          style: TextStyle(fontSize: 11.5, color: AppColors.deepAlpha(0.6)),
-        ),
-        const SizedBox(height: 6),
-        Row(
-          children: [
-            for (final g in const ['Male', 'Female'])
-              Padding(
-                padding: const EdgeInsets.only(right: 8),
-                child: AppSelectionChip(
-                  label: g,
-                  selected: value == g,
-                  onSelected: (_) => onChanged(g),
-                ),
-              ),
+        AppSegmentedTabs<String>(
+          label: 'Gender *',
+          value: value ?? '',
+          options: const [
+            ('Male', 'Male', Icons.male_outlined),
+            ('Female', 'Female', Icons.female_outlined),
           ],
+          onChanged: onChanged,
         ),
       ],
     );
@@ -699,66 +690,20 @@ class _TypeToggle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Applicant Type *',
-          style: TextStyle(
-            fontSize: 11,
-            fontWeight: FontWeight.w700,
-            color: AppColors.deepAlpha(0.55),
+    return AppSegmentedTabs<ApplicantType>(
+      label: 'Applicant Type *',
+      value: value,
+      options: [
+        for (final t in ApplicantType.values)
+          (
+            t,
+            t.label,
+            t == ApplicantType.person
+                ? Icons.person_outline
+                : Icons.business_outlined,
           ),
-        ),
-        const SizedBox(height: 6),
-        Row(
-          children: [
-            for (final t in ApplicantType.values) ...[
-              Expanded(
-                child: Material(
-                  color: t == value
-                      ? AppColors.deep
-                      : AppColors.deepAlpha(0.04),
-                  borderRadius: BorderRadius.circular(10),
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(10),
-                    onTap: () => onChanged(t),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            t == ApplicantType.person
-                                ? Icons.person_outline
-                                : Icons.business_outlined,
-                            size: 16,
-                            color: t == value
-                                ? Colors.white
-                                : AppColors.deepAlpha(0.5),
-                          ),
-                          const SizedBox(width: 6),
-                          Text(
-                            t.label,
-                            style: TextStyle(
-                              fontSize: 12.5,
-                              fontWeight: FontWeight.w700,
-                              color: t == value
-                                  ? Colors.white
-                                  : AppColors.deepAlpha(0.55),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              if (t != ApplicantType.values.last) const SizedBox(width: 8),
-            ],
-          ],
-        ),
       ],
+      onChanged: onChanged,
     );
   }
 }
