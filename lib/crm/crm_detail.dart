@@ -157,7 +157,8 @@ class _CRMDetailViewScreenState extends ConsumerState<CRMDetailViewScreen>
                           child: _buildHeaderActionCard(
                             icon: Icons.phone_outlined,
                             label: 'Call',
-                            onTap: () => launchUrl(Uri.parse('tel:${contact.phone}')),
+                            onTap: () =>
+                                launchUrl(Uri.parse('tel:${contact.phone}')),
                           ),
                         ),
                         const SizedBox(width: 10),
@@ -165,7 +166,8 @@ class _CRMDetailViewScreenState extends ConsumerState<CRMDetailViewScreen>
                           child: _buildHeaderActionCard(
                             icon: Icons.email_outlined,
                             label: 'Email',
-                            onTap: () => launchUrl(Uri.parse('mailto:${contact.email}')),
+                            onTap: () =>
+                                launchUrl(Uri.parse('mailto:${contact.email}')),
                           ),
                         ),
                         const SizedBox(width: 10),
@@ -180,11 +182,15 @@ class _CRMDetailViewScreenState extends ConsumerState<CRMDetailViewScreen>
                                 'crmPhone': contact.phone,
                                 'crmEmail': contact.email,
                               };
-                              if (contact.products.isNotEmpty) {
-                                params['product'] = contact.products.first.productName;
-                              }
+                              // No product is carried over: a CRM
+                              // opportunity is an interest, not the plan
+                              // being applied for — the FA picks that on
+                              // the Start step.
                               final query = params.entries
-                                  .map((e) => '${e.key}=${Uri.encodeComponent(e.value)}')
+                                  .map(
+                                    (e) =>
+                                        '${e.key}=${Uri.encodeComponent(e.value)}',
+                                  )
                                   .join('&');
                               context.push('${RoutePaths.eapp}?$query');
                             },

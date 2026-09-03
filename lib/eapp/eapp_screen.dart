@@ -1622,6 +1622,13 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
 
   String _fmtDate(DateTime? d) => d == null ? 'Not set' : _formatDate(d);
 
+  /// Only the document that was actually asked for. Listing all three
+  /// slots showed a stale NRC shot beside a passport after the FA changed
+  /// the identification type.
+  List<(String, XFile?)> _docImages(Applicant a) => a.documentType == 'Passport'
+      ? [('Passport', a.passportPhoto)]
+      : [('Front', a.nrcFrontPhoto), ('Back', a.nrcBackPhoto)];
+
   List<_ReviewSection> _buildReviewSections() {
     final product = _product;
     final controller = ref.read(eappQuoteFormProvider(product).notifier);
@@ -1777,11 +1784,7 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
             isEntity: _holder.isEntity,
             captured: _holder.documentsCaptured,
             documentType: _holder.documentType,
-            images: [
-              ('Front', _holder.nrcFrontPhoto),
-              ('Back', _holder.nrcBackPhoto),
-              ('Passport', _holder.passportPhoto),
-            ],
+            images: _docImages(_holder),
           ),
           _DocGroup(
             role: 'Insured Person',
@@ -1795,13 +1798,7 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
             // repeating the holder's images under a second heading.
             mirrors: _insuredSameAsHolder ? 'Same as Policy Holder' : null,
             documentType: _insured.documentType,
-            images: _insuredSameAsHolder
-                ? const []
-                : [
-                    ('Front', _insured.nrcFrontPhoto),
-                    ('Back', _insured.nrcBackPhoto),
-                    ('Passport', _insured.passportPhoto),
-                  ],
+            images: _insuredSameAsHolder ? const [] : _docImages(_insured),
           ),
           for (var i = 0; i < _beneficiaries.length; i++)
             _DocGroup(
@@ -1812,11 +1809,7 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
               isEntity: _beneficiaries[i].isEntity,
               captured: _beneficiaries[i].documentsCaptured,
               documentType: _beneficiaries[i].documentType,
-              images: [
-                ('Front', _beneficiaries[i].nrcFrontPhoto),
-                ('Back', _beneficiaries[i].nrcBackPhoto),
-                ('Passport', _beneficiaries[i].passportPhoto),
-              ],
+              images: _docImages(_beneficiaries[i]),
             ),
         ],
       ),
@@ -3028,22 +3021,6 @@ class _DocsStep extends StatelessWidget {
   final ValueChanged<String> onCapture;
   final ValueChanged<String> onRemove;
 
-  /// Doc 115 §3 — the hint line doubles as progress, so a half-finished
-  /// NRC says which side is still missing instead of repeating the same
-  /// instruction it gave before the first shot.
-  String get _nrcHint {
-    if (nrcFrontPhoto != null && nrcBackPhoto != null) {
-      return 'Both sides captured.';
-    }
-    if (nrcFrontPhoto != null) {
-      return 'Front captured — the back is still needed.';
-    }
-    if (nrcBackPhoto != null) {
-      return 'Back captured — the front is still needed.';
-    }
-    return 'Capture both sides of the NRC.';
-  }
-
   @override
   Widget build(BuildContext context) {
     return SoftCard(
@@ -3125,13 +3102,6 @@ class _DocsStep extends StatelessWidget {
               onCapture: () => onCapture('passport'),
               onRemove: () => onRemove('passport'),
             ),
-          const SizedBox(height: 10),
-          Text(
-            documentType == 'NRC'
-                ? _nrcHint
-                : 'Capture the passport photo page clearly.',
-            style: TextStyle(fontSize: 11.5, color: AppColors.deepAlpha(0.5)),
-          ),
         ],
       ),
     );
