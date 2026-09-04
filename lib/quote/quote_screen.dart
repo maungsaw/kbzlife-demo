@@ -111,15 +111,7 @@ class _QuoteScreenState extends ConsumerState<QuoteScreen> {
                           color: context.colors.warn,
                         ),
                         const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            error,
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: context.colors.deepAlpha(0.6),
-                            ),
-                          ),
-                        ),
+                        Expanded(child: AppCaptionText(error)),
                       ],
                     ),
                   ],
@@ -256,16 +248,7 @@ class _QuoteSavedSheet extends StatelessWidget {
                 child: Icon(Icons.check, color: context.colors.mint),
               ),
               const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  'Quote saved',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w800,
-                    fontSize: 15,
-                    color: context.colors.deep,
-                  ),
-                ),
-              ),
+              Expanded(child: const AppSectionTitle('Quote saved')),
             ],
           ),
           const SizedBox(height: 18),
@@ -356,22 +339,15 @@ class _ProductPickerState extends ConsumerState<_ProductPicker> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'PRODUCT',
-                      style: TextStyle(
-                        fontSize: 9.5,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 1,
-                        color: context.colors.deepAlpha(0.45),
-                      ),
-                    ),
+                    // Same eyebrow-over-value shape the e-App slots use.
+                    const AppLabelText('PRODUCT'),
                     const SizedBox(height: 2),
                     Text(
                       selected.name,
                       style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w800,
-                        color: context.colors.deep,
+                        fontSize: AppType.title,
+                        fontWeight: AppType.strong,
+                        color: context.colors.textPrimary,
                       ),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
@@ -415,14 +391,7 @@ class _ProductPickerSheet extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Select product',
-              style: TextStyle(
-                fontWeight: FontWeight.w800,
-                fontSize: 16,
-                color: context.colors.deep,
-              ),
-            ),
+            const AppSectionTitle('Select product'),
             const SizedBox(height: 8),
             ConstrainedBox(
               constraints: BoxConstraints(
@@ -435,14 +404,7 @@ class _ProductPickerSheet extends StatelessWidget {
                     Material(
                       color: Colors.transparent,
                       child: ListTile(
-                        title: Text(
-                          p.name,
-                          style: TextStyle(
-                            fontSize: 13.5,
-                            fontWeight: FontWeight.w600,
-                            color: context.colors.deep,
-                          ),
-                        ),
+                        title: AppBodyText(p.name),
                         trailing: p.code == selected.code
                             ? Icon(
                                 Icons.check,

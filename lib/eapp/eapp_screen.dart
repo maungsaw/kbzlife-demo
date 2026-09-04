@@ -212,6 +212,11 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
   // BRD Section 4 — Insured Person tab.
   bool _insuredSameAsHolder = false;
 
+  /// Validation is silent until the FA presses Next on that step: a card
+  /// they have not filled yet should not open covered in red. Reset on
+  /// every step change, so the next step starts clean too.
+  bool _showErrors = false;
+
   // BRD Section 4 — Beneficiary tab: multiple beneficiaries, percentages
   // must sum to <=100%.
   final List<Applicant> _beneficiaries = [
@@ -731,7 +736,10 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
               complete: [for (final st in _activeSteps) _stepComplete(st)],
               renewal: widget.renewalPolicyNo,
               productName: _product.name,
-              onTapStep: (i) => setState(() => _step = i),
+              onTapStep: (i) => setState(() {
+                _step = i;
+                _showErrors = false;
+              }),
             ),
             if (_correctionNote != null)
               _CorrectionBanner(
@@ -767,17 +775,36 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
                 if (_step > 0) const SizedBox(width: 10),
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: !_canContinue
-                        ? null
-                        : _step == _activeStepTitles.length - 1
-                        ? _submit
-                        : () => setState(() {
-                            if (_activeSteps[_step] == _EStep.policyHolder &&
-                                _insuredSameAsHolder) {
-                              _copyHolderToInsured();
-                            }
-                            _step++;
-                          }),
+                    onPressed: () {
+                      if (!_canContinue) {
+                        // First refusal is where the red appears — and it
+                        // appears everywhere at once, so the FA can see
+                        // every gap rather than hunting one at a time.
+                        setState(() => _showErrors = true);
+                        ScaffoldMessenger.of(context)
+                          ..hideCurrentSnackBar()
+                          ..showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                'Complete the required fields to continue.',
+                              ),
+                            ),
+                          );
+                        return;
+                      }
+                      if (_step == _activeStepTitles.length - 1) {
+                        _submit();
+                        return;
+                      }
+                      setState(() {
+                        if (_activeSteps[_step] == _EStep.policyHolder &&
+                            _insuredSameAsHolder) {
+                          _copyHolderToInsured();
+                        }
+                        _step++;
+                        _showErrors = false;
+                      });
+                    },
                     child: Text(
                       _step == _activeStepTitles.length - 1 ? 'Submit' : 'Next',
                     ),
@@ -916,6 +943,7 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
               // Requested policy date sits with the proposal itself; it was
               // buried under Optional details, where it read as an extra.
               EappDobField(
+                showErrors: _showErrors,
                 label: 'Request Policy Date',
                 date: _requestPolicyDate,
                 onPick: (d) => setState(() => _requestPolicyDate = d),
@@ -954,9 +982,11 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
                   hint: '',
                   showFlag: true,
                   helperText: '13 digits including 09',
-                  errorText: ApplicantValidators.notifyMobile(
-                    _notifyMobileController.text,
-                  ),
+                  errorText: !_showErrors
+                      ? null
+                      : ApplicantValidators.notifyMobile(
+                          _notifyMobileController.text,
+                        ),
                 ),
               ],
             ],
@@ -995,7 +1025,9 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
                   onChanged: (_) => setState(() {}),
                   maxLines: 2,
                   label: 'Special Remark *',
-                  errorText: _specialRemarkController.text.trim().isEmpty
+                  errorText:
+                      _showErrors &&
+                          _specialRemarkController.text.trim().isEmpty
                       ? 'Required.'
                       : null,
                 ),
@@ -1198,6 +1230,7 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
         ),
         const SizedBox(height: 12),
         ApplicantCard(
+          showErrors: _showErrors,
           title: 'Policy Holder',
           applicant: _holder,
           prefilledKeys: _prefilledKeys,
@@ -1225,6 +1258,7 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
         //   const SizedBox(height: 12),
         // ],
         ApplicantCard(
+          showErrors: _showErrors,
           title: 'Insured Person',
           applicant: _insured,
           onChanged: () => setState(() {}),
@@ -1343,6 +1377,7 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
     final b = _beneficiaries[i];
     final ceiling = _shareCeiling(b);
     return ApplicantCard(
+      showErrors: _showErrors,
       index: i + 1,
       applicant: b,
       percentCeiling: ceiling,

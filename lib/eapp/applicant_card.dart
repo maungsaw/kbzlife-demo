@@ -82,12 +82,16 @@ class EappDobField extends StatelessWidget {
     this.ageOf,
     this.notFuture = false,
     this.notPast = false,
+    this.showErrors = false,
   });
   final String label;
   final DateTime? date;
   final ValueChanged<DateTime> onPick;
   final int? Function(DateTime)? ageOf;
   final bool notFuture;
+
+  /// Quiet until the step is submitted.
+  final bool showErrors;
 
   /// Proposal › Request Policy Date — "Should not be less than today."
   final bool notPast;
@@ -124,7 +128,7 @@ class EappDobField extends StatelessWidget {
         if (picked != null) onPick(picked);
       },
       suffixIcon: Icon(Icons.calendar_today_outlined, size: context.iconLg),
-      errorText: error,
+      errorText: !showErrors ? null : error,
       child: Text(
         date == null
             ? 'Select a date'
@@ -364,9 +368,14 @@ class ApplicantCard extends StatelessWidget {
     this.prefilledKeys = const {},
     this.header,
     this.percentCeiling,
+    this.showErrors = false,
   });
 
   final Applicant applicant;
+
+  /// Validation is silent until the step is submitted: an untouched card
+  /// should not open covered in red for fields the FA has not reached yet.
+  final bool showErrors;
 
   /// Called after any mutation so the host screen can `setState` and
   /// re-run its step validators.
@@ -437,7 +446,9 @@ class ApplicantCard extends StatelessWidget {
           applicant.isEntity ? Icons.business_outlined : Icons.person_outline,
         ),
         helperText: _helper('name'),
-        errorText: ApplicantValidators.name(applicant.nameController.text),
+        errorText: !showErrors
+            ? null
+            : ApplicantValidators.name(applicant.nameController.text),
       ),
     );
 
@@ -476,6 +487,7 @@ class ApplicantCard extends StatelessWidget {
             onChanged();
           },
           notFuture: true,
+          showErrors: showErrors,
         ),
       );
       add(
@@ -484,9 +496,11 @@ class ApplicantCard extends StatelessWidget {
           onChanged: (_) => onChanged(),
           label: 'Contact Person *',
           prefixIcon: Icon(Icons.person_outline),
-          errorText: ApplicantValidators.name(
-            applicant.contactPersonController.text,
-          ),
+          errorText: !showErrors
+              ? null
+              : ApplicantValidators.name(
+                  applicant.contactPersonController.text,
+                ),
         ),
       );
     } else {
@@ -496,9 +510,9 @@ class ApplicantCard extends StatelessWidget {
           onChanged: (_) => onChanged(),
           label: 'Father Name *',
           helperText: _helper('fatherName'),
-          errorText: ApplicantValidators.name(
-            applicant.fatherNameController.text,
-          ),
+          errorText: !showErrors
+              ? null
+              : ApplicantValidators.name(applicant.fatherNameController.text),
         ),
       );
       add(
@@ -511,6 +525,7 @@ class ApplicantCard extends StatelessWidget {
           },
           ageOf: _isBeneficiary ? null : ApplicantValidators.ageOf,
           notFuture: _isBeneficiary,
+          showErrors: showErrors,
         ),
       );
       if (!_isBeneficiary) {
@@ -548,7 +563,9 @@ class ApplicantCard extends StatelessWidget {
         hint: '',
         showFlag: true,
         helperText: _helper('mobile'),
-        errorText: _isBeneficiary
+        errorText: !showErrors
+            ? null
+            : _isBeneficiary
             ? ApplicantValidators.mobileDigits(applicant.mobileController.text)
             : applicant.role == ApplicantRole.insured
             ? ApplicantValidators.mobileFormat(applicant.mobileController.text)
@@ -580,9 +597,9 @@ class ApplicantCard extends StatelessWidget {
             }
             onChanged();
           },
-          errorText: ApplicantValidators.percent(
-            applicant.percentController.text,
-          ),
+          errorText: !showErrors
+              ? null
+              : ApplicantValidators.percent(applicant.percentController.text),
         ),
       );
     } else {
@@ -593,7 +610,9 @@ class ApplicantCard extends StatelessWidget {
           keyboardType: TextInputType.emailAddress,
           label: 'Email',
           helperText: _helper('email'),
-          errorText: ApplicantValidators.email(applicant.emailController.text),
+          errorText: !showErrors
+              ? null
+              : ApplicantValidators.email(applicant.emailController.text),
         ),
       );
     }
@@ -607,7 +626,9 @@ class ApplicantCard extends StatelessWidget {
           prefixIcon: Icon(Icons.badge_outlined),
           suffixIcon: const Icon(Icons.chevron_right),
           helperText: _helper('nrc'),
-          errorText: ApplicantValidators.idNo(applicant.idNoController.text),
+          errorText: !showErrors
+              ? null
+              : ApplicantValidators.idNo(applicant.idNoController.text),
           onTap: () async {
             final result = await showIdentificationPickerSheet(
               context,
@@ -667,7 +688,11 @@ class ApplicantCard extends StatelessWidget {
               helperText: _helper('occupation'),
             ),
             const SizedBox(height: 10),
-            MeasurementRow(applicant: applicant, onChanged: onChanged),
+            MeasurementRow(
+              applicant: applicant,
+              onChanged: onChanged,
+              showErrors: showErrors,
+            ),
             const SizedBox(height: 10),
             AppTextField(
               controller: applicant.remarkController,
@@ -985,9 +1010,14 @@ class MeasurementRow extends StatelessWidget {
     super.key,
     required this.applicant,
     required this.onChanged,
+    this.showErrors = false,
   });
   final Applicant applicant;
   final VoidCallback onChanged;
+
+  /// Same rule as the card that hosts it: quiet until the step is
+  /// submitted.
+  final bool showErrors;
 
   @override
   Widget build(BuildContext context) {
@@ -1031,9 +1061,11 @@ class MeasurementRow extends StatelessWidget {
             readOnly: true,
             label: 'Weight (lb)',
             suffixIcon: Icon(Icons.chevron_right, size: context.iconBase),
-            errorText: ApplicantValidators.numberOnly(
-              applicant.weightController.text,
-            ),
+            errorText: !showErrors
+                ? null
+                : ApplicantValidators.numberOnly(
+                    applicant.weightController.text,
+                  ),
             onTap: () async {
               final result = await showWeightPickerSheet(context);
               if (result != null) {
