@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -156,6 +157,13 @@ class _IdSheet extends ConsumerStatefulWidget {
 /// lists — a CRM lead from Mandalay, say — so the parsed value is folded
 /// into the options rather than dropped, which is what crashed the sheet:
 /// DropdownButton asserts its value is one of its items.
+/// An NRC number is six digits, everywhere it is typed.
+const kNrcNumberLength = 6;
+final kNrcNumberFormatters = <TextInputFormatter>[
+  FilteringTextInputFormatter.digitsOnly,
+  LengthLimitingTextInputFormatter(kNrcNumberLength),
+];
+
 const _kNrcStates = ['1', '5', '9', '12', '13'];
 const _kNrcTownships = ['KaMaNa', 'PaZaTa', 'LaMaNa', 'MaBaNa', 'MaHaMa'];
 const _kNrcTypes = ['N', 'P', 'E'];
@@ -201,6 +209,15 @@ class _IdSheetState extends ConsumerState<_IdSheet> {
     _numberController.dispose();
     super.dispose();
   }
+
+  /// NRC needs its six digits; a passport needs something typed; "No ID"
+  /// needs nothing at all.
+  bool get _canSubmit => switch (_type) {
+    'NRC' ||
+    'Old NRC' => _numberController.text.trim().length == kNrcNumberLength,
+    'Passport' => _numberController.text.trim().isNotEmpty,
+    _ => true,
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -293,6 +310,11 @@ class _IdSheetState extends ConsumerState<_IdSheet> {
                       label: 'NRC Number',
                       hint: '',
                       prefixIcon: Icon(Icons.badge_outlined),
+                      // An NRC number is exactly six digits — the field
+                      // takes six and no more, rather than accepting a
+                      // seventh and rejecting it at validation.
+                      inputFormatters: kNrcNumberFormatters,
+                      helperText: '6 digits',
                     ),
                     const SizedBox(height: 4),
                     Text(
@@ -305,6 +327,7 @@ class _IdSheetState extends ConsumerState<_IdSheet> {
                   ] else if (_type == 'Passport') ...[
                     AppTextField(
                       controller: _numberController,
+                      onChanged: (_) => setState(() {}),
                       label: 'Passport Number',
                       hint: '',
                       prefixIcon: Icon(Icons.badge_outlined),
@@ -326,15 +349,21 @@ class _IdSheetState extends ConsumerState<_IdSheet> {
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: () {
-                final display = switch (_type) {
-                  'NRC' || 'Old NRC' =>
-                    '$_state/$_township($_idType)${_numberController.text}',
-                  'Passport' => _numberController.text,
-                  _ => 'No ID',
-                };
-                Navigator.pop(context, (display, _type));
-              },
+              // Done stays shut until the NRC number is the full six
+              // digits — a half-typed number would leave the card with an
+              // identification that cannot be matched in Core.
+              onPressed: _canSubmit
+                  ? () {
+                      final display = switch (_type) {
+                        'NRC' || 'Old NRC' =>
+                          '$_state/$_township($_idType)'
+                              '${_numberController.text}',
+                        'Passport' => _numberController.text,
+                        _ => 'No ID',
+                      };
+                      Navigator.pop(context, (display, _type));
+                    }
+                  : null,
               child: const Text('Done'),
             ),
           ),

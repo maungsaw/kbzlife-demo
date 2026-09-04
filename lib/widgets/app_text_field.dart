@@ -118,6 +118,13 @@ class _AppTextFieldState extends ConsumerState<AppTextField> {
       suffixText: (widget.suffixIcon == null && widget.isPassword == false)
           ? widget.suffixText
           : null,
+      // The unit reads as a unit, not as part of the value: same size as
+      // the text it follows, in the secondary ink.
+      suffixStyle: TextStyle(
+        fontSize: AppType.body,
+        fontWeight: AppType.normal,
+        color: context.colors.textSecondary,
+      ),
       hintText: widget.hint,
       helperText: widget.helperText,
       helperMaxLines: 2,

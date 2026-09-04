@@ -53,6 +53,10 @@ class QuoteFieldRenderer extends StatelessWidget {
         );
 
       case QuoteFieldType.computed:
+        // Same shape as the number field above it: the figure on the left,
+        // the unit pinned to the right edge. The unit used to sit against
+        // the number here and against the border there, so two fields that
+        // hold the same kind of value read as two different controls.
         return _labeled(
           field.label,
           Container(
@@ -62,16 +66,32 @@ class QuoteFieldRenderer extends StatelessWidget {
               color: context.colors.deepAlpha(0.06),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Text(
-              value == null
-                  ? '—'
-                  : '${value is num ? AppNumber.format(value as num) : value}'
-                        '${field.suffix != null ? ' ${field.suffix}' : ''}',
-              style: TextStyle(
-                fontSize: AppType.body,
-                fontWeight: AppType.normal,
-                color: context.colors.textPrimary,
-              ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    value == null
+                        ? '—'
+                        : value is num
+                        ? AppNumber.format(value as num)
+                        : '$value',
+                    style: TextStyle(
+                      fontSize: AppType.body,
+                      fontWeight: AppType.normal,
+                      color: context.colors.textPrimary,
+                    ),
+                  ),
+                ),
+                if (field.suffix != null)
+                  Text(
+                    field.suffix!,
+                    style: TextStyle(
+                      fontSize: AppType.body,
+                      fontWeight: AppType.normal,
+                      color: context.colors.textSecondary,
+                    ),
+                  ),
+              ],
             ),
           ),
         );
