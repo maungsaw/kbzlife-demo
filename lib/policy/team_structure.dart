@@ -137,7 +137,7 @@ class _TeamStructurePageState extends State<TeamStructurePage> {
     }
 
     return ListView.builder(
-      padding: const EdgeInsets.all(16),
+      padding: const .all(6),
       itemCount: _directManagers.length,
       itemBuilder: (context, index) {
         final managerNode = _directManagers[index];
@@ -240,13 +240,13 @@ class _TeamStructurePageState extends State<TeamStructurePage> {
 
   Widget _buildSubUserGroup(BuildContext context, _TeamNode node) {
     return Container(
-            color: context.colors.sectionBg,
+      color: context.colors.sectionBg,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Divider(height: 1),
           Material(
-      color: context.colors.sectionBg,
+            color: context.colors.sectionBg,
             child: ListTile(
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 20,
@@ -259,7 +259,9 @@ class _TeamStructurePageState extends State<TeamStructurePage> {
               ),
               title: Text.rich(
                 TextSpan(
-                  children: [WidgetSpan(child: RoleBadge(role: node.user.role))],
+                  children: [
+                    WidgetSpan(child: RoleBadge(role: node.user.role)),
+                  ],
                   text: node.user.name,
                   style: const TextStyle(
                     fontWeight: FontWeight.w700,
@@ -270,39 +272,40 @@ class _TeamStructurePageState extends State<TeamStructurePage> {
               ),
 
               subtitle: Padding(
-              padding: const EdgeInsets.only(top: 2.0),
-              child: Text.rich(
-                TextSpan(
-                  children: [
-                    TextSpan(
-                      text: 'Own: ${node.ownPolicyCount} Policies',
-                      style: TextStyle(
-                        color: context.colors.primaryColor,
-                        fontSize: 11,
-                        fontWeight: FontWeight.w600,
+                padding: const EdgeInsets.only(top: 2.0),
+                child: Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(
+                        text: 'Own: ${node.ownPolicyCount} Policies',
+                        style: TextStyle(
+                          color: context.colors.primaryColor,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                    ),
-                    TextSpan(
-                      text: ' • ',
-                      style: TextStyle(
-                        color: Colors.grey.shade400,
-                        fontSize: 11,
+                      TextSpan(
+                        text: ' • ',
+                        style: TextStyle(
+                          color: Colors.grey.shade400,
+                          fontSize: 11,
+                        ),
                       ),
-                    ),
-                    TextSpan(
-                      text: 'Total Downline: ${node.totalPolicyCount} Policies',
-                      style: TextStyle(
-                        color: Colors.grey.shade700,
-                        fontSize: 11,
+                      TextSpan(
+                        text:
+                            'Total Downline: ${node.totalPolicyCount} Policies',
+                        style: TextStyle(
+                          color: Colors.grey.shade700,
+                          fontSize: 11,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
+              trailing: Icon(Icons.chevron_right, size: context.iconBase),
+              onTap: () => widget.onPushUser(node.user),
             ),
-            trailing: Icon(Icons.chevron_right, size: context.iconBase),
-            onTap: () => widget.onPushUser(node.user),
-          ),
           ),
         ],
       ),

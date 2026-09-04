@@ -721,7 +721,11 @@ class _ModernTaskCalendarScreenState
       ),
       child: Row(
         children: [
-          Icon(Icons.today_rounded, size: 16, color: context.colors.primaryColor),
+          Icon(
+            Icons.today_rounded,
+            size: 16,
+            color: context.colors.primaryColor,
+          ),
           const SizedBox(width: 8),
           Text(
             'Today\'s Schedule',
@@ -822,7 +826,11 @@ class _ModernTaskCalendarScreenState
                   const SizedBox(height: 3),
                   Row(
                     children: [
-                      Icon(Icons.schedule_rounded, size: 12, color: context.colors.muted),
+                      Icon(
+                        Icons.schedule_rounded,
+                        size: 12,
+                        color: context.colors.muted,
+                      ),
                       const SizedBox(width: 4),
                       Text(
                         timeRange,
@@ -843,7 +851,10 @@ class _ModernTaskCalendarScreenState
                 _buildStackedAssignees(assignees),
                 const SizedBox(height: 6),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 3,
+                  ),
                   decoration: BoxDecoration(
                     color: accentColor.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(6),

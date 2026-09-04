@@ -178,7 +178,7 @@ class _OverviewPageState extends ConsumerState<OverviewPage> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const .symmetric(horizontal: 6),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -289,23 +289,37 @@ class _OverviewPageState extends ConsumerState<OverviewPage> {
       child: Material(
         color: Colors.transparent,
         child: ListTile(
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 4,
+          ),
           onTap: () {
-            context.push(RoutePaths.policyDetail.replaceFirst(':policyNo', policy.policyNo));
+            context.push(
+              RoutePaths.policyDetail.replaceFirst(
+                ':policyNo',
+                policy.policyNo,
+              ),
+            );
           },
           title: Row(
             children: [
               Flexible(
                 child: Text(
                   policy.policyNo,
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
               if (!isOwnPolicy) ...[
                 const SizedBox(width: 8),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 6,
+                    vertical: 2,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.blue.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(6),
@@ -377,7 +391,11 @@ class _OverviewPageState extends ConsumerState<OverviewPage> {
               ],
             ),
           ),
-          trailing: Icon(Icons.chevron_right, size: context.iconLg, color: Colors.grey),
+          trailing: Icon(
+            Icons.chevron_right,
+            size: context.iconLg,
+            color: Colors.grey,
+          ),
         ),
       ),
     );
