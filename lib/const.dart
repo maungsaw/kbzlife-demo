@@ -308,7 +308,8 @@ class AppColorsExtension extends ThemeExtension<AppColorsExtension> {
 
 // ── Default color values ──
 abstract class _Defaults {
-  static const Color primaryColor = Color(0xFF0B54B8);
+  // navy -> 0B54B8 lightBlue -> 00ADEE  darkBlue -> 015F9A
+  static const Color primaryColor = Color(0xFF015F9A);
   // navy -> 0B54B8 lightBlue -> 00ADEE  darkBlue -> 015F9A
   static const Color secondaryColor = Color(0xFF00ADEE);
   static const Color accentNavy = Color(0xFF0A192F);
