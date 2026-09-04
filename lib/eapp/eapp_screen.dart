@@ -1059,8 +1059,24 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
-            child: AppSectionTitle(product.name),
+            padding: const EdgeInsets.fromLTRB(16, 14, 8, 8),
+            child: Row(
+              children: [
+                Expanded(child: AppSectionTitle(product.name)),
+                // Doc 111 §2.2 — the figure carried in from the Start step
+                // stays editable, and the action sits with the thing it
+                // edits rather than stranded under the total.
+                TextButton(
+                  onPressed: _editPremiumInputs,
+                  style: TextButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    minimumSize: Size.zero,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                  child: const Text('Edit'),
+                ),
+              ],
+            ),
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
@@ -1083,7 +1099,7 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
             child: Divider(height: 1),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -1097,20 +1113,6 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
                   ),
                 ),
               ],
-            ),
-          ),
-          // Doc 111 §2.2 — the figure carried in from the Start step stays
-          // editable; changing it reopens the same calculator, never a
-          // second copy of the fields.
-          Padding(
-            padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: TextButton.icon(
-                onPressed: _editPremiumInputs,
-                icon: Icon(Icons.tune, size: context.iconBase),
-                label: const Text('Edit premium inputs'),
-              ),
             ),
           ),
         ],
@@ -1344,9 +1346,6 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
       index: i + 1,
       applicant: b,
       percentCeiling: ceiling,
-      onUseRemaining: ceiling > _shareOf(b)
-          ? () => setState(() => b.percentController.text = '$ceiling')
-          : null,
       // Removing a row frees its budget but never silently reallocates it
       // to anyone else (doc 112 §5).
       onRemove: _beneficiaries.length > 1

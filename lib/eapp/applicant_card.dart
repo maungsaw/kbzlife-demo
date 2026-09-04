@@ -43,13 +43,28 @@ class EappDropdownField extends StatelessWidget {
           value: value,
           isExpanded: true,
           isDense: true,
-          hint: const Text('Select', style: TextStyle(fontSize: AppType.label)),
+          // The chosen option reads exactly like a typed value: body size,
+          // normal weight, black. The placeholder takes the hint grey.
+          style: TextStyle(
+            fontSize: AppType.body,
+            fontWeight: AppType.normal,
+            color: context.colors.textPrimary,
+          ),
+          hint: Text(
+            'Select',
+            style: TextStyle(
+              fontSize: AppType.body,
+              fontWeight: AppType.normal,
+              color: context.colors.textSecondary,
+            ),
+          ),
+          icon: Icon(
+            Icons.keyboard_arrow_down_rounded,
+            size: context.iconLg,
+            color: context.colors.textSecondary,
+          ),
           items: [
-            for (final o in options)
-              DropdownMenuItem(
-                value: o,
-                child: Text(o, style: const TextStyle(fontSize: AppType.label)),
-              ),
+            for (final o in options) DropdownMenuItem(value: o, child: Text(o)),
           ],
           onChanged: onChanged,
         ),
@@ -116,7 +131,7 @@ class EappDobField extends StatelessWidget {
             : DateFormat('dd-MMM-yyyy', 'en_US').format(date!),
         style: TextStyle(
           fontSize: AppType.body,
-          fontWeight: date == null ? FontWeight.normal : AppType.strong,
+          fontWeight: AppType.normal,
           color: date == null
               ? context.colors.textSecondary
               : context.colors.textPrimary,
@@ -126,24 +141,29 @@ class EappDobField extends StatelessWidget {
   }
 }
 
-/// Doc 112 §2 — a share can never be typed past the budget left for it.
-/// The edit is rejected (the old value stands) rather than silently
-/// rewritten, so the FA always sees exactly what they typed.
-class PercentBudgetFormatter extends TextInputFormatter {
-  const PercentBudgetFormatter({required this.max});
-  final int max;
-
-  @override
-  TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue,
-    TextEditingValue newValue,
-  ) {
-    final text = newValue.text.trim();
-    if (text.isEmpty) return newValue;
-    final n = int.tryParse(text);
-    if (n == null) return oldValue;
-    return n > max ? oldValue : newValue;
-  }
+/// Says why the number was capped, once, at the moment it is capped.
+Future<void> _showShareLimitDialog(BuildContext context, int ceiling) {
+  return showDialog<void>(
+    context: context,
+    builder: (context) => AlertDialog(
+      backgroundColor: context.colors.paper,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+      title: const AppSectionTitle('Share cannot exceed 100%'),
+      content: AppBodyText(
+        ceiling == 0
+            ? 'The beneficiaries already share the full 100%. Lower another '
+                  'beneficiary\u2019s percentage to free some up.'
+            : 'Beneficiaries share 100% between them, and $ceiling% is left '
+                  'for this one. The value has been set to $ceiling%.',
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('OK'),
+        ),
+      ],
+    ),
+  );
 }
 
 /// Doc 111 §4.2 — required fields render immediately; everything optional
@@ -344,7 +364,6 @@ class ApplicantCard extends StatelessWidget {
     this.prefilledKeys = const {},
     this.header,
     this.percentCeiling,
-    this.onUseRemaining,
   });
 
   final Applicant applicant;
@@ -370,9 +389,6 @@ class ApplicantCard extends StatelessWidget {
   /// unallocated plus whatever they already hold. A keystroke that would
   /// break it is rejected outright rather than flagged later.
   final int? percentCeiling;
-
-  /// Doc 112 §3 — one tap to close the gap. Null when there is no gap.
-  final VoidCallback? onUseRemaining;
 
   bool get _isBeneficiary => applicant.role == ApplicantRole.beneficiary;
 
@@ -542,37 +558,31 @@ class ApplicantCard extends StatelessWidget {
 
     if (_isBeneficiary) {
       final ceiling = percentCeiling ?? 100;
-      final own = int.tryParse(applicant.percentController.text.trim()) ?? 0;
-      final unallocated = ceiling - own;
       add(
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            AppTextField(
-              controller: applicant.percentController,
-              onChanged: (_) => onChanged(),
-              keyboardType: TextInputType.number,
-              label: 'Share *',
-              suffixText: '%',
-              inputFormatters: [PercentBudgetFormatter(max: ceiling)],
-              // The cap explains itself in place, so a refused keystroke
-              // never reads as a broken keyboard (doc 112 §2).
-              helperText: unallocated > 0
-                  ? 'Max $ceiling% — $unallocated% unallocated'
-                  : 'Max $ceiling%',
-              errorText: ApplicantValidators.percent(
-                applicant.percentController.text,
-              ),
-            ),
-            if (onUseRemaining != null)
-              Align(
-                alignment: Alignment.centerLeft,
-                child: TextButton(
-                  onPressed: onUseRemaining,
-                  child: Text('Use remaining ($unallocated%)'),
-                ),
-              ),
-          ],
+        AppTextField(
+          controller: applicant.percentController,
+          keyboardType: TextInputType.number,
+          label: 'Beneficiary Percentage *',
+          suffixText: '%',
+          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+          // Doc 112 §2 — the budget is explained when it is actually hit,
+          // in a dialog the FA has to acknowledge. A permanent helper line
+          // under every row, and a "use remaining" shortcut beside it,
+          // said the same thing three times over.
+          onChanged: (raw) {
+            final typed = int.tryParse(raw.trim()) ?? 0;
+            if (typed > ceiling) {
+              applicant.percentController.text = '$ceiling';
+              applicant.percentController.selection = TextSelection.collapsed(
+                offset: '$ceiling'.length,
+              );
+              _showShareLimitDialog(context, ceiling);
+            }
+            onChanged();
+          },
+          errorText: ApplicantValidators.percent(
+            applicant.percentController.text,
+          ),
         ),
       );
     } else {
@@ -751,13 +761,15 @@ class _AddressRow extends StatelessWidget {
       onTap: () async {
         if (await showAddressSheet(context, applicant)) onChanged();
       },
+      // A filled address is a value like any other — plain black at body
+      // size, not a bolder line than the fields around it.
       child: Text(
         summary ?? 'Tap to fill',
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
         style: TextStyle(
           fontSize: AppType.body,
-          fontWeight: summary == null ? FontWeight.normal : FontWeight.w600,
+          fontWeight: AppType.normal,
           color: summary == null
               ? context.colors.textSecondary
               : context.colors.textPrimary,
@@ -1004,7 +1016,7 @@ class MeasurementRow extends StatelessWidget {
               ft.isEmpty ? 'Tap to set' : "$ft' $inch\"",
               style: TextStyle(
                 fontSize: AppType.body,
-                fontWeight: ft.isEmpty ? FontWeight.normal : FontWeight.w600,
+                fontWeight: AppType.normal,
                 color: ft.isEmpty
                     ? context.colors.textSecondary
                     : context.colors.textPrimary,

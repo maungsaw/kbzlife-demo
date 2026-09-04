@@ -16,22 +16,27 @@ import '../const.dart';
 /// `TextSpan` or an `InputDecoration` rather than take a widget.
 abstract final class AppType {
   /// Screen / step heading.
-  static const double heading = 19;
+  static const double heading = 20;
 
   /// Card or section title.
-  static const double title = 15.5;
+  static const double title = 16;
 
-  /// Field labels and table labels.
+  /// Field labels and table labels. Same ink as the title, two sizes
+  /// down: a label names the value under it, it does not compete with the
+  /// card title above it.
   static const double label = 12.5;
 
   /// Body copy and field values.
-  static const double body = 13;
+  static const double body = 13.5;
 
   /// Captions, helper lines, chips.
   static const double caption = 11.5;
 
   /// The heaviest weight in the flow. Bold is deliberately absent.
   static const FontWeight strong = FontWeight.w600;
+
+  /// Labels sit a notch below titles, so size *and* weight separate them.
+  static const FontWeight medium = FontWeight.w500;
   static const FontWeight normal = FontWeight.w400;
 }
 
@@ -123,8 +128,10 @@ class AppLabelText extends StatelessWidget {
     textAlign: align,
     style: TextStyle(
       fontSize: AppType.label,
-      fontWeight: AppType.strong,
+      fontWeight: AppType.medium,
       height: 1.3,
+      // Black, like the card title above it — they are separated by size
+      // and weight, not by fading the label out.
       color: context.colors.textPrimary,
     ),
   );
