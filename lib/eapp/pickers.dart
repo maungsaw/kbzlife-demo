@@ -17,7 +17,7 @@ Future<ImageSource?> showImageSourceSheet(
   return showModalBottomSheet<ImageSource>(
     context: context,
     showDragHandle: true,
-    backgroundColor: AppColors.paper,
+    backgroundColor: context.colors.paper,
     builder: (context) => SafeArea(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
@@ -27,10 +27,10 @@ Future<ImageSource?> showImageSourceSheet(
           children: [
             Text(
               title,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w800,
-                color: AppColors.deep,
+                color: context.colors.accentNavy,
               ),
             ),
             const SizedBox(height: 12),
@@ -58,7 +58,7 @@ Future<ImageSource?> showImageSourceSheet(
             const SizedBox(height: 10),
             Text(
               'JPG or PNG, up to 5 MB.',
-              style: TextStyle(fontSize: 11, color: AppColors.deepAlpha(0.5)),
+              style: TextStyle(fontSize: 11, color: context.colors.muted),
             ),
           ],
         ),
@@ -87,26 +87,35 @@ class _SourceTile extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 12),
         decoration: BoxDecoration(
-          color: AppColors.cream,
+          color: context.colors.paper,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppColors.deepAlpha(0.08)),
+          border: Border.all(
+            color: context.colors.accentNavy.withValues(alpha: 0.08),
+          ),
         ),
         child: Column(
           children: [
-            Icon(icon, size: context.iconXxl, color: AppColors.primaryColor),
+            Icon(
+              icon,
+              size: context.iconXxl,
+              color: context.colors.primaryColor,
+            ),
             const SizedBox(height: 8),
             Text(
               label,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 12.5,
                 fontWeight: FontWeight.w800,
-                color: AppColors.deep,
+                color: context.colors.accentNavy,
               ),
             ),
             const SizedBox(height: 2),
             Text(
               hint,
-              style: TextStyle(fontSize: 10.5, color: AppColors.deepAlpha(0.5)),
+              style: TextStyle(
+                fontSize: 10.5,
+                color: context.colors.accentNavy.withValues(alpha: 0.5),
+              ),
             ),
           ],
         ),
@@ -126,7 +135,7 @@ Future<(String, String)?> showIdentificationPickerSheet(
     context: context,
     showDragHandle: true,
     isScrollControlled: true,
-    backgroundColor: AppColors.paper,
+    backgroundColor: context.colors.paper,
     builder: (context) => _IdSheet(initial: initial),
   );
 }
@@ -203,12 +212,12 @@ class _IdSheetState extends ConsumerState<_IdSheet> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Identification',
             style: TextStyle(
               fontWeight: FontWeight.w800,
               fontSize: 16,
-              color: AppColors.deep,
+              color: context.colors.accentNavy,
             ),
           ),
           const SizedBox(height: 14),
@@ -286,7 +295,9 @@ class _IdSheetState extends ConsumerState<_IdSheet> {
                       '$_state/$_township($_idType)${_numberController.text}',
                       style: TextStyle(
                         fontSize: 11,
-                        color: AppColors.deepAlpha(0.45),
+                        color: context.colors.accentNavy.withValues(
+                          alpha: 0.45,
+                        ),
                       ),
                     ),
                   ] else if (_type == 'Passport') ...[
@@ -301,7 +312,7 @@ class _IdSheetState extends ConsumerState<_IdSheet> {
                       'No identification on file',
                       style: TextStyle(
                         fontSize: 12,
-                        color: AppColors.deepAlpha(0.5),
+                        color: context.colors.deepAlpha(0.5),
                       ),
                     ),
                   ],
@@ -349,10 +360,10 @@ class _IdTypeTile extends StatelessWidget {
       child: Container(
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: selected ? Colors.white : const Color(0xFFF1F5F9),
+          color: selected ? context.colors.paper : context.colors.chipBg,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: selected ? AppColors.primaryColor : Colors.transparent,
+            color: selected ? context.colors.primaryColor : Colors.transparent,
             width: 1.6,
           ),
         ),
@@ -365,8 +376,8 @@ class _IdTypeTile extends StatelessWidget {
                   fontWeight: FontWeight.w700,
                   fontSize: 12.5,
                   color: selected
-                      ? AppColors.primaryColor
-                      : AppColors.deepAlpha(0.6),
+                      ? context.colors.primaryColor
+                      : context.colors.deepAlpha(0.6),
                 ),
               ),
             ),
@@ -377,8 +388,8 @@ class _IdTypeTile extends StatelessWidget {
                 child: Container(
                   width: 8,
                   height: 8,
-                  decoration: const BoxDecoration(
-                    color: AppColors.primaryColor,
+                  decoration: BoxDecoration(
+                    color: context.colors.primaryColor,
                     shape: BoxShape.circle,
                   ),
                 ),
@@ -397,7 +408,7 @@ Future<String?> showHeightPickerSheet(
   return showModalBottomSheet<String>(
     context: context,
     showDragHandle: true,
-    backgroundColor: AppColors.paper,
+    backgroundColor: context.colors.paper,
     builder: (context) => _WheelPickerSheet(
       title: 'Select your height',
       leftLabel: 'ft',
@@ -416,7 +427,7 @@ Future<String?> showWeightPickerSheet(
   return showModalBottomSheet<String>(
     context: context,
     showDragHandle: true,
-    backgroundColor: AppColors.paper,
+    backgroundColor: context.colors.paper,
     builder: (context) => _WheelPickerSheet(
       title: 'Select your weight',
       leftLabel: 'lb',
@@ -463,19 +474,19 @@ class _WheelPickerSheetState extends ConsumerState<_WheelPickerSheet> {
         children: [
           Text(
             widget.title,
-            style: const TextStyle(
+            style: TextStyle(
               fontWeight: FontWeight.w800,
               fontSize: 15,
-              color: AppColors.deep,
+              color: context.colors.deep,
             ),
           ),
           const SizedBox(height: 12),
           Text(
             widget.formatPreview(left, right),
-            style: const TextStyle(
+            style: TextStyle(
               fontWeight: FontWeight.w800,
               fontSize: 22,
-              color: AppColors.primaryColor,
+              color: context.colors.primaryColor,
             ),
           ),
           const SizedBox(height: 12),
@@ -488,7 +499,7 @@ class _WheelPickerSheetState extends ConsumerState<_WheelPickerSheet> {
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w700,
-                      color: AppColors.deepAlpha(0.5),
+                      color: context.colors.deepAlpha(0.5),
                     ),
                   ),
                 ),
@@ -501,7 +512,7 @@ class _WheelPickerSheetState extends ConsumerState<_WheelPickerSheet> {
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w700,
-                      color: AppColors.deepAlpha(0.5),
+                      color: context.colors.deepAlpha(0.5),
                     ),
                   ),
                 ),
@@ -563,10 +574,10 @@ class _Wheel extends StatelessWidget {
           builder: (context, i) => Center(
             child: Text(
               values[i],
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w700,
-                color: AppColors.deep,
+                color: context.colors.deep,
               ),
             ),
           ),

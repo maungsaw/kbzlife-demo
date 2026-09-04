@@ -531,7 +531,7 @@ class _ModernTaskCalendarScreenState
       ];
     }
     return tasks.map((task) {
-      return _buildSimpleTaskTile(
+      return _buildCompactTaskTile(
         task['time'] as String,
         task['title'] as String,
         task['subtitle'] as String,
@@ -541,11 +541,11 @@ class _ModernTaskCalendarScreenState
     }).toList();
   }
 
-  Widget _buildSimpleTaskTile(
+  Widget _buildCompactTaskTile(
     String time,
     String title,
     String subtitle,
-    Color dotColor,
+    Color accentColor,
     List<String> assignees,
   ) {
     return InkWell(
@@ -555,104 +555,130 @@ class _ModernTaskCalendarScreenState
       borderRadius: BorderRadius.circular(12),
       child: Container(
         margin: const EdgeInsets.only(bottom: 8),
-        padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
-        ),
-        child: Row(
-          children: [
-            Text(
-              time,
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-                color: dotColor,
-              ),
-            ),
-            const SizedBox(width: 8),
-            Container(
-              width: 6,
-              height: 6,
-              decoration: BoxDecoration(
-                color: dotColor,
-                shape: BoxShape.circle,
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.bold,
-                      color: context.colors.primaryColor,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    subtitle,
-                    style: TextStyle(
-                      fontSize: 11,
-                      color: context.colors.textMuted,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            _buildStackedAssignees(assignees),
-            const SizedBox(width: 8),
-            Icon(
-              Icons.chevron_right,
-              size: context.iconLg,
-              color: context.colors.border,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.04),
+              blurRadius: 6,
+              offset: const Offset(0, 2),
             ),
           ],
+        ),
+        child: IntrinsicHeight(
+          child: Row(
+            children: [
+              Container(
+                width: 4,
+                decoration: BoxDecoration(
+                  color: accentColor,
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(12),
+                    bottomLeft: Radius.circular(12),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Row(
+                    children: [
+                      Text(
+                        time,
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          color: accentColor,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              title,
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w700,
+                                color: context.colors.accentNavy,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              subtitle,
+                              style: TextStyle(
+                                fontSize: 11,
+                                color: context.colors.muted,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      _buildStackedAssignees(assignees),
+                      const SizedBox(width: 4),
+                      Icon(
+                        Icons.chevron_right_rounded,
+                        size: 18,
+                        color: context.colors.border,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  // --- Day / Week Time-slot List View ---
+  // --- Day Time-slot List View ---
   List<Widget> _buildTimeSlotTaskList() {
     return [
+      _buildTimeSlotHeader(),
+      const SizedBox(height: 8),
       _buildTimeSlotRow(
         '08:00 AM',
-        _buildColoredTaskCard(
+        _buildDayTaskCard(
           'Overdue: Policy Follow-up',
           'All Day',
           'OVERDUE',
-          context.colors.roseLight,
-          context.colors.roseAccent,
+          Colors.red.shade50,
+          Colors.red.shade700,
           Colors.red,
           ['Alex Morgan', 'Sarah Chen'],
         ),
       ),
       _buildTimeSlotRow(
         '09:00 AM',
-        _buildColoredTaskCard(
+        _buildDayTaskCard(
           'Meeting Appointment',
           '09:00 - 10:00',
           'OPEN',
           context.colors.infoLight,
-          context.colors.infoBorder,
           context.colors.infoText,
+          context.colors.primaryColor,
           ['David Miller'],
         ),
       ),
       _buildTimeSlotRow('10:00 AM', null),
       _buildTimeSlotRow(
         '11:00 AM',
-        _buildColoredTaskCard(
+        _buildDayTaskCard(
           'Customer Follow-up',
           '11:00 - 12:00',
-          'INPROGRESS',
+          'IN PROGRESS',
           context.colors.warningLight,
+          Colors.amber.shade700,
           context.colors.warn,
-          context.colors.statusLead,
           ['Emma Watson', 'James Wilson'],
         ),
       ),
@@ -660,19 +686,19 @@ class _ModernTaskCalendarScreenState
       _buildTimeSlotRow('13:00 PM', null),
       _buildTimeSlotRow(
         '14:00 PM',
-        _buildColoredTaskCard(
+        _buildDayTaskCard(
           'Policy Review',
           'All Day',
           'OVERDUE',
-          context.colors.roseLight,
-          context.colors.roseAccent,
+          Colors.red.shade50,
+          Colors.red.shade700,
           Colors.red,
           ['Sarah Chen'],
         ),
       ),
       _buildTimeSlotRow(
         '15:00 PM',
-        _buildColoredTaskCard(
+        _buildDayTaskCard(
           'Submit Policy Document',
           '15:00 - 16:00',
           'COMPLETED',
@@ -684,6 +710,39 @@ class _ModernTaskCalendarScreenState
       ),
       _buildTimeSlotRow('16:00 PM', null),
     ];
+  }
+
+  Widget _buildTimeSlotHeader() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        color: context.colors.primaryColor.withValues(alpha: 0.06),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        children: [
+          Icon(Icons.today_rounded, size: 16, color: context.colors.primaryColor),
+          const SizedBox(width: 8),
+          Text(
+            'Today\'s Schedule',
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w700,
+              color: context.colors.primaryColor,
+            ),
+          ),
+          const Spacer(),
+          Text(
+            '${_tasksByDay[_selectedDay]?.length ?? 0} tasks',
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              color: context.colors.muted,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildTimeSlotRow(String time, Widget? card) {
@@ -720,13 +779,13 @@ class _ModernTaskCalendarScreenState
     );
   }
 
-  Widget _buildColoredTaskCard(
+  Widget _buildDayTaskCard(
     String title,
     String timeRange,
     String badgeText,
     Color bgColor,
-    Color badgeBgColor,
-    Color textColor,
+    Color badgeTextColor,
+    Color accentColor,
     List<String> assignees,
   ) {
     return InkWell(
@@ -735,51 +794,67 @@ class _ModernTaskCalendarScreenState
       },
       borderRadius: BorderRadius.circular(12),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: bgColor,
           borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: accentColor.withValues(alpha: 0.2),
+            width: 1,
+          ),
         ),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.bold,
-                    color: textColor,
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                      color: context.colors.accentNavy,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  timeRange,
-                  style: TextStyle(fontSize: 11, color: context.colors.muted),
-                ),
-              ],
+                  const SizedBox(height: 3),
+                  Row(
+                    children: [
+                      Icon(Icons.schedule_rounded, size: 12, color: context.colors.muted),
+                      const SizedBox(width: 4),
+                      Text(
+                        timeRange,
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: context.colors.muted,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-            Row(
+            const SizedBox(width: 8),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 _buildStackedAssignees(assignees),
-                const SizedBox(width: 8),
+                const SizedBox(height: 6),
                 Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
-                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                   decoration: BoxDecoration(
-                    color: badgeBgColor,
-                    borderRadius: BorderRadius.circular(8),
+                    color: accentColor.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(6),
                   ),
                   child: Text(
                     badgeText,
                     style: TextStyle(
                       fontSize: 9,
-                      fontWeight: FontWeight.bold,
-                      color: textColor,
+                      fontWeight: FontWeight.w800,
+                      color: badgeTextColor,
+                      letterSpacing: 0.3,
                     ),
                   ),
                 ),

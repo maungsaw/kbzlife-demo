@@ -29,12 +29,12 @@ class _EappStatusDetailScreenState
 
     if (app == null) {
       return Scaffold(
-        backgroundColor: AppColors.cream,
+        backgroundColor: context.colors.cream,
         appBar: AppBar(title: const Text('Status detail')),
         body: Center(
           child: Text(
             'Application not found',
-            style: TextStyle(color: AppColors.deepAlpha(0.4)),
+            style: TextStyle(color: context.colors.deepAlpha(0.4)),
           ),
         ),
       );
@@ -43,7 +43,7 @@ class _EappStatusDetailScreenState
     final (bg, fg) = app.status.pillColors;
 
     return Scaffold(
-      backgroundColor: AppColors.cream,
+      backgroundColor: context.colors.cream,
       appBar: AppBar(title: const Text('Status detail')),
       body: ListView(
         padding: const EdgeInsets.all(16),
@@ -56,10 +56,10 @@ class _EappStatusDetailScreenState
               children: [
                 Text(
                   app.holderName,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.w800,
                     fontSize: 16,
-                    color: AppColors.deep,
+                    color: context.colors.deep,
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -67,7 +67,7 @@ class _EappStatusDetailScreenState
                   '${app.productName} · ${app.ref}',
                   style: TextStyle(
                     fontSize: 12,
-                    color: AppColors.deepAlpha(0.5),
+                    color: context.colors.deepAlpha(0.5),
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -117,10 +117,10 @@ class _EappStatusDetailScreenState
                 const SizedBox(height: 8),
                 Text(
                   app.latestEvent.status.label,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.w800,
                     fontSize: 13,
-                    color: AppColors.deep,
+                    color: context.colors.deep,
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -128,7 +128,7 @@ class _EappStatusDetailScreenState
                   '${AppDate.dMyHm(app.latestEvent.at)} · ${app.latestEvent.actor}',
                   style: TextStyle(
                     fontSize: 11,
-                    color: AppColors.deepAlpha(0.5),
+                    color: context.colors.deepAlpha(0.5),
                   ),
                 ),
                 if (app.latestEvent.note != null) ...[
@@ -137,7 +137,7 @@ class _EappStatusDetailScreenState
                     app.latestEvent.note!,
                     style: TextStyle(
                       fontSize: 12,
-                      color: AppColors.deepAlpha(0.65),
+                      color: context.colors.deepAlpha(0.65),
                     ),
                   ),
                 ],
@@ -203,8 +203,8 @@ class _TimelineTile extends StatelessWidget {
     final done = localEvent != null;
     final future = !done && !isCurrent;
     final dotColor = isCurrent
-        ? AppColors.primaryColor
-        : (done ? AppColors.mint : AppColors.deepAlpha(0.15));
+        ? context.colors.primaryColor
+        : (done ? context.colors.mint : context.colors.deepAlpha(0.15));
 
     return IntrinsicHeight(
       child: Row(
@@ -228,7 +228,10 @@ class _TimelineTile extends StatelessWidget {
               ),
               if (!isLast)
                 Expanded(
-                  child: Container(width: 2, color: AppColors.deepAlpha(0.1)),
+                  child: Container(
+                    width: 2,
+                    color: context.colors.deepAlpha(0.1),
+                  ),
                 ),
             ],
           ),
@@ -245,8 +248,8 @@ class _TimelineTile extends StatelessWidget {
                       fontWeight: FontWeight.w800,
                       fontSize: 12.5,
                       color: future
-                          ? AppColors.deepAlpha(0.35)
-                          : AppColors.deep,
+                          ? context.colors.deepAlpha(0.35)
+                          : context.colors.deep,
                     ),
                   ),
                   if (localEvent != null) ...[
@@ -255,7 +258,7 @@ class _TimelineTile extends StatelessWidget {
                       '${AppDate.dMyHm(localEvent.at)} · ${localEvent.actor}',
                       style: TextStyle(
                         fontSize: 10.5,
-                        color: AppColors.deepAlpha(0.45),
+                        color: context.colors.deepAlpha(0.45),
                       ),
                     ),
                     if (localEvent.note != null) ...[
@@ -264,7 +267,7 @@ class _TimelineTile extends StatelessWidget {
                         localEvent.note!,
                         style: TextStyle(
                           fontSize: 11,
-                          color: AppColors.deepAlpha(0.55),
+                          color: context.colors.deepAlpha(0.55),
                         ),
                       ),
                     ],
@@ -273,7 +276,7 @@ class _TimelineTile extends StatelessWidget {
                       future ? 'Not yet reached' : '',
                       style: TextStyle(
                         fontSize: 10.5,
-                        color: AppColors.deepAlpha(0.3),
+                        color: context.colors.deepAlpha(0.3),
                       ),
                     ),
                 ],
@@ -297,7 +300,10 @@ class _StatusCta extends StatelessWidget {
         return Text(
           "You'll get a notification when this status changes.",
           textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 11.5, color: AppColors.deepAlpha(0.45)),
+          style: TextStyle(
+            fontSize: 11.5,
+            color: context.colors.deepAlpha(0.45),
+          ),
         );
       case EappStatus.correction:
         return SizedBox(
@@ -403,7 +409,9 @@ class _TimeInProcessCardState extends State<_TimeInProcessCard> {
       1.0,
     );
     final overdue = _elapsed > _target;
-    final gaugeColor = overdue ? AppColors.warn : AppColors.primaryColor;
+    final gaugeColor = overdue
+        ? context.colors.warn
+        : context.colors.primaryColor;
 
     return SoftCard(
       child: Column(
@@ -416,7 +424,11 @@ class _TimeInProcessCardState extends State<_TimeInProcessCard> {
               duration: const Duration(seconds: 1),
               curve: Curves.linear,
               builder: (context, value, child) => CustomPaint(
-                painter: _GaugePainter(progress: value, color: gaugeColor),
+                painter: _GaugePainter(
+                  progress: value,
+                  color: gaugeColor,
+                  context: context,
+                ),
                 child: child,
               ),
               child: Center(
@@ -429,7 +441,7 @@ class _TimeInProcessCardState extends State<_TimeInProcessCard> {
                         fontSize: 9,
                         fontWeight: FontWeight.bold,
                         letterSpacing: 0.8,
-                        color: AppColors.deepAlpha(0.45),
+                        color: context.colors.deepAlpha(0.45),
                       ),
                     ),
                     const SizedBox(height: 6),
@@ -438,7 +450,9 @@ class _TimeInProcessCardState extends State<_TimeInProcessCard> {
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.w800,
-                        color: overdue ? AppColors.warn : Colors.black,
+                        color: overdue
+                            ? context.colors.warn
+                            : context.colors.accentNavy,
                       ),
                     ),
                     const SizedBox(height: 10),
@@ -451,8 +465,10 @@ class _TimeInProcessCardState extends State<_TimeInProcessCard> {
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
                           color: _notifyMe
-                              ? AppColors.primaryColor.withValues(alpha: 0.12)
-                              : AppColors.deepAlpha(0.06),
+                              ? context.colors.primaryColor.withValues(
+                                  alpha: 0.12,
+                                )
+                              : context.colors.deepAlpha(0.06),
                           shape: BoxShape.circle,
                         ),
                         child: Icon(
@@ -461,8 +477,8 @@ class _TimeInProcessCardState extends State<_TimeInProcessCard> {
                               : Icons.notifications_off_outlined,
                           size: context.iconBase,
                           color: _notifyMe
-                              ? AppColors.primaryColor
-                              : AppColors.deepAlpha(0.4),
+                              ? context.colors.primaryColor
+                              : context.colors.deepAlpha(0.4),
                         ),
                       ),
                     ),
@@ -480,7 +496,9 @@ class _TimeInProcessCardState extends State<_TimeInProcessCard> {
             style: TextStyle(
               fontSize: 11,
               fontWeight: overdue ? FontWeight.w700 : FontWeight.normal,
-              color: overdue ? AppColors.warn : AppColors.deepAlpha(0.5),
+              color: overdue
+                  ? context.colors.warn
+                  : context.colors.deepAlpha(0.5),
             ),
           ),
         ],
@@ -490,9 +508,14 @@ class _TimeInProcessCardState extends State<_TimeInProcessCard> {
 }
 
 class _GaugePainter extends CustomPainter {
-  _GaugePainter({required this.progress, required this.color});
+  _GaugePainter({
+    required this.progress,
+    required this.color,
+    required this.context,
+  });
   final double progress;
   final Color color;
+  final BuildContext context;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -500,7 +523,7 @@ class _GaugePainter extends CustomPainter {
     final radius = size.width / 2 - 6;
 
     final track = Paint()
-      ..color = AppColors.deepAlpha(0.08)
+      ..color = context.colors.deepAlpha(0.08)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 7
       ..strokeCap = StrokeCap.round;
@@ -594,8 +617,8 @@ class _StageStepper extends StatelessWidget {
                           ? FontWeight.w800
                           : FontWeight.w600,
                       color: i <= current
-                          ? AppColors.deep
-                          : AppColors.deepAlpha(0.35),
+                          ? context.colors.deep
+                          : context.colors.deepAlpha(0.35),
                     ),
                   ),
                 ),
@@ -607,14 +630,19 @@ class _StageStepper extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 22),
                 child: i < current
-                    ? Container(height: 2, color: AppColors.primaryColor)
+                    ? Container(height: 2, color: context.colors.primaryColor)
                     : (i == current && !stalled)
                     ? _DashedLine(
                         color: stalled
-                            ? AppColors.danger
-                            : AppColors.primaryColor.withValues(alpha: 0.5),
+                            ? context.colors.danger
+                            : context.colors.primaryColor.withValues(
+                                alpha: 0.5,
+                              ),
                       )
-                    : Container(height: 2, color: AppColors.deepAlpha(0.12)),
+                    : Container(
+                        height: 2,
+                        color: context.colors.deepAlpha(0.12),
+                      ),
               ),
             ),
         ],
@@ -638,10 +666,10 @@ class _StageDot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = isError
-        ? AppColors.danger
+        ? context.colors.danger
         : (done || isCurrent)
-        ? AppColors.primaryColor
-        : AppColors.deepAlpha(0.15);
+        ? context.colors.primaryColor
+        : context.colors.deepAlpha(0.15);
     return Container(
       width: 26,
       height: 26,

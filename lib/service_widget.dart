@@ -322,9 +322,7 @@ class _ServiceTileState extends ConsumerState<_ServiceTile> {
                         Positioned.fill(
                           child: Container(
                             decoration: BoxDecoration(
-                              color: context.colors.primaryColor.withValues(
-                                alpha: 0.09,
-                              ),
+                              color: context.colors.primaryColor,
                               borderRadius: BorderRadius.circular(
                                 containerSize * 0.50,
                               ),
@@ -333,7 +331,7 @@ class _ServiceTileState extends ConsumerState<_ServiceTile> {
                               child: Icon(
                                 widget.service.icon,
                                 size: iconSize,
-                                color: context.colors.primaryColor,
+                                color: context.colors.surfaceBg,
                               ),
                             ),
                           ),

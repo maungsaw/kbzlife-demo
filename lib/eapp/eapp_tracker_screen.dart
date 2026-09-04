@@ -25,7 +25,6 @@ class _EappTrackerScreenState extends ConsumerState<EappTrackerScreen> {
         .toList();
 
     return Scaffold(
-      backgroundColor: AppColors.cream,
       appBar: AppBar(title: const Text('App tracker')),
       body: Column(
         children: [
@@ -60,7 +59,7 @@ class _EappTrackerScreenState extends ConsumerState<EappTrackerScreen> {
                     child: Text(
                       'No applications',
                       style: TextStyle(
-                        color: AppColors.deepAlpha(0.4),
+                        color: context.colors.deepAlpha(0.4),
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -110,12 +109,12 @@ class _AppRow extends StatelessWidget {
             height: 40,
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: AppColors.primaryColor.withValues(alpha: 0.12),
+              color: context.colors.primaryColor.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(
               app.status.icon,
-              color: AppColors.primaryColor,
+              color: context.colors.primaryColor,
               size: context.iconXl,
             ),
           ),
@@ -126,10 +125,10 @@ class _AppRow extends StatelessWidget {
               children: [
                 Text(
                   app.holderName,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.w800,
                     fontSize: 13,
-                    color: AppColors.deep,
+                    color: context.colors.deep,
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -137,7 +136,7 @@ class _AppRow extends StatelessWidget {
                   '${app.productName} · ${app.ref}',
                   style: TextStyle(
                     fontSize: 11.5,
-                    color: AppColors.deepAlpha(0.5),
+                    color: context.colors.deepAlpha(0.5),
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -145,7 +144,7 @@ class _AppRow extends StatelessWidget {
                   app.status.whatsNext,
                   style: TextStyle(
                     fontSize: 10.5,
-                    color: AppColors.deepAlpha(0.4),
+                    color: context.colors.deepAlpha(0.4),
                   ),
                 ),
               ],

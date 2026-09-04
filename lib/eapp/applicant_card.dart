@@ -17,10 +17,10 @@ class EappCardTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Text(
     text,
-    style: const TextStyle(
+    style: TextStyle(
       fontSize: 14,
       fontWeight: FontWeight.bold,
-      color: Colors.black,
+      color: context.colors.accentNavy,
     ),
   );
 }
@@ -121,7 +121,9 @@ class EappDobField extends StatelessWidget {
         style: TextStyle(
           fontSize: 13,
           fontWeight: date == null ? FontWeight.normal : FontWeight.bold,
-          color: date == null ? AppColors.muted : AppColors.accentNavy,
+          color: date == null
+              ? context.colors.muted
+              : context.colors.accentNavy,
         ),
       ),
     );
@@ -182,17 +184,17 @@ class _OptionalDetailsState extends State<OptionalDetails> {
                 Icon(
                   _open ? Icons.expand_less : Icons.expand_more,
                   size: context.iconLg,
-                  color: AppColors.primaryColor,
+                  color: context.colors.primaryColor,
                 ),
                 const SizedBox(width: 6),
                 Text(
                   widget.filledCount > 0
                       ? 'Optional details · ${widget.filledCount} filled'
                       : 'Add optional details',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w700,
-                    color: AppColors.primaryColor,
+                    color: context.colors.primaryColor,
                   ),
                 ),
               ],
@@ -211,7 +213,7 @@ Future<bool> showAddressSheet(BuildContext context, Applicant applicant) async {
   final changed = await showModalBottomSheet<bool>(
     context: context,
     isScrollControlled: true,
-    backgroundColor: AppColors.paper,
+    backgroundColor: context.colors.paper,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
     ),
@@ -307,9 +309,7 @@ class EappGenderField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _GenderPillTabs(value: value, onChanged: onChanged),
-      ],
+      children: [_GenderPillTabs(value: value, onChanged: onChanged)],
     );
   }
 }
@@ -326,13 +326,12 @@ class _GenderPillTabs extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final index = _options.indexWhere((t) => t.$1 == value).clamp(0, _options.length - 1);
+    final index = _options
+        .indexWhere((t) => t.$1 == value)
+        .clamp(0, _options.length - 1);
     return PillTabs(
       initialIndex: index,
-      tabs: [
-        for (final o in _options)
-          PillTab(label: o.$2, icon: o.$3),
-      ],
+      tabs: [for (final o in _options) PillTab(label: o.$2, icon: o.$3)],
       onPageChanged: (i) => onChanged(_options[i].$1),
     );
   }
@@ -692,7 +691,7 @@ class ApplicantCard extends StatelessWidget {
                   child: Icon(
                     Icons.close,
                     size: context.iconBase,
-                    color: AppColors.deepAlpha(0.4),
+                    color: context.colors.deepAlpha(0.4),
                   ),
                 ),
             ],
@@ -723,13 +722,12 @@ class _TypeToggle extends StatelessWidget {
               : Icons.business_outlined,
         ),
     ];
-    final index = options.indexWhere((t) => t.$1 == value).clamp(0, options.length - 1);
+    final index = options
+        .indexWhere((t) => t.$1 == value)
+        .clamp(0, options.length - 1);
     return PillTabs(
       initialIndex: index,
-      tabs: [
-        for (final o in options)
-          PillTab(label: o.$2, icon: o.$3),
-      ],
+      tabs: [for (final o in options) PillTab(label: o.$2, icon: o.$3)],
       onPageChanged: (i) => onChanged(options[i].$1),
     );
   }
@@ -764,7 +762,9 @@ class _AddressRow extends StatelessWidget {
         style: TextStyle(
           fontSize: 13,
           fontWeight: summary == null ? FontWeight.normal : FontWeight.w600,
-          color: summary == null ? AppColors.muted : AppColors.accentNavy,
+          color: summary == null
+              ? context.colors.muted
+              : context.colors.accentNavy,
         ),
       ),
     );
@@ -787,19 +787,18 @@ class ShareAllocationBar extends StatelessWidget {
   /// Display name (or "Beneficiary n") per share, same order.
   final List<String> labels;
 
-  static const _segmentColors = [
-    AppColors.primaryColor,
-    AppColors.primaryColor,
-    AppColors.accentNavy,
-    AppColors.mint,
-    AppColors.warn,
-  ];
-
   @override
   Widget build(BuildContext context) {
     final total = shares.fold<int>(0, (a, b) => a + b);
     final remaining = 100 - total;
     final full = remaining == 0;
+    final segmentColors = [
+      context.colors.primaryColor,
+      context.colors.primaryColor,
+      context.colors.accentNavy,
+      context.colors.mint,
+      context.colors.warn,
+    ];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -815,14 +814,14 @@ class ShareAllocationBar extends StatelessWidget {
                     Expanded(
                       flex: shares[i],
                       child: Container(
-                        color: _segmentColors[i % _segmentColors.length],
+                        color: segmentColors[i % segmentColors.length],
                         margin: const EdgeInsets.only(right: 1),
                       ),
                     ),
                 if (remaining > 0)
                   Expanded(
                     flex: remaining,
-                    child: Container(color: AppColors.deepAlpha(0.08)),
+                    child: Container(color: context.colors.deepAlpha(0.08)),
                   ),
               ],
             ),
@@ -839,10 +838,10 @@ class ShareAllocationBar extends StatelessWidget {
             fontSize: 11.5,
             fontWeight: FontWeight.w800,
             color: full
-                ? AppColors.mint
+                ? context.colors.mint
                 : total > 100
-                ? AppColors.danger
-                : AppColors.deepAlpha(0.6),
+                ? context.colors.danger
+                : context.colors.deepAlpha(0.6),
           ),
         ),
         if (shares.length > 1) ...[
@@ -859,7 +858,7 @@ class ShareAllocationBar extends StatelessWidget {
                       width: 8,
                       height: 8,
                       decoration: BoxDecoration(
-                        color: _segmentColors[i % _segmentColors.length],
+                        color: segmentColors[i % segmentColors.length],
                         shape: BoxShape.circle,
                       ),
                     ),
@@ -868,7 +867,7 @@ class ShareAllocationBar extends StatelessWidget {
                       '${labels[i]} ${shares[i]}%',
                       style: TextStyle(
                         fontSize: 10.5,
-                        color: AppColors.deepAlpha(0.6),
+                        color: context.colors.deepAlpha(0.6),
                       ),
                     ),
                   ],
@@ -898,7 +897,7 @@ class _TownFieldState extends State<_TownField> {
     final entry = await showModalBottomSheet<TownEntry>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: AppColors.paper,
+      backgroundColor: context.colors.paper,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
@@ -919,7 +918,7 @@ class _TownFieldState extends State<_TownField> {
                   '${t.district} · ${t.stateRegion}',
                   style: TextStyle(
                     fontSize: 11.5,
-                    color: AppColors.deepAlpha(0.5),
+                    color: context.colors.deepAlpha(0.5),
                   ),
                 ),
                 onTap: () => Navigator.pop(context, t),
@@ -959,7 +958,7 @@ class _TownFieldState extends State<_TownField> {
               '${a.stateRegionController.text}',
               style: TextStyle(
                 fontSize: 11.5,
-                color: AppColors.deepAlpha(0.55),
+                color: context.colors.deepAlpha(0.55),
               ),
             ),
           ),
@@ -1007,7 +1006,9 @@ class MeasurementRow extends StatelessWidget {
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: ft.isEmpty ? FontWeight.normal : FontWeight.w600,
-                color: ft.isEmpty ? AppColors.muted : AppColors.accentNavy,
+                color: ft.isEmpty
+                    ? context.colors.muted
+                    : context.colors.accentNavy,
               ),
             ),
           ),

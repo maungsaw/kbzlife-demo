@@ -120,7 +120,9 @@ class _PillTabsState extends State<PillTabs>
                     width: w,
                     child: Container(
                       decoration: BoxDecoration(
-                        color: context.colors.primaryColor,
+                        color: context.colors.primaryColor.withValues(
+                          alpha: 0.9,
+                        ),
                         borderRadius: BorderRadius.circular(999),
                         boxShadow: [
                           BoxShadow(

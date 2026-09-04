@@ -1,23 +1,5 @@
 import 'package:flutter/material.dart';
 
-// ── Static color constants (used only in const contexts / theme registration) ──
-abstract class AppColors {
-  static const Color primaryColor = Color(0xFF00ADEE);
-  static const Color secondaryColor = Color(0xFF015F9A);
-  static const Color accentNavy = Color(0xFF0A192F);
-  static const Color deep = Color(0xFF00ADEE);
-  static const Color mint = Color(0xFF57C785);
-  static const Color warn = Color(0xFFF59E0B);
-  static const Color danger = Color(0xFFE34D4D);
-  static const Color muted = Color(0xFF64748B);
-  static const Color baltic = Color(0xFF006494);
-  static const Color cream = Color(0xFFECEEF2);
-  static const Color paper = Color(0xFFFFFFFF);
-  static const Color chipBg = Color(0xFFF1F5F9);
-  static Color deepAlpha(double opacity) => deep.withValues(alpha: opacity);
-}
-
-// ── Convenience extension for accessing colors from BuildContext ──
 extension BuildContextColors on BuildContext {
   AppColorsExtension get colors =>
       Theme.of(this).extension<AppColorsExtension>() ?? kAppColors;
@@ -326,9 +308,9 @@ class AppColorsExtension extends ThemeExtension<AppColorsExtension> {
 
 // ── Default color values ──
 abstract class _Defaults {
-  static const Color primaryColor = Color(0xFF00ADEE);
+  static const Color primaryColor = Color(0xFF0B54B8);
   // navy -> 0B54B8 lightBlue -> 00ADEE  darkBlue -> 015F9A
-  static const Color secondaryColor = Color(0xFF0B54B8);
+  static const Color secondaryColor = Color(0xFF00ADEE);
   static const Color accentNavy = Color(0xFF0A192F);
   static const Color goldAccent = Color(0xFFD4AF37);
   static const Color baltic = Color(0xFF006494);

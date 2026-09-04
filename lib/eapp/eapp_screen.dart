@@ -159,16 +159,6 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
   final _referralController = TextEditingController();
   bool _specialCase = false;
   final _specialRemarkController = TextEditingController();
-
-  // BRD "Proposal Validation Message" sheet — the field-level validators
-  // now live in [ApplicantValidators] so the Policy Holder, Insured and
-  // Beneficiary cards, which share one renderer, cannot drift apart.
-
-  /// Accepts a product code or a product name and returns the code. CRM
-  /// opportunities carry loose product labels ("Health Insurance",
-  /// "Education Plan") rather than catalogue names, so an exact match is
-  /// tried first and then the closest catalogue product by shared words —
-  /// without it the Start step opens with no product and no estimate.
   static String? _resolveProductCode(String? codeOrName) {
     final query = codeOrName?.trim().toLowerCase() ?? '';
     if (query.isEmpty) return null;
@@ -240,17 +230,8 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
   };
   final _healthRemarkController = TextEditingController();
 
-  // Doc 91 — Client and Agent are two isolated pads, each with its own
-  // controller. Agent stays locked until Client has real (non-tap) ink,
-  // and clearing Client wipes + re-locks Agent.
-  final _clientSig = SignatureController(
-    penStrokeWidth: 2.4,
-    penColor: AppColors.deep,
-  );
-  final _agentSig = SignatureController(
-    penStrokeWidth: 2.4,
-    penColor: AppColors.deep,
-  );
+  final _clientSig = SignatureController(penStrokeWidth: 2.4);
+  final _agentSig = SignatureController(penStrokeWidth: 2.4);
   bool _clientHasInk = false;
   bool _agentHasInk = false;
   String _clientSigMode = 'esign';
@@ -772,7 +753,7 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
           child: Container(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: context.colors.paper,
               border: Border(
                 top: BorderSide(color: context.colors.border, width: 1),
               ),
@@ -821,7 +802,7 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
     final choice = await showDialog<String>(
       context: context,
       builder: (context) => Dialog(
-        backgroundColor: AppColors.paper,
+        backgroundColor: context.colors.paper,
         insetPadding: const EdgeInsets.symmetric(horizontal: 28),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
         child: Padding(
@@ -836,24 +817,24 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
                   height: 46,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: AppColors.warn.withValues(alpha: 0.14),
+                    color: context.colors.warn.withValues(alpha: 0.14),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
                     Icons.exit_to_app_rounded,
-                    color: AppColors.warn,
+                    color: context.colors.warn,
                     size: context.iconXxl,
                   ),
                 ),
               ),
               const SizedBox(height: 14),
-              const Text(
+              Text(
                 'Leave this application?',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 15.5,
                   fontWeight: FontWeight.w800,
-                  color: AppColors.deep,
+                  color: context.colors.deep,
                 ),
               ),
               const SizedBox(height: 6),
@@ -864,7 +845,7 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
                 style: TextStyle(
                   fontSize: 12.5,
                   height: 1.4,
-                  color: AppColors.deepAlpha(0.6),
+                  color: context.colors.deepAlpha(0.6),
                 ),
               ),
               const SizedBox(height: 18),
@@ -879,9 +860,9 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
                 icon: Icon(Icons.delete_outline, size: context.iconMd),
                 label: const Text('Discard'),
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: AppColors.danger,
+                  foregroundColor: context.colors.danger,
                   side: BorderSide(
-                    color: AppColors.danger.withValues(alpha: 0.4),
+                    color: context.colors.danger.withValues(alpha: 0.4),
                   ),
                 ),
               ),
@@ -1001,9 +982,9 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
               SwitchListTile(
                 contentPadding: EdgeInsets.zero,
                 dense: true,
-                title: const Text(
+                title: Text(
                   'Special Case',
-                  style: TextStyle(fontSize: 12.5, color: AppColors.deep),
+                  style: TextStyle(fontSize: 12.5, color: context.colors.deep),
                 ),
                 value: _specialCase,
                 onChanged: (v) => setState(() => _specialCase = v),
@@ -1049,7 +1030,7 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
                 Icon(
                   Icons.info_outline,
                   size: context.iconLg,
-                  color: AppColors.warn,
+                  color: context.colors.warn,
                 ),
                 const SizedBox(width: 10),
                 Expanded(
@@ -1057,7 +1038,7 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
                     error ?? 'Premium inputs are incomplete.',
                     style: TextStyle(
                       fontSize: 13,
-                      color: AppColors.deepAlpha(0.6),
+                      color: context.colors.deepAlpha(0.6),
                     ),
                   ),
                 ),
@@ -1097,34 +1078,34 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
             child: Text(
               product.name,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 15.5,
                 fontWeight: FontWeight.bold,
-                color: Colors.black,
+                color: context.colors.accentNavy,
               ),
             ),
           ),
           Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            color: AppColors.primaryColor.withValues(alpha: 0.10),
+            color: context.colors.primaryColor.withValues(alpha: 0.10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   premiumLabel(),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 12.5,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.deep,
+                    color: context.colors.deep,
                   ),
                 ),
                 Text(
                   _productInfoMoney.format(result.premium),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.primaryColor,
+                    color: context.colors.primaryColor,
                   ),
                 ),
               ],
@@ -1152,20 +1133,20 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
+                Text(
                   'Total Amount',
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.deep,
+                    color: context.colors.deep,
                   ),
                 ),
                 Text(
                   _productInfoMoney.format(result.total),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 15.5,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.deep,
+                    color: context.colors.deep,
                   ),
                 ),
               ],
@@ -1218,8 +1199,8 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
                   color: _insuredSameAsHolder
-                      ? AppColors.mint
-                      : AppColors.deepAlpha(0.06),
+                      ? context.colors.mint
+                      : context.colors.deepAlpha(0.06),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
@@ -1227,7 +1208,7 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
                   size: context.iconBase,
                   color: _insuredSameAsHolder
                       ? Colors.white
-                      : AppColors.primaryColor,
+                      : context.colors.primaryColor,
                 ),
               ),
               const SizedBox(width: 12),
@@ -1235,12 +1216,12 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       'Insured is the policy holder',
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w700,
-                        color: AppColors.deep,
+                        color: context.colors.deep,
                       ),
                     ),
                     const SizedBox(height: 2),
@@ -1250,7 +1231,7 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
                     //       : 'Leave off to fill the insured separately',
                     //   style: TextStyle(
                     //     fontSize: 11.5,
-                    //     color: AppColors.deepAlpha(0.55),
+                    //     color: context.colors.deepAlpha(0.55),
                     //   ),
                     // ),
                   ],
@@ -1460,7 +1441,7 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
                 'Answer each question to complete the health declaration.',
                 style: TextStyle(
                   fontSize: 11.5,
-                  color: AppColors.deepAlpha(0.5),
+                  color: context.colors.deepAlpha(0.5),
                 ),
               ),
               const SizedBox(height: 8),
@@ -1470,9 +1451,9 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
                   dense: true,
                   title: Text(
                     q,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 12.5,
-                      color: AppColors.deep,
+                      color: context.colors.deep,
                     ),
                   ),
                   value: _healthAnswers[q]!,
@@ -1908,16 +1889,16 @@ class _PrefillBanner extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
-        color: AppColors.mint.withValues(alpha: 0.12),
+        color: context.colors.mint.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.mint.withValues(alpha: 0.4)),
+        border: Border.all(color: context.colors.mint.withValues(alpha: 0.4)),
       ),
       child: Row(
         children: [
           Icon(
             Icons.auto_awesome,
             size: context.iconBase,
-            color: AppColors.mint,
+            color: context.colors.mint,
           ),
           const SizedBox(width: 8),
           Expanded(
@@ -1926,10 +1907,10 @@ class _PrefillBanner extends StatelessWidget {
                   ? 'Linked to $customerName — you have edited every prefilled field.'
                   : '$count ${count == 1 ? 'field' : 'fields'} filled from '
                         '$customerName\u2019s record.',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 11.5,
                 fontWeight: FontWeight.w700,
-                color: AppColors.deep,
+                color: context.colors.deep,
               ),
             ),
           ),
@@ -1952,16 +1933,16 @@ class _CopiedFromHolderBanner extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.fromLTRB(12, 8, 8, 8),
       decoration: BoxDecoration(
-        color: AppColors.mint.withValues(alpha: 0.12),
+        color: context.colors.mint.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.mint.withValues(alpha: 0.4)),
+        border: Border.all(color: context.colors.mint.withValues(alpha: 0.4)),
       ),
       child: Row(
         children: [
           Icon(
             Icons.copy_all_outlined,
             size: context.iconBase,
-            color: AppColors.mint,
+            color: context.colors.mint,
           ),
           const SizedBox(width: 8),
           Expanded(
@@ -1970,10 +1951,10 @@ class _CopiedFromHolderBanner extends StatelessWidget {
                   ? 'Copied from the Policy Holder — edit anything that '
                         'differs.'
                   : 'Copied from $name — edit anything that differs.',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 11.5,
                 fontWeight: FontWeight.w700,
-                color: AppColors.deep,
+                color: context.colors.deep,
               ),
             ),
           ),
@@ -2003,16 +1984,16 @@ class _CorrectionBanner extends StatelessWidget {
       margin: const EdgeInsets.fromLTRB(16, 10, 16, 0),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: AppColors.warn.withValues(alpha: 0.12),
+        color: context.colors.warn.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.warn.withValues(alpha: 0.3)),
+        border: Border.all(color: context.colors.warn.withValues(alpha: 0.3)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(
             Icons.flag_outlined,
-            color: AppColors.warn,
+            color: context.colors.warn,
             size: context.iconLg,
           ),
           const SizedBox(width: 8),
@@ -2020,12 +2001,12 @@ class _CorrectionBanner extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'Underwriting asked for a fix here',
                   style: TextStyle(
                     fontWeight: FontWeight.w800,
                     fontSize: 12,
-                    color: AppColors.deep,
+                    color: context.colors.deep,
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -2033,7 +2014,7 @@ class _CorrectionBanner extends StatelessWidget {
                   note,
                   style: TextStyle(
                     fontSize: 11.5,
-                    color: AppColors.deepAlpha(0.6),
+                    color: context.colors.deepAlpha(0.6),
                   ),
                 ),
               ],
@@ -2044,7 +2025,7 @@ class _CorrectionBanner extends StatelessWidget {
             child: Icon(
               Icons.close,
               size: context.iconBase,
-              color: AppColors.deepAlpha(0.4),
+              color: context.colors.deepAlpha(0.4),
             ),
           ),
         ],
@@ -2080,7 +2061,7 @@ class _ProgressHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final done = complete.where((c) => c).length;
     return Container(
-      color: AppColors.paper,
+      color: context.colors.paper,
       padding: const EdgeInsets.fromLTRB(16, 10, 16, 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -2090,18 +2071,18 @@ class _ProgressHeader extends StatelessWidget {
               margin: const EdgeInsets.only(bottom: 8),
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
               decoration: BoxDecoration(
-                color: AppColors.primaryColor.withValues(alpha: 0.14),
+                color: context.colors.primaryColor.withValues(alpha: 0.14),
                 borderRadius: BorderRadius.circular(999),
                 border: Border.all(
-                  color: AppColors.primaryColor.withValues(alpha: 0.3),
+                  color: context.colors.primaryColor.withValues(alpha: 0.3),
                 ),
               ),
               child: Text(
                 'Renewal · $renewal',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 10.5,
                   fontWeight: FontWeight.w800,
-                  color: AppColors.primaryColor,
+                  color: context.colors.primaryColor,
                 ),
               ),
             )
@@ -2110,15 +2091,15 @@ class _ProgressHeader extends StatelessWidget {
               margin: const EdgeInsets.only(bottom: 8),
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
               decoration: BoxDecoration(
-                color: AppColors.deepAlpha(0.06),
+                color: context.colors.deepAlpha(0.06),
                 borderRadius: BorderRadius.circular(999),
               ),
               child: Text(
                 'Product · $productName',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 10.5,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black,
+                  color: context.colors.accentNavy,
                 ),
               ),
             ),
@@ -2127,10 +2108,10 @@ class _ProgressHeader extends StatelessWidget {
               Expanded(
                 child: Text(
                   'Step ${step + 1} of ${titles.length} · ${titles[step]}',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 12.5,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.deep,
+                    color: context.colors.deep,
                   ),
                 ),
               ),
@@ -2139,7 +2120,7 @@ class _ProgressHeader extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w700,
-                  color: AppColors.deepAlpha(0.5),
+                  color: context.colors.deepAlpha(0.5),
                 ),
               ),
             ],
@@ -2162,12 +2143,14 @@ class _ProgressHeader extends StatelessWidget {
                           height: 4,
                           decoration: BoxDecoration(
                             color: complete[i]
-                                ? AppColors.mint
+                                ? context.colors.mint
                                 : i == step
-                                ? AppColors.primaryColor
+                                ? context.colors.primaryColor
                                 : i < step
-                                ? AppColors.primaryColor.withValues(alpha: 0.45)
-                                : AppColors.deepAlpha(0.1),
+                                ? context.colors.primaryColor.withValues(
+                                    alpha: 0.45,
+                                  )
+                                : context.colors.deepAlpha(0.1),
                             borderRadius: BorderRadius.circular(999),
                           ),
                         ),
@@ -2200,19 +2183,19 @@ class _Row extends StatelessWidget {
           Expanded(
             child: Text(
               label,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 12.5,
                 fontWeight: FontWeight.bold,
-                color: Colors.black,
+                color: context.colors.accentNavy,
               ),
             ),
           ),
           Text(
             value,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 12.5,
               fontWeight: FontWeight.bold,
-              color: Colors.black,
+              color: context.colors.accentNavy,
             ),
           ),
         ],
@@ -2292,7 +2275,7 @@ class _EappStartStepState extends ConsumerState<_EappStartStep> {
     final picked = await showModalBottomSheet<String>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: AppColors.paper,
+      backgroundColor: context.colors.paper,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
@@ -2321,7 +2304,7 @@ class _EappStartStepState extends ConsumerState<_EappStartStep> {
     final ready = product != null && error == null && result != null;
 
     return Scaffold(
-      backgroundColor: AppColors.cream,
+      backgroundColor: context.colors.cream,
       appBar: AppBar(
         title: const Text('Start e-Application'),
         leading: IconButton(
@@ -2348,7 +2331,7 @@ class _EappStartStepState extends ConsumerState<_EappStartStep> {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 11,
-                    color: AppColors.deepAlpha(0.5),
+                    color: context.colors.deepAlpha(0.5),
                   ),
                 ),
               ),
@@ -2474,9 +2457,9 @@ class _EappStartStepState extends ConsumerState<_EappStartStep> {
                         if (error != null)
                           Text(
                             error,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 11,
-                              color: AppColors.danger,
+                              color: context.colors.danger,
                             ),
                           ),
                       ],
@@ -2529,13 +2512,13 @@ class _StartSlotRow extends StatelessWidget {
           height: 26,
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: done ? AppColors.mint : AppColors.deepAlpha(0.06),
+            color: done ? context.colors.mint : context.colors.deepAlpha(0.06),
             shape: BoxShape.circle,
           ),
           child: Icon(
             done ? Icons.check : icon,
             size: context.iconBase,
-            color: done ? Colors.white : AppColors.primaryColor,
+            color: done ? Colors.white : context.colors.primaryColor,
           ),
         ),
         const SizedBox(width: 12),
@@ -2551,7 +2534,7 @@ class _StartSlotRow extends StatelessWidget {
                       fontSize: 11,
                       fontWeight: FontWeight.w700,
                       letterSpacing: 0.3,
-                      color: AppColors.deepAlpha(0.55),
+                      color: context.colors.deepAlpha(0.55),
                     ),
                   ),
                   if (optional) ...[
@@ -2561,7 +2544,7 @@ class _StartSlotRow extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 10,
                         fontWeight: FontWeight.w600,
-                        color: AppColors.deepAlpha(0.35),
+                        color: context.colors.deepAlpha(0.35),
                       ),
                     ),
                   ],
@@ -2581,8 +2564,8 @@ class _StartSlotRow extends StatelessWidget {
                             ? FontWeight.w400
                             : FontWeight.w800,
                         color: value == null
-                            ? AppColors.deepAlpha(0.45)
-                            : Colors.black,
+                            ? context.colors.deepAlpha(0.45)
+                            : context.colors.accentNavy,
                       ),
                     ),
                   ),
@@ -2594,15 +2577,15 @@ class _StartSlotRow extends StatelessWidget {
                         vertical: 2,
                       ),
                       decoration: BoxDecoration(
-                        color: AppColors.deepAlpha(0.06),
+                        color: context.colors.deepAlpha(0.06),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
                         valueTag!,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 9.5,
                           fontWeight: FontWeight.w800,
-                          color: AppColors.primaryColor,
+                          color: context.colors.primaryColor,
                         ),
                       ),
                     ),
@@ -2626,7 +2609,7 @@ class _StartSlotRow extends StatelessWidget {
           Icon(
             Icons.chevron_right,
             size: context.iconXl,
-            color: AppColors.deepAlpha(0.3),
+            color: context.colors.deepAlpha(0.3),
           ),
         if (done && onClear != null)
           IconButton(
@@ -2636,7 +2619,7 @@ class _StartSlotRow extends StatelessWidget {
             icon: Icon(
               Icons.close,
               size: context.iconBase,
-              color: AppColors.deepAlpha(0.4),
+              color: context.colors.deepAlpha(0.4),
             ),
           ),
       ],
@@ -2725,7 +2708,7 @@ class _CustomerPickerSheetState extends State<_CustomerPickerSheet> {
               height: 4,
               margin: const EdgeInsets.only(top: 10, bottom: 6),
               decoration: BoxDecoration(
-                color: AppColors.deepAlpha(0.15),
+                color: context.colors.deepAlpha(0.15),
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -2781,16 +2764,16 @@ class _CustomerPickerSheetState extends State<_CustomerPickerSheet> {
                         Icon(
                           Icons.person_off_outlined,
                           size: context.icon5xl,
-                          color: AppColors.deepAlpha(0.25),
+                          color: context.colors.deepAlpha(0.25),
                         ),
                         const SizedBox(height: 12),
                         Text(
                           'No match for "${_searchController.text.trim()}"',
                           textAlign: TextAlign.center,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w700,
-                            color: AppColors.deep,
+                            color: context.colors.deep,
                           ),
                         ),
                         const SizedBox(height: 6),
@@ -2800,7 +2783,7 @@ class _CustomerPickerSheetState extends State<_CustomerPickerSheet> {
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 11.5,
-                            color: AppColors.deepAlpha(0.5),
+                            color: context.colors.deepAlpha(0.5),
                           ),
                         ),
                         const SizedBox(height: 14),
@@ -2816,37 +2799,39 @@ class _CustomerPickerSheetState extends State<_CustomerPickerSheet> {
                       controller: scrollController,
                       padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
                       itemCount: results.length,
-                      separatorBuilder: (_, _) =>
-                          Divider(height: 1, color: AppColors.deepAlpha(0.06)),
+                      separatorBuilder: (_, _) => Divider(
+                        height: 1,
+                        color: context.colors.deepAlpha(0.06),
+                      ),
                       itemBuilder: (context, i) {
                         final c = results[i];
                         return ListTile(
                           contentPadding: EdgeInsets.zero,
                           leading: CircleAvatar(
                             radius: 18,
-                            backgroundColor: AppColors.deepAlpha(0.07),
+                            backgroundColor: context.colors.deepAlpha(0.07),
                             child: Text(
                               c.name.isEmpty ? '?' : c.name[0].toUpperCase(),
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w800,
-                                color: AppColors.deep,
+                                color: context.colors.deep,
                               ),
                             ),
                           ),
                           title: Text(
                             c.name,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 13.5,
                               fontWeight: FontWeight.w700,
-                              color: AppColors.deep,
+                              color: context.colors.deep,
                             ),
                           ),
                           subtitle: Text(
                             c.phone,
                             style: TextStyle(
                               fontSize: 11.5,
-                              color: AppColors.deepAlpha(0.55),
+                              color: context.colors.deepAlpha(0.55),
                             ),
                           ),
                           trailing: Container(
@@ -2856,10 +2841,10 @@ class _CustomerPickerSheetState extends State<_CustomerPickerSheet> {
                             ),
                             decoration: BoxDecoration(
                               color: c.contactType.name == 'client'
-                                  ? AppColors.mint.withValues(alpha: 0.14)
+                                  ? context.colors.mint.withValues(alpha: 0.14)
                                   : c.contactType.name == 'halfQualified'
-                                  ? Colors.orange.withValues(alpha: 0.14)
-                                  : AppColors.deepAlpha(0.06),
+                                  ? context.colors.warn.withValues(alpha: 0.14)
+                                  : context.colors.deepAlpha(0.06),
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Text(
@@ -2872,10 +2857,10 @@ class _CustomerPickerSheetState extends State<_CustomerPickerSheet> {
                                 fontSize: 9.5,
                                 fontWeight: FontWeight.w800,
                                 color: c.contactType.name == 'client'
-                                    ? AppColors.mint
+                                    ? context.colors.mint
                                     : c.contactType.name == 'halfQualified'
-                                    ? Colors.orange
-                                    : AppColors.primaryColor,
+                                    ? context.colors.warn
+                                    : context.colors.primaryColor,
                               ),
                             ),
                           ),
@@ -2900,7 +2885,7 @@ class _SlotDivider extends StatelessWidget {
     thickness: 1,
     indent: 14,
     endIndent: 14,
-    color: AppColors.deepAlpha(0.06),
+    color: context.colors.deepAlpha(0.06),
   );
 }
 
@@ -2920,7 +2905,7 @@ class _CategoryTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: selected ? AppColors.deep : AppColors.deepAlpha(0.04),
+      color: selected ? context.colors.deep : context.colors.deepAlpha(0.04),
       borderRadius: BorderRadius.circular(12),
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
@@ -2942,7 +2927,7 @@ class _CategoryTile extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w800,
-                  color: selected ? Colors.white : AppColors.deep,
+                  color: selected ? Colors.white : context.colors.deep,
                 ),
               ),
               const SizedBox(height: 2),
@@ -2952,7 +2937,7 @@ class _CategoryTile extends StatelessWidget {
                   fontSize: 10,
                   color: selected
                       ? Colors.white.withValues(alpha: 0.75)
-                      : AppColors.deepAlpha(0.45),
+                      : context.colors.deepAlpha(0.45),
                 ),
               ),
             ],
@@ -2977,8 +2962,8 @@ class _ProductChoiceTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       color: selected
-          ? AppColors.primaryColor.withValues(alpha: 0.12)
-          : AppColors.deepAlpha(0.035),
+          ? context.colors.primaryColor.withValues(alpha: 0.12)
+          : context.colors.deepAlpha(0.035),
       borderRadius: BorderRadius.circular(12),
       child: InkWell(
         onTap: onTap,
@@ -2992,18 +2977,18 @@ class _ProductChoiceTile extends StatelessWidget {
               Expanded(
                 child: Text(
                   product.name,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 12.5,
                     fontWeight: FontWeight.w700,
-                    color: AppColors.deep,
+                    color: context.colors.deep,
                   ),
                 ),
               ),
               Icon(
                 selected ? Icons.radio_button_checked : Icons.radio_button_off,
                 color: selected
-                    ? AppColors.primaryColor
-                    : AppColors.deepAlpha(0.3),
+                    ? context.colors.primaryColor
+                    : context.colors.deepAlpha(0.3),
                 size: context.iconXl,
               ),
             ],
@@ -3056,7 +3041,10 @@ class _DocsStep extends StatelessWidget {
           const SizedBox(height: 2),
           Text(
             subtitle.isEmpty ? 'Name not set' : subtitle,
-            style: TextStyle(fontSize: 11.5, color: AppColors.deepAlpha(0.55)),
+            style: TextStyle(
+              fontSize: 11.5,
+              color: context.colors.deepAlpha(0.55),
+            ),
           ),
           const SizedBox(height: 10),
           // The identification type was already chosen on this party's own
@@ -3069,15 +3057,15 @@ class _DocsStep extends StatelessWidget {
                     ? Icons.public_outlined
                     : Icons.badge_outlined,
                 size: context.iconBase,
-                color: AppColors.primaryColor,
+                color: context.colors.primaryColor,
               ),
               const SizedBox(width: 6),
               Text(
                 idLabel,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 12.5,
                   fontWeight: FontWeight.w700,
-                  color: AppColors.deep,
+                  color: context.colors.deep,
                 ),
               ),
               const Spacer(),
@@ -3148,7 +3136,7 @@ class _NoDocsCard extends StatelessWidget {
           Icon(
             Icons.business_outlined,
             size: context.iconLg,
-            color: AppColors.deepAlpha(0.45),
+            color: context.colors.deepAlpha(0.45),
           ),
           const SizedBox(width: 10),
           Expanded(
@@ -3164,7 +3152,7 @@ class _NoDocsCard extends StatelessWidget {
                             'required.',
                   style: TextStyle(
                     fontSize: 11.5,
-                    color: AppColors.deepAlpha(0.55),
+                    color: context.colors.deepAlpha(0.55),
                   ),
                 ),
               ],
@@ -3205,7 +3193,7 @@ class _DocumentCaptureTile extends StatelessWidget {
             fit: StackFit.expand,
             children: [
               Material(
-                color: AppColors.deepAlpha(0.035),
+                color: context.colors.deepAlpha(0.035),
                 borderRadius: BorderRadius.circular(12),
                 clipBehavior: Clip.antiAlias,
                 child: InkWell(
@@ -3219,7 +3207,7 @@ class _DocumentCaptureTile extends StatelessWidget {
                           children: [
                             Icon(
                               Icons.add_a_photo_outlined,
-                              color: AppColors.primaryColor,
+                              color: context.colors.primaryColor,
                               size: context.iconXxl,
                             ),
                             const SizedBox(height: 6),
@@ -3228,7 +3216,7 @@ class _DocumentCaptureTile extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 10.5,
                                 fontWeight: FontWeight.w700,
-                                color: AppColors.deepAlpha(0.6),
+                                color: context.colors.deepAlpha(0.6),
                               ),
                             ),
                             const SizedBox(height: 2),
@@ -3238,7 +3226,7 @@ class _DocumentCaptureTile extends StatelessWidget {
                               'Camera or upload',
                               style: TextStyle(
                                 fontSize: 9.5,
-                                color: AppColors.deepAlpha(0.42),
+                                color: context.colors.deepAlpha(0.42),
                               ),
                             ),
                           ],
@@ -3257,7 +3245,7 @@ class _DocumentCaptureTile extends StatelessWidget {
                     button: true,
                     label: 'Remove $label',
                     child: Material(
-                      color: Colors.black.withValues(alpha: 0.55),
+                      color: context.colors.accentNavy.withValues(alpha: 0.55),
                       shape: const CircleBorder(),
                       clipBehavior: Clip.antiAlias,
                       child: InkWell(
@@ -3286,16 +3274,18 @@ class _DocumentCaptureTile extends StatelessWidget {
             Icon(
               captured ? Icons.check_circle : Icons.circle_outlined,
               size: context.iconSm,
-              color: captured ? AppColors.mint : AppColors.deepAlpha(0.25),
+              color: captured
+                  ? context.colors.mint
+                  : context.colors.deepAlpha(0.25),
             ),
             const SizedBox(width: 5),
             Expanded(
               child: Text(
                 label,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 11.5,
                   fontWeight: FontWeight.w700,
-                  color: AppColors.deep,
+                  color: context.colors.deep,
                 ),
               ),
             ),
@@ -3321,7 +3311,9 @@ class _DocumentCaptureTile extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(8),
               child: CircleAvatar(
-                backgroundColor: Colors.black54,
+                backgroundColor: context.colors.accentNavy.withValues(
+                  alpha: 0.54,
+                ),
                 child: IconButton(
                   icon: Icon(
                     Icons.close,
@@ -3456,14 +3448,14 @@ class _SignaturePad extends StatelessWidget {
               if (hasValue)
                 Icon(
                   Icons.check_circle,
-                  color: AppColors.mint,
+                  color: context.colors.mint,
                   size: context.iconBase,
                 ),
               if (locked)
                 Icon(
                   Icons.lock_outline,
                   size: context.iconMd,
-                  color: AppColors.deepAlpha(0.4),
+                  color: context.colors.deepAlpha(0.4),
                 ),
             ],
           ),
@@ -3491,8 +3483,10 @@ class _SignaturePad extends StatelessWidget {
                       child: Container(
                         height: 140,
                         decoration: BoxDecoration(
-                          color: AppColors.cream,
-                          border: Border.all(color: AppColors.deepAlpha(0.1)),
+                          color: context.colors.cream,
+                          border: Border.all(
+                            color: context.colors.deepAlpha(0.1),
+                          ),
                         ),
                         child: locked
                             ? Center(
@@ -3500,7 +3494,7 @@ class _SignaturePad extends StatelessWidget {
                                   lockedHint ?? '',
                                   style: TextStyle(
                                     fontSize: 11.5,
-                                    color: AppColors.deepAlpha(0.4),
+                                    color: context.colors.deepAlpha(0.4),
                                   ),
                                 ),
                               )
@@ -3518,11 +3512,11 @@ class _SignaturePad extends StatelessWidget {
                           height: 140,
                           width: double.infinity,
                           decoration: BoxDecoration(
-                            color: AppColors.cream,
+                            color: context.colors.cream,
                             border: Border.all(
                               color: photo != null
-                                  ? AppColors.primaryColor
-                                  : AppColors.deepAlpha(0.1),
+                                  ? context.colors.primaryColor
+                                  : context.colors.deepAlpha(0.1),
                             ),
                           ),
                           child: photo != null
@@ -3540,7 +3534,7 @@ class _SignaturePad extends StatelessWidget {
                                         child: Icon(
                                           Icons.image,
                                           size: context.icon6xl,
-                                          color: AppColors.muted,
+                                          color: context.colors.muted,
                                         ),
                                       ),
                                     ),
@@ -3552,9 +3546,8 @@ class _SignaturePad extends StatelessWidget {
                                         child: Container(
                                           padding: const EdgeInsets.all(4),
                                           decoration: BoxDecoration(
-                                            color: Colors.black.withValues(
-                                              alpha: 0.5,
-                                            ),
+                                            color: context.colors.accentNavy
+                                                .withValues(alpha: 0.5),
                                             shape: BoxShape.circle,
                                           ),
                                           child: Icon(
@@ -3574,14 +3567,14 @@ class _SignaturePad extends StatelessWidget {
                                       Icon(
                                         Icons.add_a_photo_outlined,
                                         size: context.icon5xl,
-                                        color: AppColors.deepAlpha(0.3),
+                                        color: context.colors.deepAlpha(0.3),
                                       ),
                                       const SizedBox(height: 8),
                                       Text(
                                         'Tap to upload signature',
                                         style: TextStyle(
                                           fontSize: 12,
-                                          color: AppColors.deepAlpha(0.4),
+                                          color: context.colors.deepAlpha(0.4),
                                         ),
                                       ),
                                     ],
@@ -3643,7 +3636,7 @@ class _ReviewStep extends StatelessWidget {
                       'Not set',
                       style: TextStyle(
                         fontSize: 12,
-                        color: AppColors.deepAlpha(0.4),
+                        color: context.colors.deepAlpha(0.4),
                       ),
                     ),
                   )
@@ -3652,7 +3645,7 @@ class _ReviewStep extends StatelessWidget {
                     _ReviewRow(label: label, value: value),
                 for (var i = 0; i < section.docGroups.length; i++) ...[
                   if (i > 0)
-                    Divider(height: 20, color: AppColors.deepAlpha(0.06)),
+                    Divider(height: 20, color: context.colors.deepAlpha(0.06)),
                   _DocGroupBlock(group: section.docGroups[i]),
                 ],
                 if (section.signatures.isNotEmpty) ...[
@@ -3674,7 +3667,7 @@ class _ReviewStep extends StatelessWidget {
         ],
         Text(
           'By submitting, I confirm all information is accurate to the best of my knowledge.',
-          style: TextStyle(fontSize: 11, color: AppColors.deepAlpha(0.5)),
+          style: TextStyle(fontSize: 11, color: context.colors.deepAlpha(0.5)),
         ),
       ],
     );
@@ -3699,7 +3692,7 @@ class _SignatureProofBlock extends StatelessWidget {
               style: TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.w700,
-                color: AppColors.deepAlpha(0.55),
+                color: context.colors.deepAlpha(0.55),
               ),
             ),
             const SizedBox(width: 6),
@@ -3707,7 +3700,7 @@ class _SignatureProofBlock extends StatelessWidget {
               Icon(
                 Icons.check_circle,
                 size: context.iconSm,
-                color: AppColors.mint,
+                color: context.colors.mint,
               ),
           ],
         ),
@@ -3718,8 +3711,10 @@ class _SignatureProofBlock extends StatelessWidget {
             height: 86,
             width: double.infinity,
             decoration: BoxDecoration(
-              color: proof.captured ? Colors.white : AppColors.cream,
-              border: Border.all(color: AppColors.deepAlpha(0.1)),
+              color: proof.captured
+                  ? context.colors.paper
+                  : context.colors.cream,
+              border: Border.all(color: context.colors.deepAlpha(0.1)),
             ),
             child: !proof.captured
                 ? Center(
@@ -3727,7 +3722,7 @@ class _SignatureProofBlock extends StatelessWidget {
                       'Not signed',
                       style: TextStyle(
                         fontSize: 11,
-                        color: AppColors.deepAlpha(0.4),
+                        color: context.colors.deepAlpha(0.4),
                       ),
                     ),
                   )
@@ -3736,7 +3731,7 @@ class _SignatureProofBlock extends StatelessWidget {
                 : IgnorePointer(
                     child: Signature(
                       controller: proof.controller,
-                      backgroundColor: Colors.white,
+                      backgroundColor: context.colors.paper,
                     ),
                   ),
           ),
@@ -3744,7 +3739,7 @@ class _SignatureProofBlock extends StatelessWidget {
         const SizedBox(height: 4),
         Text(
           proof.mode == 'upload' ? 'Uploaded image' : 'Signed on screen',
-          style: TextStyle(fontSize: 10, color: AppColors.deepAlpha(0.45)),
+          style: TextStyle(fontSize: 10, color: context.colors.deepAlpha(0.45)),
         ),
       ],
     );
@@ -3767,20 +3762,20 @@ class _ReviewRow extends StatelessWidget {
             width: 130,
             child: Text(
               label,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 11.5,
                 fontWeight: FontWeight.bold,
-                color: Colors.black,
+                color: context.colors.accentNavy,
               ),
             ),
           ),
           Expanded(
             child: Text(
               value,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 12.5,
                 fontWeight: FontWeight.bold,
-                color: Colors.black,
+                color: context.colors.accentNavy,
               ),
             ),
           ),
@@ -3810,7 +3805,7 @@ class _DocGroupBlock extends StatelessWidget {
             Icon(
               group.isEntity ? Icons.business_outlined : Icons.person_outline,
               size: context.iconBase,
-              color: AppColors.primaryColor,
+              color: context.colors.primaryColor,
             ),
             const SizedBox(width: 7),
             Expanded(
@@ -3819,10 +3814,10 @@ class _DocGroupBlock extends StatelessWidget {
                 children: [
                   Text(
                     group.role,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 12.5,
                       fontWeight: FontWeight.w800,
-                      color: Colors.black,
+                      color: context.colors.accentNavy,
                     ),
                   ),
                   // The name is the whole point: "Beneficiary 1" means
@@ -3831,7 +3826,7 @@ class _DocGroupBlock extends StatelessWidget {
                     group.name.isEmpty ? 'Name not set' : group.name,
                     style: TextStyle(
                       fontSize: 11.5,
-                      color: AppColors.deepAlpha(0.55),
+                      color: context.colors.deepAlpha(0.55),
                     ),
                   ),
                 ],
@@ -3842,8 +3837,8 @@ class _DocGroupBlock extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
               decoration: BoxDecoration(
                 color: ok
-                    ? AppColors.mint.withValues(alpha: 0.14)
-                    : AppColors.warn.withValues(alpha: 0.16),
+                    ? context.colors.mint.withValues(alpha: 0.14)
+                    : context.colors.warn.withValues(alpha: 0.16),
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Row(
@@ -3852,7 +3847,7 @@ class _DocGroupBlock extends StatelessWidget {
                   Icon(
                     Icons.check_circle,
                     size: context.iconSm,
-                    color: ok ? AppColors.mint : AppColors.warn,
+                    color: ok ? context.colors.mint : context.colors.warn,
                   ),
                   const SizedBox(width: 4),
                   Text(
@@ -3860,7 +3855,7 @@ class _DocGroupBlock extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 9.5,
                       fontWeight: FontWeight.w800,
-                      color: ok ? AppColors.mint : AppColors.warn,
+                      color: ok ? context.colors.mint : context.colors.warn,
                     ),
                   ),
                 ],
@@ -3910,7 +3905,9 @@ class _ReviewImageThumb extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(8),
               child: CircleAvatar(
-                backgroundColor: Colors.black54,
+                backgroundColor: context.colors.accentNavy.withValues(
+                  alpha: 0.54,
+                ),
                 child: IconButton(
                   icon: Icon(
                     Icons.close,
@@ -3951,10 +3948,10 @@ class _ReviewImageThumb extends StatelessWidget {
               label,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 9.5,
                 fontWeight: FontWeight.bold,
-                color: Colors.black,
+                color: context.colors.accentNavy,
               ),
             ),
           ),
@@ -4003,7 +4000,7 @@ class _SuccessScreen extends StatelessWidget {
         if (!didPop) context.go('/home');
       },
       child: Scaffold(
-        backgroundColor: AppColors.paper,
+        backgroundColor: context.colors.paper,
         body: Stack(
           children: [
             // Confetti sits behind the content and only in the top third —
@@ -4027,10 +4024,10 @@ class _SuccessScreen extends StatelessWidget {
                           const SizedBox(height: 24),
                           Text(
                             isRenewal ? 'Renewal submitted' : 'Success',
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 21,
                               fontWeight: FontWeight.w800,
-                              color: AppColors.deep,
+                              color: context.colors.deep,
                             ),
                           ),
                           const SizedBox(height: 8),
@@ -4039,7 +4036,7 @@ class _SuccessScreen extends StatelessWidget {
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 13,
-                              color: AppColors.deepAlpha(0.55),
+                              color: context.colors.deepAlpha(0.55),
                             ),
                           ),
                           const SizedBox(height: 10),
@@ -4054,7 +4051,7 @@ class _SuccessScreen extends StatelessWidget {
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 12,
-                              color: AppColors.deepAlpha(0.45),
+                              color: context.colors.deepAlpha(0.45),
                             ),
                           ),
                           const SizedBox(height: 34),
@@ -4111,7 +4108,7 @@ class _SuccessScreen extends StatelessWidget {
   void _openProposal(BuildContext context) {
     showModalBottomSheet<void>(
       context: context,
-      backgroundColor: AppColors.paper,
+      backgroundColor: context.colors.paper,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(AppRadii.sheet),
@@ -4130,7 +4127,7 @@ class _SuccessScreen extends StatelessWidget {
                   height: 4,
                   margin: const EdgeInsets.only(bottom: 14),
                   decoration: BoxDecoration(
-                    color: AppColors.deepAlpha(0.15),
+                    color: context.colors.deepAlpha(0.15),
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -4174,7 +4171,7 @@ class _SuccessScreen extends StatelessWidget {
   void _share(BuildContext context) {
     showModalBottomSheet<void>(
       context: context,
-      backgroundColor: AppColors.paper,
+      backgroundColor: context.colors.paper,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(AppRadii.sheet),
@@ -4189,7 +4186,7 @@ class _SuccessScreen extends StatelessWidget {
               height: 4,
               margin: const EdgeInsets.only(top: 8, bottom: 10),
               decoration: BoxDecoration(
-                color: AppColors.deepAlpha(0.15),
+                color: context.colors.deepAlpha(0.15),
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -4268,10 +4265,10 @@ class _ShareTile extends StatelessWidget {
       ),
       title: Text(
         label,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 13.5,
           fontWeight: FontWeight.w700,
-          color: AppColors.deep,
+          color: context.colors.deep,
         ),
       ),
       onTap: onTap,
@@ -4312,9 +4309,7 @@ class _SuccessCheckState extends State<_SuccessCheck>
         animation: _c,
         builder: (context, _) => CustomPaint(
           painter: _CheckPainter(
-            // The ring sweeps over the first 55% of the run, the tick is
-            // drawn over the last 45% — sequential, so the eye reads it
-            // as one gesture completing rather than two things appearing.
+            context: context,
             ring: Curves.easeOutCubic.transform(
               (_c.value / 0.55).clamp(0.0, 1.0),
             ),
@@ -4329,14 +4324,19 @@ class _SuccessCheckState extends State<_SuccessCheck>
 }
 
 class _CheckPainter extends CustomPainter {
-  const _CheckPainter({required this.ring, required this.tick});
+  const _CheckPainter({
+    required this.ring,
+    required this.tick,
+    required this.context,
+  });
   final double ring;
   final double tick;
+  final BuildContext context;
 
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = AppColors.mint
+      ..color = context.colors.mint
       ..style = PaintingStyle.stroke
       ..strokeWidth = 5
       ..strokeCap = StrokeCap.round
@@ -4377,9 +4377,11 @@ class _ProposalNoPill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: AppColors.primaryColor.withValues(alpha: 0.08),
+      color: context.colors.primaryColor.withValues(alpha: 0.08),
       shape: StadiumBorder(
-        side: BorderSide(color: AppColors.primaryColor.withValues(alpha: 0.35)),
+        side: BorderSide(
+          color: context.colors.primaryColor.withValues(alpha: 0.35),
+        ),
       ),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
@@ -4403,16 +4405,18 @@ class _ProposalNoPill extends StatelessWidget {
                       fontSize: 9,
                       letterSpacing: 0.8,
                       fontWeight: FontWeight.w800,
-                      color: AppColors.primaryColor.withValues(alpha: 0.75),
+                      color: context.colors.primaryColor.withValues(
+                        alpha: 0.75,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 1),
                   Text(
                     proposalNo,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w800,
-                      color: AppColors.baltic,
+                      color: context.colors.baltic,
                     ),
                   ),
                 ],
@@ -4421,7 +4425,7 @@ class _ProposalNoPill extends StatelessWidget {
               Icon(
                 Icons.copy_outlined,
                 size: context.iconBase,
-                color: AppColors.primaryColor.withValues(alpha: 0.8),
+                color: context.colors.primaryColor.withValues(alpha: 0.8),
               ),
             ],
           ),
@@ -4486,8 +4490,8 @@ class _JourneyTracker extends StatelessWidget {
                           ? FontWeight.w800
                           : FontWeight.w500,
                       color: i <= stage
-                          ? AppColors.deep
-                          : AppColors.deepAlpha(0.4),
+                          ? context.colors.deep
+                          : context.colors.deepAlpha(0.4),
                     ),
                   ),
                   // The one tappable stage says so, rather than hiding a
@@ -4498,7 +4502,9 @@ class _JourneyTracker extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 9.5,
                         fontWeight: FontWeight.w800,
-                        color: AppColors.primaryColor.withValues(alpha: 0.9),
+                        color: context.colors.primaryColor.withValues(
+                          alpha: 0.9,
+                        ),
                       ),
                     ),
                 ],
@@ -4528,15 +4534,15 @@ class _JourneyDot extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: done
-            ? AppColors.mint
+            ? context.colors.mint
             : current
-            ? AppColors.primaryColor
-            : AppColors.primaryColor.withValues(alpha: 0.10),
+            ? context.colors.primaryColor
+            : context.colors.primaryColor.withValues(alpha: 0.10),
         // The current stage carries a halo so it reads as "here" rather
         // than just another filled dot.
         border: current
             ? Border.all(
-                color: AppColors.primaryColor.withValues(alpha: 0.25),
+                color: context.colors.primaryColor.withValues(alpha: 0.25),
                 width: 3,
               )
             : null,
@@ -4548,7 +4554,7 @@ class _JourneyDot extends StatelessWidget {
               style: TextStyle(
                 fontSize: 11.5,
                 fontWeight: FontWeight.w800,
-                color: current ? Colors.white : AppColors.primaryColor,
+                color: current ? Colors.white : context.colors.primaryColor,
               ),
             ),
     );
@@ -4566,7 +4572,9 @@ class _JourneyLink extends StatelessWidget {
       height: 2,
       child: CustomPaint(
         painter: _LinkPainter(
-          color: done ? AppColors.primaryColor : AppColors.deepAlpha(0.18),
+          color: done
+              ? context.colors.primaryColor
+              : context.colors.deepAlpha(0.18),
           dashed: dashed,
         ),
       ),
@@ -4623,7 +4631,7 @@ class _CircleIconButton extends StatelessWidget {
     return Tooltip(
       message: tooltip,
       child: Material(
-        color: AppColors.primaryColor.withValues(alpha: 0.10),
+        color: context.colors.primaryColor.withValues(alpha: 0.10),
         shape: const CircleBorder(),
         clipBehavior: Clip.antiAlias,
         child: InkWell(
@@ -4634,7 +4642,7 @@ class _CircleIconButton extends StatelessWidget {
             child: Icon(
               icon,
               size: context.iconBase,
-              color: AppColors.primaryColor,
+              color: context.colors.primaryColor,
             ),
           ),
         ),
@@ -4672,33 +4680,35 @@ class _ConfettiState extends State<_Confetti>
   Widget build(BuildContext context) {
     return AnimatedBuilder(
       animation: _c,
-      builder: (context, _) =>
-          CustomPaint(painter: _ConfettiPainter(progress: _c.value)),
+      builder: (context, _) => CustomPaint(
+        painter: _ConfettiPainter(progress: _c.value, context: context),
+      ),
     );
   }
 }
 
 class _ConfettiPainter extends CustomPainter {
-  const _ConfettiPainter({required this.progress});
+  const _ConfettiPainter({required this.progress, required this.context});
 
   /// 0 → 1 across the whole run.
   final double progress;
-
-  static const _palette = [
-    AppColors.mint,
-    AppColors.primaryColor,
-    AppColors.warn,
-    AppColors.danger,
-    AppColors.primaryColor,
-  ];
+  final BuildContext context;
 
   @override
   void paint(Canvas canvas, Size size) {
+    final palette = [
+      context.colors.mint,
+      context.colors.primaryColor,
+      context.colors.warn,
+      context.colors.danger,
+      context.colors.primaryColor,
+    ];
+
     final random = Random(7);
     for (var i = 0; i < 46; i++) {
       final x = random.nextDouble() * size.width;
       final restY = random.nextDouble() * size.height;
-      final color = _palette[random.nextInt(_palette.length)];
+      final color = palette[random.nextInt(palette.length)];
       final angle = random.nextDouble() * pi;
       final spin = (random.nextDouble() - 0.5) * 4;
       final long = 5.0 + random.nextDouble() * 9;
