@@ -318,6 +318,12 @@ class _EappStartStepState extends ConsumerState<EappStartStep> {
 /// what they are to the agency. A one-line row could not carry that, and
 /// FAs could not tell the row was tappable at all.
 class _CustomerSlotCard extends StatelessWidget {
+  /// The empty invitation and the picked customer are the same block: one
+  /// padding, one radius, full width between the card's gutters. They used
+  /// to differ, so the slot jumped as soon as a customer was chosen.
+  static const double _blockPadding = 12;
+  static const double _blockRadius = 12;
+
   const _CustomerSlotCard({
     required this.customer,
     required this.onPick,
@@ -333,7 +339,12 @@ class _CustomerSlotCard extends StatelessWidget {
     final c = customer;
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
+      padding: const EdgeInsets.fromLTRB(
+        _StartSlotRow.gutter,
+        12,
+        _StartSlotRow.gutter,
+        12,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -411,17 +422,17 @@ class _CustomerSlotCard extends StatelessWidget {
           else
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(_blockPadding),
               decoration: BoxDecoration(
                 color: context.colors.surfaceBg,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(_blockRadius),
                 border: Border.all(color: context.colors.border),
               ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CircleAvatar(
-                    radius: 20,
+                    radius: 18,
                     backgroundColor: context.colors.primaryColor.withValues(
                       alpha: 0.12,
                     ),
@@ -444,14 +455,12 @@ class _CustomerSlotCard extends StatelessWidget {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
-                            fontSize: AppType.title,
+                            fontSize: AppType.body,
                             fontWeight: AppType.strong,
                             color: context.colors.textPrimary,
                           ),
                         ),
                         const SizedBox(height: 2),
-                        // Phone gets the full line — sharing it with the
-                        // stage chip cut the number down to "09-123…".
                         AppCaptionText(c.phone, maxLines: 1),
                         const SizedBox(height: 4),
                         Container(
@@ -475,23 +484,38 @@ class _CustomerSlotCard extends StatelessWidget {
                       ],
                     ),
                   ),
-                  TextButton(
-                    onPressed: onPick,
-                    style: TextButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      minimumSize: Size.zero,
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    ),
-                    child: const Text('Change'),
-                  ),
-                  IconButton(
-                    tooltip: 'Remove',
-                    visualDensity: VisualDensity.compact,
-                    onPressed: onClear,
-                    icon: Icon(
-                      Icons.close,
-                      size: context.iconBase,
-                      color: context.colors.deepAlpha(0.4),
+                  // Both actions on one line, centred on the name they act
+                  // on — as two separate children they drifted apart, the
+                  // link riding high and the ✕ hanging below it.
+                  SizedBox(
+                    height: 22,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        TextButton(
+                          onPressed: onPick,
+                          style: TextButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(horizontal: 6),
+                            minimumSize: Size.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
+                          child: const Text('Change'),
+                        ),
+                        const SizedBox(width: 4),
+                        InkWell(
+                          onTap: onClear,
+                          borderRadius: BorderRadius.circular(999),
+                          child: Padding(
+                            padding: const EdgeInsets.all(2),
+                            child: Icon(
+                              Icons.close,
+                              size: context.iconBase,
+                              color: context.colors.deepAlpha(0.45),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -511,8 +535,9 @@ class _CustomerSlotCard extends StatelessWidget {
 }
 
 class _StartSlotRow extends StatelessWidget {
-  /// The one inset every row, its expanded body and the divider share.
-  static const double _gutter = 14;
+  /// The one inset every row, its expanded body, the customer card and
+  /// the dividers all share.
+  static const double gutter = 14;
 
   const _StartSlotRow({
     required this.title,
@@ -592,7 +617,7 @@ class _StartSlotRow extends StatelessWidget {
     return Padding(
       // Same inset on both sides so the row, its expanded body and the
       // divider below all start and end on the same rule.
-      padding: const EdgeInsets.fromLTRB(_gutter, 12, _gutter, 12),
+      padding: const EdgeInsets.fromLTRB(gutter, 12, gutter, 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -846,8 +871,8 @@ class _SlotDivider extends StatelessWidget {
   Widget build(BuildContext context) => Divider(
     height: 1,
     thickness: 1,
-    indent: 14,
-    endIndent: 14,
+    indent: _StartSlotRow.gutter,
+    endIndent: _StartSlotRow.gutter,
     color: context.colors.deepAlpha(0.06),
   );
 }
