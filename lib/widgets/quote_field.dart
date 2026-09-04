@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../app_date.dart';
 import '../../data/models/quote_field.dart';
 import '../const.dart';
+import 'app_number.dart';
 import 'app_text.dart';
 import 'app_text_field.dart';
 import 'app_selection_chip.dart';
@@ -64,7 +65,8 @@ class QuoteFieldRenderer extends StatelessWidget {
             child: Text(
               value == null
                   ? '—'
-                  : '$value${field.suffix != null ? ' ${field.suffix}' : ''}',
+                  : '${value is num ? AppNumber.format(value as num) : value}'
+                        '${field.suffix != null ? ' ${field.suffix}' : ''}',
               style: TextStyle(
                 fontSize: AppType.body,
                 fontWeight: AppType.normal,
@@ -78,13 +80,16 @@ class QuoteFieldRenderer extends StatelessWidget {
         return _labeled(
           field.label,
           AppTextField(
-            initialValue: '${value ?? ''}',
+            // Amounts are grouped while they are typed — an FA checking a
+            // sum insured against a form should not have to count zeros.
+            initialValue: value == null ? '' : AppNumber.format(value as num),
             label: '',
             hint: '',
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+            keyboardType: TextInputType.number,
+            inputFormatters: const [ThousandsFormatter()],
             suffixText: field.suffix,
             helperText: field.helperText,
-            onChanged: (v) => onChanged(num.tryParse(v) ?? 0),
+            onChanged: (v) => onChanged(AppNumber.parse(v) ?? 0),
           ),
         );
 

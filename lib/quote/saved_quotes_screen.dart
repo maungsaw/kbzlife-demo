@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../const.dart';
+import '../widgets/app_number.dart';
 import '../widgets/app_text.dart';
 import '../widgets/soft_card.dart';
 import 'quote_providers.dart';
@@ -77,7 +78,7 @@ class SavedQuotesScreen extends ConsumerWidget {
                         ),
                       ),
                       Text(
-                        '${NumberFormat.decimalPattern('en_US').format(d.premium)} MMK',
+                        '${AppNumber.format(d.premium)} MMK',
                         style: TextStyle(
                           fontWeight: AppType.strong,
                           fontSize: AppType.label,

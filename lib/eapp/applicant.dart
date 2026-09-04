@@ -221,6 +221,93 @@ class ApplicantValidators {
 }
 
 extension ApplicantValidity on Applicant {
+  /// The first thing standing between this card and Continue, phrased for
+  /// the FA. `isValid` answers yes/no; this answers "which field", so the
+  /// step can say what is missing instead of "complete the required
+  /// fields" over a form that looks complete.
+  String? get validationMessage {
+    String? need(String label) => '$label is required.';
+
+    if (nameController.text.trim().isEmpty) return need('Name');
+    final nameErr = ApplicantValidators.name(nameController.text);
+    if (nameErr != null) return 'Name: $nameErr';
+    if (mobileController.text.trim().isEmpty) {
+      return need('Mobile phone no');
+    }
+
+    if (isEntity) {
+      if (regNoController.text.trim().isEmpty) return need('Registration no');
+      if (businessType == null) return need('Business type');
+      if (contactPersonController.text.trim().isEmpty) {
+        return need('Contact person');
+      }
+      final contactErr = ApplicantValidators.name(contactPersonController.text);
+      if (contactErr != null) return 'Contact person: $contactErr';
+      if (incorporationDate != null &&
+          ApplicantValidators.dobFuture(incorporationDate!) != null) {
+        return 'Incorporation date: '
+            '${ApplicantValidators.dobFuture(incorporationDate!)}';
+      }
+    } else {
+      if (fatherNameController.text.trim().isEmpty) {
+        return need("Father's name");
+      }
+      final fatherErr = ApplicantValidators.name(fatherNameController.text);
+      if (fatherErr != null) return "Father's name: $fatherErr";
+      if (idNoController.text.trim().isEmpty) return need('Identification');
+      final idErr = ApplicantValidators.idNo(idNoController.text);
+      if (idErr != null) return 'Identification: $idErr';
+      if (dob == null) return need('Date of birth');
+      final dobError = switch (role) {
+        ApplicantRole.beneficiary => ApplicantValidators.dobFuture(dob!),
+        ApplicantRole.insured => ApplicantValidators.dobMaxAge(dob!),
+        ApplicantRole.policyHolder => ApplicantValidators.dobAge(dob!),
+      };
+      if (dobError != null) return 'Date of birth: $dobError';
+      if (role != ApplicantRole.beneficiary && gender == null) {
+        return need('Gender');
+      }
+      for (final (label, text) in [
+        ('Weight', weightController.text),
+        ('Height (ft)', heightFtController.text),
+        ('Height (in)', heightInController.text),
+      ]) {
+        final err = ApplicantValidators.numberOnly(text);
+        if (err != null) return '$label: $err';
+      }
+    }
+
+    if (role != ApplicantRole.beneficiary && !addressComplete) {
+      return 'Address is incomplete — house no, street, ward and town are '
+          'all required.';
+    }
+
+    switch (role) {
+      case ApplicantRole.beneficiary:
+        if (mobileController.text.trim().length < 7) {
+          return 'Mobile phone no: Minimum length is 7.';
+        }
+        final digitsErr = ApplicantValidators.mobileDigits(
+          mobileController.text,
+        );
+        if (digitsErr != null) return 'Mobile phone no: $digitsErr';
+        final pctErr = ApplicantValidators.percent(percentController.text);
+        if (pctErr != null) return 'Beneficiary percentage: $pctErr';
+        if (double.tryParse(percentController.text.trim()) == null) {
+          return need('Beneficiary percentage');
+        }
+      case ApplicantRole.insured:
+        final mobErr = ApplicantValidators.mobileFormat(mobileController.text);
+        if (mobErr != null) return 'Mobile phone no: $mobErr';
+        final emailErr = ApplicantValidators.email(emailController.text);
+        if (emailErr != null) return 'Email: $emailErr';
+      case ApplicantRole.policyHolder:
+        final emailErr = ApplicantValidators.email(emailController.text);
+        if (emailErr != null) return 'Email: $emailErr';
+    }
+    return null;
+  }
+
   bool get isValid {
     if (nameController.text.trim().isEmpty) return false;
     if (ApplicantValidators.name(nameController.text) != null) return false;

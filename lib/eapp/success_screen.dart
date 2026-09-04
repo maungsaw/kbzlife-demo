@@ -3,12 +3,10 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/services.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../app_date.dart';
 import '../const.dart';
 import '../widgets/app_key_value_row.dart';
-import '../widgets/chip.dart';
 import '../widgets/app_text.dart';
 import 'applicant_card.dart';
 import 'eapp_status.dart';
@@ -37,11 +35,6 @@ class EappSuccessScreen extends StatelessWidget {
     EappStatus.approved => 2,
     _ => 1,
   };
-
-  String get _shareText =>
-      'KBZ Life proposal $proposalNo'
-      '${customerName.isEmpty ? '' : ' for $customerName'}'
-      ' · $productName · ${status.label}.';
 
   @override
   Widget build(BuildContext context) {
@@ -118,29 +111,30 @@ class EappSuccessScreen extends StatelessWidget {
                       ),
                     ),
                   ),
+                  // Two ways on from here, side by side and equally wide:
+                  // leave it, or follow it. Nothing else competes with them.
                   Padding(
                     padding: const EdgeInsets.fromLTRB(24, 4, 24, 12),
-                    child: Column(
+                    child: Row(
                       children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              child: ElevatedButton(
-                                onPressed: () => context.push('/e-app/tracker'),
-                                child: const Text('Track application'),
-                              ),
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: () => context.go('/home'),
+                            style: OutlinedButton.styleFrom(
+                              minimumSize: const Size(0, 48),
                             ),
-                            const SizedBox(width: 10),
-                            _CircleIconButton(
-                              icon: Icons.share_outlined,
-                              tooltip: 'Share',
-                              onTap: () => _share(context),
-                            ),
-                          ],
+                            child: const Text('Back to home', maxLines: 1),
+                          ),
                         ),
-                        TextButton(
-                          onPressed: () => context.go('/home'),
-                          child: const Text('Back to home'),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () => context.push('/e-app/tracker'),
+                            style: ElevatedButton.styleFrom(
+                              minimumSize: const Size(0, 48),
+                            ),
+                            child: const Text('Track application', maxLines: 1),
+                          ),
                         ),
                       ],
                     ),
@@ -216,115 +210,6 @@ class EappSuccessScreen extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-
-  /// Doc 120 §4 — a real share, built from what this app already ships:
-  /// SMS and email through url_launcher, plus the clipboard. No stub.
-  void _share(BuildContext context) {
-    showModalBottomSheet<void>(
-      context: context,
-      backgroundColor: context.colors.paper,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(AppRadii.sheet),
-        ),
-      ),
-      builder: (sheetContext) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 38,
-              height: 4,
-              margin: const EdgeInsets.only(top: 8, bottom: 10),
-              decoration: BoxDecoration(
-                color: context.colors.deepAlpha(0.15),
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.fromLTRB(20, 0, 20, 6),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: EappCardTitle('Share proposal'),
-              ),
-            ),
-            _ShareTile(
-              icon: Icons.sms_outlined,
-              label: 'Send by SMS',
-              onTap: () {
-                Navigator.pop(sheetContext);
-                launchUrl(
-                  Uri(scheme: 'sms', queryParameters: {'body': _shareText}),
-                  mode: LaunchMode.externalApplication,
-                );
-              },
-            ),
-            _ShareTile(
-              icon: Icons.mail_outline,
-              label: 'Send by email',
-              onTap: () {
-                Navigator.pop(sheetContext);
-                launchUrl(
-                  Uri(
-                    scheme: 'mailto',
-                    queryParameters: {
-                      'subject': 'KBZ Life proposal $proposalNo',
-                      'body': _shareText,
-                    },
-                  ),
-                  mode: LaunchMode.externalApplication,
-                );
-              },
-            ),
-            _ShareTile(
-              icon: Icons.copy_all_outlined,
-              label: 'Copy proposal details',
-              onTap: () {
-                Navigator.pop(sheetContext);
-                Clipboard.setData(ClipboardData(text: _shareText));
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Proposal details copied')),
-                );
-              },
-            ),
-            const SizedBox(height: 8),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _ShareTile extends StatelessWidget {
-  const _ShareTile({
-    required this.icon,
-    required this.label,
-    required this.onTap,
-  });
-  final IconData icon;
-  final String label;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      // Doc 124 — shared chip.
-      leading: AppIconChip(
-        icon: icon,
-        size: 38,
-        style: AppIconChipStyle.tinted,
-      ),
-      title: Text(
-        label,
-        style: TextStyle(
-          fontSize: AppType.body,
-          fontWeight: AppType.strong,
-          color: context.colors.textPrimary,
-        ),
-      ),
-      onTap: onTap,
     );
   }
 }
@@ -665,41 +550,6 @@ class _LinkPainter extends CustomPainter {
   @override
   bool shouldRepaint(_LinkPainter old) =>
       old.color != color || old.dashed != dashed;
-}
-
-class _CircleIconButton extends StatelessWidget {
-  const _CircleIconButton({
-    required this.icon,
-    required this.tooltip,
-    required this.onTap,
-  });
-  final IconData icon;
-  final String tooltip;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Tooltip(
-      message: tooltip,
-      child: Material(
-        color: context.colors.primaryColor.withValues(alpha: 0.10),
-        shape: const CircleBorder(),
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: onTap,
-          child: SizedBox(
-            width: 48,
-            height: 48,
-            child: Icon(
-              icon,
-              size: context.iconBase,
-              color: context.colors.primaryColor,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
 }
 
 /// Doc 120 §1 — confetti that actually falls. Each piece has its own

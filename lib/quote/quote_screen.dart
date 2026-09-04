@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 
 import '../../data/mock/mock_data.dart';
 import '../../data/models/product.dart';
@@ -9,6 +8,7 @@ import '../../data/models/quote_draft.dart';
 import '../../data/models/quote_field.dart';
 import '../const.dart';
 import '../products/product_icons.dart';
+import '../widgets/app_number.dart';
 import '../widgets/app_text.dart';
 import '../widgets/quote_field.dart';
 import '../widgets/soft_card.dart';
@@ -446,7 +446,6 @@ class _PremiumHero extends StatelessWidget {
   final VoidCallback onBookmark;
 
   static const _stampFee = 100;
-  static final _money = NumberFormat('#,##0.00', 'en_US');
 
   @override
   Widget build(BuildContext context) {
@@ -513,8 +512,8 @@ class _PremiumHero extends StatelessWidget {
                 for (final (label, val) in r.lines) _Row(label, val),
                 // Premium sits with the figures it is derived from, and
                 // directly above the fee that is added to it.
-                _Row('Premium', _money.format(r.premium)),
-                _Row('Stamp Fee', _money.format(_stampFee)),
+                _Row('Premium', AppNumber.money(r.premium)),
+                _Row('Stamp Fee', AppNumber.money(_stampFee)),
               ],
             ),
           ),
@@ -529,7 +528,7 @@ class _PremiumHero extends StatelessWidget {
               children: [
                 const AppSectionTitle('Total Amount'),
                 Text(
-                  _money.format(r.total),
+                  AppNumber.money(r.total),
                   style: TextStyle(
                     fontSize: AppType.title,
                     fontWeight: AppType.strong,
