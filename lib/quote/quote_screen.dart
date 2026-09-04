@@ -104,11 +104,11 @@ class _QuoteScreenState extends ConsumerState<QuoteScreen> {
                     const SizedBox(height: 10),
                     Row(
                       children: [
-                      Icon(
-                        Icons.info_outline,
-                        size: context.iconBase,
-                        color: context.colors.warn,
-                      ),
+                        Icon(
+                          Icons.info_outline,
+                          size: context.iconBase,
+                          color: context.colors.warn,
+                        ),
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
@@ -510,12 +510,19 @@ class _PremiumHero extends StatelessWidget {
       return SoftCard(
         child: Row(
           children: [
-            Icon(Icons.info_outline, size: context.iconLg, color: context.colors.warn),
+            Icon(
+              Icons.info_outline,
+              size: context.iconLg,
+              color: context.colors.warn,
+            ),
             const SizedBox(width: 10),
             Expanded(
               child: Text(
                 error ?? 'Enter details to see a premium',
-                style: TextStyle(fontSize: 13, color: context.colors.deepAlpha(0.6)),
+                style: TextStyle(
+                  fontSize: 13,
+                  color: context.colors.deepAlpha(0.6),
+                ),
               ),
             ),
           ],
@@ -551,7 +558,9 @@ class _PremiumHero extends StatelessWidget {
                     height: 34,
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
-                      color: context.colors.primaryColor.withValues(alpha: 0.14),
+                      color: context.colors.primaryColor.withValues(
+                        alpha: 0.14,
+                      ),
                       shape: BoxShape.circle,
                     ),
                     child: Icon(

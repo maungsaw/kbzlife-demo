@@ -41,7 +41,9 @@ class SavedQuotesScreen extends ConsumerWidget {
                         height: 40,
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
-                          color: context.colors.primaryColor.withValues(alpha: 0.12),
+                          color: context.colors.primaryColor.withValues(
+                            alpha: 0.12,
+                          ),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Icon(

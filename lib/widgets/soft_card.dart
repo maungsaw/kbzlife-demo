@@ -19,24 +19,20 @@ class SoftCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final card = Container(
-      padding: padding,
-      decoration: BoxDecoration(
-        color: context.colors.paper,
-        borderRadius: BorderRadius.circular(AppRadii.card),
-      ),
-      child: child,
-    );
-
-    if (onTap == null) return card;
+    // The surface is a Material, not a DecoratedBox: anything inside that
+    // paints its own background or ink (ListTile, Checkbox/RadioListTile,
+    // InkWell) needs the nearest Material to be this card, or Flutter
+    // asserts that those effects would be painted behind it.
     return Material(
-      color: Colors.transparent,
+      color: context.colors.paper,
       borderRadius: BorderRadius.circular(AppRadii.card),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(AppRadii.card),
-        onTap: onTap,
-        child: card,
-      ),
+      clipBehavior: Clip.antiAlias,
+      child: onTap == null
+          ? Padding(padding: padding, child: child)
+          : InkWell(
+              onTap: onTap,
+              child: Padding(padding: padding, child: child),
+            ),
     );
   }
 }
