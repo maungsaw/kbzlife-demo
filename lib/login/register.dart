@@ -95,21 +95,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     return Scaffold(
       backgroundColor: context.colors.paper,
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        foregroundColor: context.colors.textPrimary,
         elevation: 0,
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(1),
           child: Divider(),
         ),
-        title: Text(
-          'Register Account',
-          style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-            color: context.colors.accentNavy,
-          ),
-        ),
+        title: Text('Register Account'),
         scrolledUnderElevation: 0,
         automaticallyImplyActions: true,
       ),
@@ -217,32 +208,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           ),
                   ),
                 ),
-                const SizedBox(height: 16),
-
-                // Test Toggle Switch
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'isCore',
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w500,
-                        color: context.colors.accentNavy,
-                      ),
-                    ),
-                    Switch(
-                      value: _isAlreadyExist,
-                      activeThumbColor: context.colors.primaryColor,
-                      onChanged: (val) {
-                        setState(() {
-                          _isAlreadyExist = val;
-                        });
-                      },
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 26),
 
                 // Login Redirect
                 Row(

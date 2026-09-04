@@ -8,10 +8,12 @@ class CommissionReportScreen extends ConsumerStatefulWidget {
   const CommissionReportScreen({super.key});
 
   @override
-  ConsumerState<CommissionReportScreen> createState() => _CommissionReportScreenState();
+  ConsumerState<CommissionReportScreen> createState() =>
+      _CommissionReportScreenState();
 }
 
-class _CommissionReportScreenState extends ConsumerState<CommissionReportScreen> {
+class _CommissionReportScreenState
+    extends ConsumerState<CommissionReportScreen> {
   // Real Product Portfolio Data categorized from KBZ Life Insurance
   List<CategoryReportModel> _buildCategories(BuildContext context) => [
     CategoryReportModel(
@@ -82,48 +84,10 @@ class _CommissionReportScreenState extends ConsumerState<CommissionReportScreen>
     final commissionState = ref.watch(commissionProvider);
 
     return Scaffold(
-      backgroundColor: context.colors.cream,
       appBar: AppBar(
-        backgroundColor: Colors.white,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black87),
-          onPressed: () => Navigator.maybePop(context),
-        ),
-        title: const Text(
-          'Report',
-          style: TextStyle(
-            color: Colors.black87,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        centerTitle: true,
-        actions: [
-          Stack(
-            children: [
-              IconButton(
-                icon: const Icon(
-                  Icons.notifications_none_rounded,
-                  color: Colors.black87,
-                ),
-                onPressed: () {},
-              ),
-              Positioned(
-                right: 12,
-                top: 12,
-                child: Container(
-                  width: 8,
-                  height: 8,
-                  decoration: const BoxDecoration(
-                    color: Colors.red,
-                    shape: BoxShape.circle,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
+        automaticallyImplyActions: true,
+        title: const Text('Report'),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -263,10 +227,13 @@ class _CommissionReportScreenState extends ConsumerState<CommissionReportScreen>
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: _buildCategories(context).map((cat) {
-                      final isSelected = commissionState.expandedCategoryLabel == cat.label;
+                      final isSelected =
+                          commissionState.expandedCategoryLabel == cat.label;
                       return GestureDetector(
                         onTap: () {
-                          ref.read(commissionProvider.notifier).toggleCategory(cat.label);
+                          ref
+                              .read(commissionProvider.notifier)
+                              .toggleCategory(cat.label);
                         },
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.end,
@@ -506,14 +473,17 @@ class _CommissionReportScreenState extends ConsumerState<CommissionReportScreen>
                 Divider(color: Colors.grey.shade100, height: 1),
             itemBuilder: (context, index) {
               final cat = _buildCategories(context)[index];
-              final isExpanded = commissionState.expandedCategoryLabel == cat.label;
+              final isExpanded =
+                  commissionState.expandedCategoryLabel == cat.label;
 
               return ExpansionTile(
                 key: Key(cat.label),
                 initiallyExpanded: isExpanded,
                 tilePadding: EdgeInsets.zero,
                 onExpansionChanged: (expanded) {
-                  ref.read(commissionProvider.notifier).toggleCategory(cat.label);
+                  ref
+                      .read(commissionProvider.notifier)
+                      .toggleCategory(cat.label);
                 },
                 leading: Container(
                   padding: const EdgeInsets.all(8),
@@ -521,7 +491,11 @@ class _CommissionReportScreenState extends ConsumerState<CommissionReportScreen>
                     color: cat.iconBg,
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(cat.icon, size: context.iconLg, color: cat.iconColor),
+                  child: Icon(
+                    cat.icon,
+                    size: context.iconLg,
+                    color: cat.iconColor,
+                  ),
                 ),
                 title: Text(
                   cat.label,

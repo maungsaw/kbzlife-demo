@@ -103,10 +103,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
           preferredSize: Size.fromHeight(1),
           child: Divider(),
         ),
-        title: Text(
-          'Forgot Password',
-          style: TextStyle(fontSize: 15, color: context.colors.accentNavy),
-        ),
+        title: Text('Forgot Password'),
         backgroundColor: Colors.white,
         foregroundColor: context.colors.accentNavy,
         elevation: 0,

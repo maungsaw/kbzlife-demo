@@ -128,10 +128,7 @@ class _ApplicationTrackerDetailScreenState
     return Scaffold(
       backgroundColor: context.colors.cream,
       appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new_rounded, size: context.iconLg),
-          onPressed: () => Navigator.maybePop(context),
-        ),
+        automaticallyImplyActions: true,
         title: const Text('Application Details'),
         centerTitle: true,
       ),
@@ -164,7 +161,9 @@ class _ApplicationTrackerDetailScreenState
                                 vertical: 3,
                               ),
                               decoration: BoxDecoration(
-                                color: context.colors.border.withValues(alpha: 0.5),
+                                color: context.colors.border.withValues(
+                                  alpha: 0.5,
+                                ),
                                 borderRadius: BorderRadius.circular(4),
                               ),
                               child: Text(
@@ -454,7 +453,7 @@ class _ApplicationTrackerDetailScreenState
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: context.colors.border),
       ),
-        child: Column(
+      child: Column(
         children: [
           Row(
             children: [
@@ -516,7 +515,10 @@ class _ApplicationTrackerDetailScreenState
               ),
               label: Text(
                 'View Documents',
-                style: TextStyle(color: context.colors.accentNavy, fontSize: 12),
+                style: TextStyle(
+                  color: context.colors.accentNavy,
+                  fontSize: 12,
+                ),
               ),
             ),
           ),
@@ -533,7 +535,11 @@ class _ApplicationTrackerDetailScreenState
                       ),
                     ),
                     onPressed: () {},
-                    icon: Icon(Icons.edit, size: context.iconBase, color: Colors.white),
+                    icon: Icon(
+                      Icons.edit,
+                      size: context.iconBase,
+                      color: Colors.white,
+                    ),
                     label: const Text(
                       'View Corrections',
                       style: TextStyle(

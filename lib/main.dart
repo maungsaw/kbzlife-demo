@@ -33,12 +33,12 @@ class MyApp extends ConsumerWidget {
           secondary: kAppColors.secondaryColor,
           surface: kAppColors.surfaceBg,
           error: kAppColors.danger,
-          onPrimary: Colors.white,
-          onSecondary: Colors.white,
+          onPrimary: kAppColors.paper,
+          onSecondary: kAppColors.paper,
           onSurface: kAppColors.textPrimary,
         ),
         appBarTheme: AppBarTheme(
-          backgroundColor: Colors.white,
+          backgroundColor: kAppColors.paper,
           foregroundColor: kAppColors.textPrimary,
           elevation: 0,
           scrolledUnderElevation: 0,
@@ -49,7 +49,7 @@ class MyApp extends ConsumerWidget {
           ),
         ),
         cardTheme: CardThemeData(
-          color: Colors.white,
+          color: kAppColors.paper,
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
@@ -57,7 +57,7 @@ class MyApp extends ConsumerWidget {
           ),
         ),
         bottomAppBarTheme: BottomAppBarThemeData(
-          color: Colors.white,
+          color: kAppColors.paper,
           elevation: 0,
           shadowColor: Colors.transparent,
           surfaceTintColor: Colors.transparent,
@@ -76,7 +76,7 @@ class MyApp extends ConsumerWidget {
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
             backgroundColor: kAppColors.primaryColor,
-            foregroundColor: Colors.white,
+            foregroundColor: kAppColors.paper,
             elevation: 0,
             minimumSize: const Size(double.infinity, 48),
             shape: RoundedRectangleBorder(

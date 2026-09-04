@@ -12,8 +12,7 @@ class PolicyDetailScreen extends ConsumerStatefulWidget {
   const PolicyDetailScreen({super.key, this.policyNo = 'POL12345678'});
 
   @override
-  ConsumerState<PolicyDetailScreen> createState() =>
-      _PolicyDetailScreenState();
+  ConsumerState<PolicyDetailScreen> createState() => _PolicyDetailScreenState();
 }
 
 class _PolicyDetailScreenState extends ConsumerState<PolicyDetailScreen>
@@ -162,32 +161,19 @@ class _PolicyDetailScreenState extends ConsumerState<PolicyDetailScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: context.colors.cream,
       appBar: AppBar(
-        backgroundColor: Colors.white,
         elevation: 0,
         scrolledUnderElevation: 0,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios_new,
-            color: Colors.black,
-            size: context.iconXl,
-          ),
-          onPressed: () => context.pop(),
-        ),
-        title: const Text(
-          'Policy Detail',
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 18,
-            fontWeight: FontWeight.w700,
-            letterSpacing: -0.3,
-          ),
-        ),
+        automaticallyImplyActions: true,
+        title: const Text('Policy Detail'),
         centerTitle: true,
         actions: [
           IconButton(
-            icon: Icon(Icons.more_horiz, color: Colors.black, size: context.iconXxxl),
+            icon: Icon(
+              Icons.more_horiz,
+              color: Colors.black,
+              size: context.iconXxxl,
+            ),
             onPressed: () => _showMoreActions(context),
           ),
         ],
@@ -196,9 +182,7 @@ class _PolicyDetailScreenState extends ConsumerState<PolicyDetailScreen>
         children: [
           Container(
             width: double.infinity,
-            decoration: BoxDecoration(
-              color: Colors.white,
-            ),
+            decoration: BoxDecoration(color: Colors.white),
             padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
             child: Column(
               crossAxisAlignment: .start,
@@ -262,7 +246,9 @@ class _PolicyDetailScreenState extends ConsumerState<PolicyDetailScreen>
                       vertical: 8,
                     ),
                     decoration: BoxDecoration(
-                      color: context.colors.primaryColor.withValues(alpha: 0.08),
+                      color: context.colors.primaryColor.withValues(
+                        alpha: 0.08,
+                      ),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Row(
@@ -575,7 +561,11 @@ class _PolicyDetailScreenState extends ConsumerState<PolicyDetailScreen>
               color: Colors.grey.shade100,
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Icon(icon, size: context.iconLg, color: Colors.grey.shade700),
+            child: Icon(
+              icon,
+              size: context.iconLg,
+              color: Colors.grey.shade700,
+            ),
           ),
           const SizedBox(width: 12),
           Text(

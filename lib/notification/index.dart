@@ -74,16 +74,8 @@ class _NotificationInboxScreenState
     final list = _filteredList;
 
     return Scaffold(
-      backgroundColor: context.colors.cream,
       appBar: AppBar(
-        title: Text(
-          'Announcements',
-          style: TextStyle(
-            color: context.colors.textPrimary,
-            fontSize: 18,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
+        title: Text('Announcements'),
         actions: [
           if (_unreadCount > 0)
             TextButton(

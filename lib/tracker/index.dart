@@ -165,14 +165,17 @@ class _ApplicationTrackerListScreenState
     return Scaffold(
       appBar: AppBar(
         title: Column(
-        children: [
-          Text('Application Tracker'),
-          SizedBox(height: 2),
-          Text(
-            '• Last synced just now',
-            style: TextStyle(fontSize: 10, color: context.colors.primaryColor),
-          ),
-        ],
+          children: [
+            Text('Application Tracker'),
+            SizedBox(height: 2),
+            Text(
+              '• Last synced just now',
+              style: TextStyle(
+                fontSize: 10,
+                color: context.colors.primaryColor,
+              ),
+            ),
+          ],
         ),
         centerTitle: true,
         actions: [
@@ -413,7 +416,12 @@ class _ApplicationTrackerListScreenState
                           color: context.colors.muted,
                         ),
                         onTap: () {
-                          context.push(RoutePaths.trackerDetail.replaceFirst(':status', app.status.name));
+                          context.push(
+                            RoutePaths.trackerDetail.replaceFirst(
+                              ':status',
+                              app.status.name,
+                            ),
+                          );
                         },
                       ),
                     );
@@ -439,7 +447,9 @@ class _ApplicationTrackerListScreenState
             color: isSelected ? context.colors.primaryColor : Colors.white,
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: isSelected ? context.colors.primaryColor : context.colors.border,
+              color: isSelected
+                  ? context.colors.primaryColor
+                  : context.colors.border,
             ),
           ),
           child: Text(

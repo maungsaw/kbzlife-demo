@@ -46,17 +46,8 @@ class _AppWebViewScreenState extends ConsumerState<AppWebViewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: context.colors.cream,
       appBar: AppBar(
-        title: Text(
-          widget.url,
-          style: TextStyle(
-            color: context.colors.textPrimary,
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-          ),
-          overflow: TextOverflow.ellipsis,
-        ),
+        title: Text(widget.url, overflow: TextOverflow.ellipsis),
         backgroundColor: Colors.white,
         elevation: 0,
         iconTheme: IconThemeData(color: context.colors.textPrimary),

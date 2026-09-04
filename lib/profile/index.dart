@@ -114,7 +114,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         ),
         child: Column(
           children: [
-            FaIcon(icon, size: context.iconXxl, color: context.colors.primaryColor),
+            FaIcon(
+              icon,
+              size: context.iconXxl,
+              color: context.colors.primaryColor,
+            ),
             const SizedBox(height: 8),
             Text(
               label,
@@ -136,40 +140,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final agentData = profileState.agentData;
 
     return Material(
-      color: context.colors.surfaceBg,
       child: SafeArea(
         child: Column(
           children: [
-            // Top bar
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Profile',
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.w800,
-                      color: context.colors.accentNavy,
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: context.colors.cream,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: FaIcon(
-                      FontAwesomeIcons.gear,
-                      size: context.iconLg,
-                      color: context.colors.muted,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
             Expanded(
               child: ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -522,7 +495,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               color: color.withValues(alpha: 0.09),
               borderRadius: BorderRadius.circular(14),
             ),
-            child: Center(child: FaIcon(icon, size: context.iconXxxl, color: color)),
+            child: Center(
+              child: FaIcon(icon, size: context.iconXxxl, color: color),
+            ),
           ),
           const SizedBox(height: 6),
           Text(
@@ -567,7 +542,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       color: color.withValues(alpha: 0.10),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: Center(child: FaIcon(icon, size: context.iconBase, color: color)),
+                    child: Center(
+                      child: FaIcon(icon, size: context.iconBase, color: color),
+                    ),
                   ),
                   const SizedBox(width: 14),
                   Expanded(
@@ -605,7 +582,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           ),
         ),
         if (showDivider)
-          Divider(height: 1, color: context.colors.border.withValues(alpha: 0.5)),
+          Divider(
+            height: 1,
+            color: context.colors.border.withValues(alpha: 0.5),
+          ),
       ],
     );
   }

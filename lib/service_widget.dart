@@ -1,3 +1,5 @@
+import 'package:demo_ui/eapp/eapp_tracker_screen.dart';
+
 import 'commission.dart';
 
 import 'package:flutter/material.dart';
@@ -12,7 +14,6 @@ import 'login/index.dart';
 import 'policy/index.dart';
 import 'providers/router_provider.dart';
 import 'task/index.dart';
-import 'tracker/index.dart';
 
 class ServiceItem {
   final String title;
@@ -40,9 +41,9 @@ class ServiceRegistry {
   static const Map<String, String> routePaths = {
     'Products': RoutePaths.products,
     'Calculator': RoutePaths.calculator,
-    'Proposal': RoutePaths.eapp,
+    'E-App': RoutePaths.eapp,
     'Commission': RoutePaths.commission,
-    'Tracker': RoutePaths.trackerList,
+    'Proposal Status': RoutePaths.eappTracker,
     'CRM': RoutePaths.crm,
     'Tasks': RoutePaths.taskList,
     'Policy': RoutePaths.policyList,
@@ -51,9 +52,9 @@ class ServiceRegistry {
   static const Map<String, String> guestRoutePaths = {
     'Products': '/guest/products',
     'Calculator': RoutePaths.calculator,
-    'Proposal': RoutePaths.login,
+    'E-App': RoutePaths.login,
     'Commission': RoutePaths.login,
-    'Tracker': RoutePaths.login,
+    'Proposal Status': RoutePaths.login,
     'CRM': RoutePaths.login,
     'Tasks': RoutePaths.login,
     'Policy': RoutePaths.login,
@@ -85,7 +86,7 @@ class ServicesCard extends StatelessWidget {
       externalUrl: 'https://selfservice.kbzlife.com/',
     ),
     ServiceItem(
-      title: 'Proposal',
+      title: 'E-App',
       icon: BootstrapIcons.file_earmark_text,
       isGuestAllowed: false,
       targetScreen: (context) => const EAppScreen(),
@@ -97,10 +98,10 @@ class ServicesCard extends StatelessWidget {
       targetScreen: (context) => CommissionReportScreen(),
     ),
     ServiceItem(
-      title: 'Tracker',
+      title: 'Proposal Status',
       icon: BootstrapIcons.graph_up,
       isGuestAllowed: false,
-      targetScreen: (context) => ApplicationTrackerListScreen(),
+      targetScreen: (context) => EappTrackerScreen(),
     ),
     ServiceItem(
       title: 'CRM',
@@ -262,7 +263,14 @@ class _ServiceTileState extends ConsumerState<_ServiceTile> {
 
     // Normal mode navigation
     if (widget.service.tabIndex != null) {
-      final paths = ['/home', '/crm', '/products', '/profile', '/e-app'];
+      final paths = [
+        '/home',
+        '/crm',
+        '/products',
+        '/profile',
+        '/e-app',
+        '/e-app/tracker',
+      ];
       if (widget.service.tabIndex! < paths.length) {
         context.go(paths[widget.service.tabIndex!]);
       }

@@ -59,7 +59,6 @@ class _PerformanceDashboardPageState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
         elevation: 0,
         scrolledUnderElevation: 0,
         leading: _breadcrumbs.length > 1
@@ -81,11 +80,6 @@ class _PerformanceDashboardPageState
               ),
         title: Text(
           _currentNode.isFA ? 'My Dashboard' : 'Performance Dashboard',
-          style: TextStyle(
-            color: context.colors.accentNavy,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
         ),
         actions: [
           if (_currentNode.isLeader)

@@ -47,31 +47,8 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
       appBar: AppBar(
         titleSpacing: 0,
         toolbarHeight: 64,
-        title: Padding(
-          padding: const EdgeInsets.only(top: 4),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                product.name,
-                style: TextStyle(
-                  fontWeight: FontWeight.w800,
-                  fontSize: 17,
-                  color: context.colors.deep,
-                ),
-              ),
-              Text(
-                '${_categoryLabel(product.category)} · ${product.code}',
-                style: TextStyle(
-                  fontSize: 11.5,
-                  fontWeight: FontWeight.w600,
-                  color: context.colors.deepAlpha(0.5),
-                ),
-              ),
-            ],
-          ),
-        ),
+        title: Text(product.name),
+
         actions: [
           IconButton(
             tooltip: 'Compare',

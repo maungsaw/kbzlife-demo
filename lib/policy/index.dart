@@ -91,14 +91,7 @@ class _PolicyListScreenState extends ConsumerState<PolicyListScreen> {
                   onPressed: _popUser,
                 )
               : null,
-          title: Text(
-            'Policy & Serving',
-            style: const TextStyle(
-              color: Colors.black,
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
+          title: Text('Policy & Serving'),
           centerTitle: false,
         ),
         body: Column(

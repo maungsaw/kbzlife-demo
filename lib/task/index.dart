@@ -102,18 +102,8 @@ class _ModernTaskCalendarScreenState
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: context.colors.accentNavy),
-          onPressed: () => context.pop(),
-        ),
-        title: Text(
-          'Tasks',
-          style: TextStyle(
-            color: context.colors.accentNavy,
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
-          ),
-        ),
+        automaticallyImplyActions: true,
+        title: Text('Tasks'),
         actions: [
           IconButton(
             icon: Icon(Icons.search, color: context.colors.accentNavy),
