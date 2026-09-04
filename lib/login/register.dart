@@ -5,6 +5,7 @@ import '../eapp/pickers.dart';
 import '../providers/auth_provider.dart';
 import '../const.dart';
 import '../widgets/otp_bottom_sheet.dart';
+import 'review.dart';
 import 'widget.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
@@ -92,11 +93,15 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: context.colors.cream,
+      backgroundColor: context.colors.paper,
       appBar: AppBar(
         backgroundColor: Colors.white,
         foregroundColor: context.colors.textPrimary,
         elevation: 0,
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(1),
+          child: Divider(),
+        ),
         title: Text(
           'Register Account',
           style: TextStyle(
@@ -219,7 +224,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'isAlreadyExist (Test Toggle)',
+                      'isCore',
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w500,
@@ -245,18 +250,21 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   children: [
                     Text(
                       'Already have an account? ',
-                      style: TextStyle(fontSize: 13, color: context.colors.muted),
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: context.colors.muted,
+                      ),
                     ),
                     GestureDetector(
                       onTap: () => Navigator.maybePop(context),
-                        child: Text(
-                          'Login Now',
-                          style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.bold,
-                            color: context.colors.primaryColor,
-                          ),
+                      child: Text(
+                        'Login Now',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                          color: context.colors.primaryColor,
                         ),
+                      ),
                     ),
                   ],
                 ),
@@ -265,21 +273,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-// Target screen placeholder for existing user review state
-class AdminReviewProgressScreen extends StatelessWidget {
-  const AdminReviewProgressScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Review Progress')),
-      body: const Center(
-        child: Text('Your account is currently under admin review.'),
       ),
     );
   }

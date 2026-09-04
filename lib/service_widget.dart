@@ -143,9 +143,8 @@ class ServicesCard extends StatelessWidget {
                 'Our Services',
                 style: TextStyle(
                   fontSize: 18,
-                  fontWeight: .w800,
-                  color: context.colors.textPrimary,
                   letterSpacing: -0.3,
+                  fontWeight: .bold,
                 ),
               ),
 

@@ -122,7 +122,7 @@ class _MobileLoginScreenState extends ConsumerState<MobileLoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: context.colors.cream,
+      backgroundColor: context.colors.paper,
       body: SafeArea(
         child: Stack(
           children: [
@@ -157,7 +157,10 @@ class _MobileLoginScreenState extends ConsumerState<MobileLoginScreen> {
                   Center(
                     child: Text(
                       'Sign in with your registered phone number',
-                      style: TextStyle(fontSize: 12, color: context.colors.muted),
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: context.colors.muted,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 36),
@@ -257,9 +260,9 @@ class _MobileLoginScreenState extends ConsumerState<MobileLoginScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(
-                        Icons.fingerprint_rounded,
-                        color: context.colors.accentNavy,
-                        size: context.iconXl,
+                          Icons.fingerprint_rounded,
+                          color: context.colors.accentNavy,
+                          size: context.iconXl,
                         ),
                         const SizedBox(width: 8),
                         Text(
@@ -281,7 +284,10 @@ class _MobileLoginScreenState extends ConsumerState<MobileLoginScreen> {
                     children: [
                       Text(
                         "Don't have an agent account? ",
-                        style: TextStyle(fontSize: 12, color: context.colors.muted),
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: context.colors.muted,
+                        ),
                       ),
                       GestureDetector(
                         onTap: () {

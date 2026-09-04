@@ -97,8 +97,12 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: context.colors.cream,
+      backgroundColor: context.colors.paper,
       appBar: AppBar(
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(1),
+          child: Divider(),
+        ),
         title: Text(
           'Forgot Password',
           style: TextStyle(fontSize: 15, color: context.colors.accentNavy),
@@ -106,10 +110,6 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
         backgroundColor: Colors.white,
         foregroundColor: context.colors.accentNavy,
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new_rounded, size: context.iconLg),
-          onPressed: () => Navigator.pop(context),
-        ),
       ),
       body: SafeArea(
         child: SingleChildScrollView(

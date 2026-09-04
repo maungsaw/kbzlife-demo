@@ -369,7 +369,7 @@ class _BeforeLoginDashboardScreenState
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: Colors.black87,
+              letterSpacing: -0.3,
             ),
           ),
           const SizedBox(height: 12),

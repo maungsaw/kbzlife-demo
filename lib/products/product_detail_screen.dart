@@ -44,7 +44,6 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     final stats = _buildStats(product);
 
     return Scaffold(
-      backgroundColor: context.colors.cream,
       appBar: AppBar(
         titleSpacing: 0,
         toolbarHeight: 64,

@@ -56,6 +56,14 @@ class MyApp extends ConsumerWidget {
             side: BorderSide(color: kAppColors.border),
           ),
         ),
+        bottomAppBarTheme: BottomAppBarThemeData(
+          color: Colors.white,
+          elevation: 0,
+          shadowColor: Colors.transparent,
+          surfaceTintColor: Colors.transparent,
+          padding: EdgeInsets.zero,
+          shape: const CircularNotchedRectangle(),
+        ),
         dividerTheme: DividerThemeData(color: kAppColors.border, thickness: 1),
         tabBarTheme: TabBarThemeData(
           labelColor: kAppColors.primaryColor,
@@ -64,6 +72,7 @@ class MyApp extends ConsumerWidget {
 
           dividerColor: kAppColors.baltic,
         ),
+
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
             backgroundColor: kAppColors.primaryColor,

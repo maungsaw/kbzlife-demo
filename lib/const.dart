@@ -322,7 +322,7 @@ abstract class _Defaults {
   static const Color paper = Color(0xFFFFFFFF);
   static const Color chipBg = Color(0xFFF1F5F9);
   static const Color sectionBg = Color(0xFFF8F9FA);
-  static const Color textPrimary = Color(0xFF0F172A);
+  static const Color textPrimary = Color(0xFF000000);
   static const Color textSecondary = Color(0xFF334155);
   static const Color textMuted = Color(0xFF94A3B8);
   static const Color muted = Color(0xFF64748B);
