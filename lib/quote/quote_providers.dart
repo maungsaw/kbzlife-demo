@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/legacy.dart';
 import '../../data/models/product.dart';
 import '../../data/models/quote_draft.dart';
 import '../../data/models/quote_field.dart';
+import '../widgets/app_number.dart';
 
 class QuoteCalcResult {
   const QuoteCalcResult({
@@ -225,10 +226,8 @@ class QuoteFormController extends StateNotifier<Map<String, dynamic>> {
     _ => '—',
   };
 
-  String _fmt(int n) => n.toString().replaceAllMapped(
-    RegExp(r'\B(?=(\d{3})+(?!\d))'),
-    (m) => ',',
-  );
+  /// Grouping lives in one place for the whole app (see [AppNumber]).
+  String _fmt(int n) => AppNumber.format(n);
 }
 
 final quoteFormProvider =

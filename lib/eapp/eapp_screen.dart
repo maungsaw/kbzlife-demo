@@ -13,6 +13,7 @@ import '../../data/mock/mock_data.dart';
 import '../../data/models/product.dart';
 import '../const.dart';
 import '../widgets/app_key_value_row.dart';
+import '../widgets/app_number.dart';
 import '../widgets/app_text.dart';
 import '../crm/provider.dart';
 import '../quote/quote_providers.dart';
@@ -91,8 +92,6 @@ const _stepTitleMap = {
   _EStep.sign: 'Sign',
   _EStep.review: 'Review',
 };
-
-final _startMoney = NumberFormat('#,##0', 'en_US');
 
 class _EAppScreenState extends ConsumerState<EAppScreen> {
   late int _step = (widget.initialStep ?? 0).clamp(
@@ -910,7 +909,6 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
     return choice == 'draft' || choice == 'discard';
   }
 
-  static final _productInfoMoney = NumberFormat('#,##0.00', 'en_US');
   static const _productInfoStampFee = 100;
 
   /// Doc 114 §2 — the Proposal tab is 13 fields, but only 4 of them need
@@ -1118,11 +1116,8 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
                 for (final (label, val) in result.lines) _Row(label, val),
                 // Premium sits with the figures it came from, directly
                 // above the fee that is added to it.
-                _Row('Premium', _productInfoMoney.format(result.premium)),
-                _Row(
-                  'Stamp Fee',
-                  _productInfoMoney.format(_productInfoStampFee),
-                ),
+                _Row('Premium', AppNumber.money(result.premium)),
+                _Row('Stamp Fee', AppNumber.money(_productInfoStampFee)),
               ],
             ),
           ),
@@ -1137,7 +1132,7 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
               children: [
                 const AppSectionTitle('Total Amount'),
                 Text(
-                  _productInfoMoney.format(result.total),
+                  AppNumber.money(result.total),
                   style: TextStyle(
                     fontSize: AppType.title,
                     fontWeight: AppType.strong,
@@ -1682,7 +1677,7 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
     final premiumRows = <(String, String)>[
       ('Product', product.name),
       if (result != null)
-        ('Estimated premium', '${_startMoney.format(result.total)} MMK'),
+        ('Estimated premium', '${AppNumber.format(result.total)} MMK'),
       if (result != null)
         for (final (label, val) in result.lines) (label, val),
     ];
