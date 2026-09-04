@@ -640,6 +640,37 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
     _EStep.review => true,
   };
 
+  /// What is stopping this step, in words. A generic "complete the
+  /// required fields" over a form that looks complete sends the FA hunting;
+  /// the card validators already know which field it is, so say it.
+  String _blockingReason() {
+    const fallback = 'Complete the required fields to continue.';
+    return switch (_activeSteps[_step]) {
+      _EStep.policyHolder => _holder.validationMessage ?? fallback,
+      _EStep.insuredPerson => _insured.validationMessage ?? fallback,
+      _EStep.beneficiaries =>
+        _sharesTotal != 100
+            ? 'Beneficiary percentages must add up to 100% — '
+                  'currently $_sharesTotal%.'
+            : _beneficiaries
+                      .map((b) => b.validationMessage)
+                      .firstWhere((m) => m != null, orElse: () => null) ??
+                  fallback,
+      _EStep.proposal =>
+        _notifyType == 'SMS' &&
+                ApplicantValidators.notifyMobile(
+                      _notifyMobileController.text,
+                    ) !=
+                    null
+            ? 'Notify mobile phone no: '
+                  '${ApplicantValidators.notifyMobile(_notifyMobileController.text)}'
+            : fallback,
+      _EStep.documentation => 'Capture the documents for every party.',
+      _EStep.sign => 'Both the client and the agent have to sign.',
+      _ => fallback,
+    };
+  }
+
   Future<void> _submit() async {
     final confirmed = await showDialog<bool>(
       context: context,
@@ -783,11 +814,7 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
                         ScaffoldMessenger.of(context)
                           ..hideCurrentSnackBar()
                           ..showSnackBar(
-                            const SnackBar(
-                              content: Text(
-                                'Complete the required fields to continue.',
-                              ),
-                            ),
+                            SnackBar(content: Text(_blockingReason())),
                           );
                         return;
                       }

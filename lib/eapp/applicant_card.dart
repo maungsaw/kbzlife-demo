@@ -327,32 +327,57 @@ class EappGenderField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [_GenderPillTabs(value: value, onChanged: onChanged)],
-    );
+    return _GenderPillTabs(value: value, onChanged: onChanged);
   }
 }
 
-class _GenderPillTabs extends StatelessWidget {
+class _GenderPillTabs extends StatefulWidget {
   const _GenderPillTabs({required this.value, required this.onChanged});
   final String? value;
   final ValueChanged<String> onChanged;
 
+  @override
+  State<_GenderPillTabs> createState() => _GenderPillTabsState();
+}
+
+class _GenderPillTabsState extends State<_GenderPillTabs> {
   static const _options = [
     ('Male', 'Male', Icons.male_outlined),
     ('Female', 'Female', Icons.female_outlined),
   ];
 
   @override
+  void initState() {
+    super.initState();
+    // PillTabs is uncontrolled and clamps an unknown value to the first
+    // tab, so an unset gender *looked* chosen while the record still held
+    // null — and Next refused a form that read as complete. The pills stay
+    // as they are; the record is brought into line with what they show.
+    if (widget.value == null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && widget.value == null) {
+          widget.onChanged(_options.first.$1);
+        }
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final index = _options
-        .indexWhere((t) => t.$1 == value)
+        .indexWhere((t) => t.$1 == widget.value)
         .clamp(0, _options.length - 1);
-    return PillTabs(
-      initialIndex: index,
-      tabs: [for (final o in _options) PillTab(label: o.$2, icon: o.$3)],
-      onPageChanged: (i) => onChanged(_options[i].$1),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const AppLabelText('Gender *'),
+        const SizedBox(height: 6),
+        PillTabs(
+          initialIndex: index,
+          tabs: [for (final o in _options) PillTab(label: o.$2, icon: o.$3)],
+          onPageChanged: (i) => widget.onChanged(_options[i].$1),
+        ),
+      ],
     );
   }
 }
