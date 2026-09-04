@@ -5,10 +5,11 @@ import 'package:intl/intl.dart';
 
 import '../../data/mock/mock_data.dart';
 import '../../data/models/product.dart';
-import '../const.dart';
-import '../products/product_icons.dart';
 import '../../data/models/quote_draft.dart';
 import '../../data/models/quote_field.dart';
+import '../const.dart';
+import '../products/product_icons.dart';
+import '../widgets/app_text.dart';
 import '../widgets/quote_field.dart';
 import '../widgets/soft_card.dart';
 import 'quote_providers.dart';
@@ -129,7 +130,7 @@ class _QuoteScreenState extends ConsumerState<QuoteScreen> {
                       onPressed: result == null
                           ? null
                           : () => setState(() => _step = 1),
-                      child: const Text('Calculate Premium'),
+                      child: const Text('Calculate'),
                     ),
                   ),
                 ]
@@ -485,25 +486,6 @@ class _PremiumHero extends StatelessWidget {
   static const _stampFee = 100;
   static final _money = NumberFormat('#,##0.00', 'en_US');
 
-  /// Payment-cadence wording for the highlighted premium row — reads the
-  /// selected `paymentType` option's label when the product has one
-  /// (e.g. "Monthly", "Semi Annually"); products without that field are
-  /// lump-sum priced per their eligibility copy, so those fall back to
-  /// "Lumpsum"; anything unrecognized falls back to a bare "Premium".
-  String _premiumLabel() {
-    for (final field in product.calculatorFields) {
-      if (field.key == 'paymentType' && field.options.isNotEmpty) {
-        final selected = answers['paymentType'];
-        final option = field.options.firstWhere(
-          (o) => o.value == selected,
-          orElse: () => field.options.first,
-        );
-        return 'Premium (${option.label})';
-      }
-    }
-    return 'Premium (Lumpsum)';
-  }
-
   @override
   Widget build(BuildContext context) {
     if (result == null) {
@@ -517,12 +499,9 @@ class _PremiumHero extends StatelessWidget {
             ),
             const SizedBox(width: 10),
             Expanded(
-              child: Text(
+              child: AppBodyText(
                 error ?? 'Enter details to see a premium',
-                style: TextStyle(
-                  fontSize: 13,
-                  color: context.colors.deepAlpha(0.6),
-                ),
+                muted: true,
               ),
             ),
           ],
@@ -540,16 +519,7 @@ class _PremiumHero extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
             child: Row(
               children: [
-                Expanded(
-                  child: Text(
-                    product.name,
-                    style: TextStyle(
-                      fontSize: 15.5,
-                      fontWeight: FontWeight.w800,
-                      color: context.colors.deep,
-                    ),
-                  ),
-                ),
+                Expanded(child: AppSectionTitle(product.name)),
                 InkWell(
                   borderRadius: BorderRadius.circular(999),
                   onTap: onBookmark,
@@ -573,38 +543,15 @@ class _PremiumHero extends StatelessWidget {
               ],
             ),
           ),
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            color: context.colors.primaryColor.withValues(alpha: 0.10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  _premiumLabel(),
-                  style: TextStyle(
-                    fontSize: 12.5,
-                    fontWeight: FontWeight.w600,
-                    color: context.colors.deep,
-                  ),
-                ),
-                Text(
-                  _money.format(r.premium),
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w800,
-                    color: context.colors.primaryColor,
-                  ),
-                ),
-              ],
-            ),
-          ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+            padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
             child: Column(
               children: [
                 _Row('Product Name', product.name),
                 for (final (label, val) in r.lines) _Row(label, val),
+                // Premium sits with the figures it is derived from, and
+                // directly above the fee that is added to it.
+                _Row('Premium', _money.format(r.premium)),
                 _Row('Stamp Fee', _money.format(_stampFee)),
               ],
             ),
@@ -618,20 +565,13 @@ class _PremiumHero extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  'Total Amount',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w800,
-                    color: context.colors.deep,
-                  ),
-                ),
+                const AppSectionTitle('Total Amount'),
                 Text(
                   _money.format(r.total),
                   style: TextStyle(
-                    fontSize: 15.5,
-                    fontWeight: FontWeight.w800,
-                    color: context.colors.deep,
+                    fontSize: AppType.title,
+                    fontWeight: AppType.strong,
+                    color: context.colors.primaryColor,
                   ),
                 ),
               ],
@@ -655,24 +595,9 @@ class _Row extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Expanded(
-            child: Text(
-              label,
-              style: TextStyle(
-                fontSize: 12.5,
-                color: context.colors.deepAlpha(0.55),
-              ),
-            ),
-          ),
+          Expanded(child: AppLabelText(label)),
           const SizedBox(width: 10),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 12.5,
-              fontWeight: FontWeight.w700,
-              color: context.colors.deep,
-            ),
-          ),
+          AppBodyText(value, strong: true),
         ],
       ),
     );

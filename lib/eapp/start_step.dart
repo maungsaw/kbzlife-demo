@@ -176,7 +176,9 @@ class _EappStartStepState extends ConsumerState<EappStartStep> {
                 );
             },
             icon: Icon(Icons.arrow_forward, size: context.iconLg),
-            label: const Text('Continue to e-Application'),
+            // "Next", to match the wizard's own button — this screen is
+            // step zero of the same flow, not a separate door into it.
+            label: const Text('Next'),
           ),
         ),
       ),
@@ -416,6 +418,7 @@ class _CustomerSlotCard extends StatelessWidget {
                 border: Border.all(color: context.colors.border),
               ),
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CircleAvatar(
                     radius: 20,
@@ -447,31 +450,27 @@ class _CustomerSlotCard extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 2),
-                        Row(
-                          children: [
-                            Flexible(
-                              child: AppCaptionText(c.phone, maxLines: 1),
+                        // Phone gets the full line — sharing it with the
+                        // stage chip cut the number down to "09-123…".
+                        AppCaptionText(c.phone, maxLines: 1),
+                        const SizedBox(height: 4),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 7,
+                            vertical: 2,
+                          ),
+                          decoration: BoxDecoration(
+                            color: context.colors.deepAlpha(0.06),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            c.tag,
+                            style: TextStyle(
+                              fontSize: AppType.caption,
+                              fontWeight: AppType.strong,
+                              color: context.colors.primaryColor,
                             ),
-                            const SizedBox(width: 6),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 7,
-                                vertical: 2,
-                              ),
-                              decoration: BoxDecoration(
-                                color: context.colors.deepAlpha(0.06),
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Text(
-                                c.tag,
-                                style: TextStyle(
-                                  fontSize: AppType.caption,
-                                  fontWeight: AppType.strong,
-                                  color: context.colors.primaryColor,
-                                ),
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
                       ],
                     ),

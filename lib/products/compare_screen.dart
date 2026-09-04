@@ -234,7 +234,9 @@ class _CompareHeader extends StatelessWidget {
                         ? FontAwesomeIcons.thumbtack
                         : FontAwesomeIcons.thumbtack,
                     size: context.iconXs,
-                    color: pinned ? Colors.white : context.colors.deepAlpha(0.5),
+                    color: pinned
+                        ? Colors.white
+                        : context.colors.deepAlpha(0.5),
                   ),
                   const SizedBox(width: 4),
                   Text(
@@ -242,7 +244,9 @@ class _CompareHeader extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 10,
                       fontWeight: FontWeight.w800,
-                      color: pinned ? Colors.white : context.colors.deepAlpha(0.5),
+                      color: pinned
+                          ? Colors.white
+                          : context.colors.deepAlpha(0.5),
                     ),
                   ),
                 ],
