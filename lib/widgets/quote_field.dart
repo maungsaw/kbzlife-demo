@@ -37,14 +37,16 @@ class QuoteFieldRenderer extends StatelessWidget {
             if (picked != null) onChanged(picked);
           },
           suffixIcon: Icon(Icons.calendar_today_outlined, size: context.iconLg),
+          // A picked date is a typed value like any other: same size,
+          // same weight, same ink as the number field beneath it.
           child: Text(
             value == null ? 'Select date' : AppDate.dMy(value as DateTime),
             style: TextStyle(
               fontSize: AppType.body,
-              fontWeight: value == null ? FontWeight.normal : FontWeight.w600,
+              fontWeight: AppType.normal,
               color: value == null
-                  ? context.colors.muted
-                  : context.colors.accentNavy,
+                  ? context.colors.textSecondary
+                  : context.colors.textPrimary,
             ),
           ),
         );
@@ -65,8 +67,8 @@ class QuoteFieldRenderer extends StatelessWidget {
                   : '$value${field.suffix != null ? ' ${field.suffix}' : ''}',
               style: TextStyle(
                 fontSize: AppType.body,
-                fontWeight: AppType.strong,
-                color: context.colors.deep,
+                fontWeight: AppType.normal,
+                color: context.colors.textPrimary,
               ),
             ),
           ),
@@ -129,13 +131,7 @@ class QuoteFieldRenderer extends StatelessWidget {
                 CheckboxListTile(
                   value: selected.contains(option.value),
                   onChanged: (_) => onToggleMulti(option.value),
-                  title: Text(
-                    option.label,
-                    style: TextStyle(
-                      fontSize: AppType.label,
-                      color: context.colors.deep,
-                    ),
-                  ),
+                  title: AppBodyText(option.label),
                   controlAffinity: ListTileControlAffinity.leading,
                   contentPadding: EdgeInsets.zero,
                   dense: true,
