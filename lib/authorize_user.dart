@@ -179,12 +179,12 @@ class _AuthorizedAgentScreenState extends ConsumerState<AuthorizedAgentScreen> {
               delegate: SliverChildListDelegate([
                 const SizedBox(height: 8),
                 _buildMyPerformance(),
-                const SizedBox(height: 8),
+                const SizedBox(height: 10),
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16.0),
                   child: ServicesCard(),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 10),
                 _buildCampaignCarousel(),
               ]),
             ),

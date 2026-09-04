@@ -372,7 +372,7 @@ class _ServiceTileState extends ConsumerState<_ServiceTile> {
                     maxLines: 1,
                     overflow: .ellipsis,
                     style: TextStyle(
-                      fontSize: 11,
+                      fontSize: 14,
                       fontWeight: .w600,
                       color: context.colors.textSecondary,
                       letterSpacing: -0.2,

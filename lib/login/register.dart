@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../eapp/pickers.dart';
 import '../providers/auth_provider.dart';
 import '../const.dart';
 import '../widgets/otp_bottom_sheet.dart';
-import 'review.dart';
+//import 'review.dart';
 import 'widget.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
@@ -25,7 +26,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final _emailController = TextEditingController();
 
   bool _isSubmitting = false;
-  bool _isAlreadyExist = true; // Flag to toggle exist check state
+  //bool _isAlreadyExist = true; // Flag to toggle exist check state
 
   @override
   void dispose() {
@@ -42,43 +43,42 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
     setState(() => _isSubmitting = true);
 
-    final navigator = Navigator.of(context);
+    // final navigator = Navigator.of(context);
     final phoneNumber = _mobileController.text.trim();
 
     try {
       await Future.delayed(const Duration(seconds: 1));
-      final bool isPhoneExist = _isAlreadyExist;
+      // final bool isPhoneExist = _isAlreadyExist;
 
-      if (!mounted) return;
-      setState(() => _isSubmitting = false);
+      // if (!mounted) return;
+      // setState(() => _isSubmitting = false);
 
-      if (isPhoneExist) {
-        // Phone number already exists -> Route directly to Admin Review Progress
-        navigator.pushReplacement(
-          MaterialPageRoute(
-            builder: (context) => const AdminReviewProgressScreen(),
-          ),
-        );
-      } else {
-        // Phone number does NOT exist -> Show OTP Bottom Sheet
-        OtpBottomSheet.show(
-          // ignore: use_build_context_synchronously
-          context: context,
-          phoneNumber: phoneNumber,
-          title: 'Verify Phone Number',
-          description: 'Enter the OTP code sent to your mobile number.',
-          onVerified: () async {
+      // if (isPhoneExist) {
+      //   // Phone number already exists -> Route directly to Admin Review Progress
+      //   navigator.pushReplacement(
+      //     MaterialPageRoute(
+      //       builder: (context) => const AdminReviewProgressScreen(),
+      //     ),
+      //   );
+      // } else {
+      OtpBottomSheet.show(
+        // ignore: use_build_context_synchronously
+        context: context,
+        phoneNumber: phoneNumber,
+        title: 'Verify Phone Number',
+        description: 'Enter the OTP code sent to your mobile number.',
+        onVerified: () async {
+          if (mounted && context.mounted) {
+            context.pop();
+            await Future.delayed(const Duration(milliseconds: 100));
             if (mounted && context.mounted) {
-              Navigator.of(context).pop();
-              await Future.delayed(const Duration(milliseconds: 100));
-              if (mounted && context.mounted) {
-                ref.read(authProvider.notifier).login();
-                Navigator.of(context).pop();
-              }
+              ref.read(authProvider.notifier).login();
+              context.pop();
             }
-          },
-        );
-      }
+          }
+        },
+      );
+      // }
     } catch (e) {
       if (!mounted) return;
       setState(() => _isSubmitting = false);
