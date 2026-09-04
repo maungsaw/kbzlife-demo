@@ -165,7 +165,7 @@ class _ProductRowCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Container(
-              width: 88,
+              width: 110,
               decoration: BoxDecoration(
                 color: color.withValues(alpha: 0.10),
                 borderRadius: const BorderRadius.only(
@@ -174,7 +174,7 @@ class _ProductRowCard extends StatelessWidget {
                 ),
               ),
               child: asset == null
-                  ? ProductScene(product: product, size: 88)
+                  ? ProductScene(product: product, size: 110)
                   : ClipRRect(
                       borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(14),
@@ -186,7 +186,7 @@ class _ProductRowCard extends StatelessWidget {
                         alignment: Alignment.topCenter,
                         filterQuality: FilterQuality.medium,
                         errorBuilder: (context, _, _) =>
-                            ProductScene(product: product, size: 88),
+                            ProductScene(product: product, size: 110),
                       ),
                     ),
             ),
@@ -287,7 +287,7 @@ class _ProductList extends StatelessWidget {
       onTap: () => context.push('/products/${products[i].code}'),
       child: Row(
         children: [
-          ProductIllustration(product: products[i], size: 44),
+          ProductIllustration(product: products[i], size: 80),
           const SizedBox(width: 12),
           Expanded(
             child: Column(

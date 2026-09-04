@@ -56,23 +56,11 @@ class ProductVisuals {
   };
 }
 
-/// Doc 130 §1 — the per-product illustration, if one has been supplied.
-///
-/// Feedback on the Products Library asked for vector illustrations in
-/// place of icons. Rather than block on artwork, every product looks for
-/// `assets/products/<code>.png` (lower-cased) and falls back to its icon
-/// plate when the file is not there — so the six that exist can ship
-/// while the rest follow, with no code change per product.
 class ProductIllustration extends StatelessWidget {
   const ProductIllustration({super.key, required this.product, this.size = 88});
 
   final Product product;
   final double size;
-
-  /// Doc 133 — the supplied artwork, by product code. Mapped by name
-  /// rather than derived from the code: the files arrived named after the
-  /// products, and renaming someone's assets to suit a lookup is how a
-  /// re-export later silently breaks the screen.
   static const _assets = <String, String>{
     'UL-01': 'universal_life',
     'STE-01': 'short_term_endowment',
@@ -108,8 +96,7 @@ class ProductIllustration extends StatelessWidget {
           ? ProductScene(product: product, size: size)
           : Image.asset(
               asset,
-              fit: BoxFit.cover,
-
+              fit: .cover,
               alignment: Alignment.topCenter,
               filterQuality: FilterQuality.medium,
               errorBuilder: (context, _, _) =>
