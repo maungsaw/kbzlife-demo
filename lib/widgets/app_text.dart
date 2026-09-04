@@ -117,24 +117,43 @@ class AppBodyText extends StatelessWidget {
 }
 
 /// Field label — sits above the value it names.
+///
+/// A label ending in `*` marks a required field: the asterisk is split off
+/// and drawn in the danger colour, so "required" reads at a glance instead
+/// of hiding as one more black character at the end of the words.
 class AppLabelText extends StatelessWidget {
   const AppLabelText(this.text, {super.key, this.align});
   final String text;
   final TextAlign? align;
 
   @override
-  Widget build(BuildContext context) => Text(
-    text,
-    textAlign: align,
-    style: TextStyle(
+  Widget build(BuildContext context) {
+    final style = TextStyle(
       fontSize: AppType.label,
       fontWeight: AppType.medium,
       height: 1.3,
-      // Black, like the card title above it — they are separated by size
-      // and weight, not by fading the label out.
       color: context.colors.textPrimary,
-    ),
-  );
+    );
+
+    final trimmed = text.trimRight();
+    if (!trimmed.endsWith('*')) {
+      return Text(text, textAlign: align, style: style);
+    }
+
+    return Text.rich(
+      TextSpan(
+        style: style,
+        children: [
+          TextSpan(text: trimmed.substring(0, trimmed.length - 1).trimRight()),
+          TextSpan(
+            text: ' *',
+            style: TextStyle(color: context.colors.danger),
+          ),
+        ],
+      ),
+      textAlign: align,
+    );
+  }
 }
 
 /// Helper lines, counters, chip text.

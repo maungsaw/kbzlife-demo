@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../const.dart';
+import '../widgets/app_text.dart';
 import '../widgets/soft_card.dart';
 import 'quote_providers.dart';
 
@@ -59,8 +60,8 @@ class SavedQuotesScreen extends ConsumerWidget {
                             Text(
                               d.productName,
                               style: TextStyle(
-                                fontWeight: FontWeight.w800,
-                                fontSize: 13,
+                                fontWeight: AppType.strong,
+                                fontSize: AppType.body,
                                 color: context.colors.deep,
                               ),
                             ),
@@ -68,7 +69,7 @@ class SavedQuotesScreen extends ConsumerWidget {
                             Text(
                               'Saved ${DateFormat('dd-MMM-yyyy').format(d.savedAt)} · valid 30 days',
                               style: TextStyle(
-                                fontSize: 10.5,
+                                fontSize: AppType.caption,
                                 color: context.colors.deepAlpha(0.45),
                               ),
                             ),
@@ -78,8 +79,8 @@ class SavedQuotesScreen extends ConsumerWidget {
                       Text(
                         '${NumberFormat.decimalPattern('en_US').format(d.premium)} MMK',
                         style: TextStyle(
-                          fontWeight: FontWeight.w800,
-                          fontSize: 12.5,
+                          fontWeight: AppType.strong,
+                          fontSize: AppType.label,
                           color: context.colors.primaryColor,
                         ),
                       ),
