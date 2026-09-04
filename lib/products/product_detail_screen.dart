@@ -140,6 +140,9 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         child: Row(
           children: [
+            // Two words, two buttons, one line each: "Calculate Premium"
+            // wrapped onto two lines here and left the pair looking
+            // lopsided next to "Start e-App".
             Expanded(
               child: ElevatedButton.icon(
                 onPressed: () => context.push('/quote?product=${product.code}'),
@@ -147,7 +150,8 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                   FontAwesomeIcons.calculator,
                   size: context.iconBase,
                 ),
-                label: const Text('Calculate Premium'),
+                label: const Text('Calculate', maxLines: 1),
+                style: ElevatedButton.styleFrom(minimumSize: const Size(0, 46)),
               ),
             ),
             const SizedBox(width: 10),
@@ -155,7 +159,8 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
               child: OutlinedButton.icon(
                 onPressed: () => context.push('/e-app?product=${product.code}'),
                 icon: Icon(Icons.description_outlined, size: context.iconLg),
-                label: const Text('Start e-App'),
+                label: const Text('Start e-App', maxLines: 1),
+                style: OutlinedButton.styleFrom(minimumSize: const Size(0, 46)),
               ),
             ),
           ],

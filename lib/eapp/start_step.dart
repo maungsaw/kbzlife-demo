@@ -65,14 +65,21 @@ class _EappStartStepState extends ConsumerState<EappStartStep> {
   /// The linked contact as the slot shows it. Two stores feed this screen —
   /// the Customer records and the CRM contact list, whose IDs do not overlap —
   /// so a pick from either has to resolve here or the slot reads as empty.
-  ({String name, String tag})? get _customerDisplay {
+  /// The linked contact as the card shows it. Two stores feed this screen —
+  /// the Customer records and the CRM contact list, whose IDs do not overlap —
+  /// so a pick from either has to resolve here or the card reads as empty.
+  ({String name, String tag, String phone})? get _customerDisplay {
     final id = _customerId;
     if (id == null) return null;
 
     final controller = ref.read(crmControllerProvider.notifier);
     final customer = controller.byId(id) ?? controller.byName(id);
     if (customer != null) {
-      return (name: customer.name, tag: customer.isClient ? 'Client' : 'Lead');
+      return (
+        name: customer.name,
+        tag: customer.isClient ? 'Client' : 'Lead',
+        phone: customer.phone,
+      );
     }
 
     final contacts = ref.watch(crmContactsProvider).value;
@@ -87,6 +94,7 @@ class _EappStartStepState extends ConsumerState<EappStartStep> {
         'halfQualified' => 'Half-Qualified',
         _ => 'Lead',
       },
+      phone: contact.phone,
     );
   }
 
@@ -168,7 +176,9 @@ class _EappStartStepState extends ConsumerState<EappStartStep> {
                 );
             },
             icon: Icon(Icons.arrow_forward, size: context.iconLg),
-            label: const Text('Continue to e-Application'),
+            // "Next", to match the wizard's own button — this screen is
+            // step zero of the same flow, not a separate door into it.
+            label: const Text('Next'),
           ),
         ),
       ),
@@ -184,17 +194,10 @@ class _EappStartStepState extends ConsumerState<EappStartStep> {
             child: Column(
               children: [
                 // --- Slot 1: customer (optional) ------------------------
-                _StartSlotRow(
-                  title: 'Customer',
-                  optional: true,
-                  done: customer != null,
-                  value: customer?.name,
-                  valueTag: customer?.tag,
-                  hint: 'Prefill from a lead or client · skip for a walk-in',
-                  onTap: _pickCustomer,
-                  onClear: customer == null
-                      ? null
-                      : () => setState(() => _customerId = null),
+                _CustomerSlotCard(
+                  customer: customer,
+                  onPick: _pickCustomer,
+                  onClear: () => setState(() => _customerId = null),
                 ),
                 const _SlotDivider(),
 
@@ -310,6 +313,203 @@ class _EappStartStepState extends ConsumerState<EappStartStep> {
   }
 }
 
+/// The customer slot, given a card of its own: empty it is an invitation
+/// with a named button, filled it is the person — avatar, name, phone and
+/// what they are to the agency. A one-line row could not carry that, and
+/// FAs could not tell the row was tappable at all.
+class _CustomerSlotCard extends StatelessWidget {
+  const _CustomerSlotCard({
+    required this.customer,
+    required this.onPick,
+    required this.onClear,
+  });
+
+  final ({String name, String tag, String phone})? customer;
+  final VoidCallback onPick;
+  final VoidCallback onClear;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = customer;
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Text(
+                'Customer',
+                style: TextStyle(
+                  fontSize: AppType.caption,
+                  fontWeight: AppType.strong,
+                  letterSpacing: 0.3,
+                  color: context.colors.textSecondary,
+                ),
+              ),
+              const SizedBox(width: 6),
+              Text(
+                'Optional',
+                style: TextStyle(
+                  fontSize: AppType.caption,
+                  color: context.colors.textSecondary,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          if (c == null)
+            InkWell(
+              onTap: onPick,
+              borderRadius: BorderRadius.circular(12),
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 14,
+                ),
+                decoration: BoxDecoration(
+                  color: context.colors.primaryColor.withValues(alpha: 0.05),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: context.colors.primaryColor.withValues(alpha: 0.35),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.person_search_outlined,
+                      size: context.iconLg,
+                      color: context.colors.primaryColor,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Select customer',
+                            style: TextStyle(
+                              fontSize: AppType.body,
+                              fontWeight: AppType.strong,
+                              color: context.colors.primaryColor,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          AppCaptionText(
+                            'Prefills the form from a lead or client · '
+                            'skip for a walk-in',
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          else
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: context.colors.surfaceBg,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: context.colors.border),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CircleAvatar(
+                    radius: 20,
+                    backgroundColor: context.colors.primaryColor.withValues(
+                      alpha: 0.12,
+                    ),
+                    child: Text(
+                      _initials(c.name),
+                      style: TextStyle(
+                        fontSize: AppType.label,
+                        fontWeight: AppType.strong,
+                        color: context.colors.primaryColor,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          c.name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: AppType.title,
+                            fontWeight: AppType.strong,
+                            color: context.colors.textPrimary,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        // Phone gets the full line — sharing it with the
+                        // stage chip cut the number down to "09-123…".
+                        AppCaptionText(c.phone, maxLines: 1),
+                        const SizedBox(height: 4),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 7,
+                            vertical: 2,
+                          ),
+                          decoration: BoxDecoration(
+                            color: context.colors.deepAlpha(0.06),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            c.tag,
+                            style: TextStyle(
+                              fontSize: AppType.caption,
+                              fontWeight: AppType.strong,
+                              color: context.colors.primaryColor,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: onPick,
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      minimumSize: Size.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                    child: const Text('Change'),
+                  ),
+                  IconButton(
+                    tooltip: 'Remove',
+                    visualDensity: VisualDensity.compact,
+                    onPressed: onClear,
+                    icon: Icon(
+                      Icons.close,
+                      size: context.iconBase,
+                      color: context.colors.deepAlpha(0.4),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  static String _initials(String name) {
+    final parts = name.trim().split(RegExp(r'\s+'));
+    if (parts.isEmpty || parts.first.isEmpty) return '?';
+    if (parts.length == 1) return parts.first[0].toUpperCase();
+    return (parts.first[0] + parts.last[0]).toUpperCase();
+  }
+}
+
 class _StartSlotRow extends StatelessWidget {
   /// The one inset every row, its expanded body and the divider share.
   static const double _gutter = 14;
@@ -319,10 +519,7 @@ class _StartSlotRow extends StatelessWidget {
     required this.done,
     required this.hint,
     this.value,
-    this.valueTag,
-    this.optional = false,
     this.onTap,
-    this.onClear,
     this.expanded,
     this.error = false,
   });
@@ -331,11 +528,7 @@ class _StartSlotRow extends StatelessWidget {
   final bool done;
   final String hint;
   final String? value;
-  final String? valueTag;
-  final bool optional;
   final VoidCallback? onTap;
-  final VoidCallback? onClear;
-
   final Widget? expanded;
 
   /// The slot is what stopped Continue — its hint turns red until it is
@@ -350,29 +543,14 @@ class _StartSlotRow extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      fontSize: AppType.caption,
-                      fontWeight: AppType.strong,
-                      letterSpacing: 0.3,
-                      color: context.colors.textSecondary,
-                    ),
-                  ),
-                  if (optional) ...[
-                    const SizedBox(width: 6),
-                    Text(
-                      'Optional',
-                      style: TextStyle(
-                        fontSize: AppType.caption,
-                        fontWeight: FontWeight.w600,
-                        color: context.colors.textSecondary,
-                      ),
-                    ),
-                  ],
-                ],
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: AppType.caption,
+                  fontWeight: AppType.strong,
+                  letterSpacing: 0.3,
+                  color: context.colors.textSecondary,
+                ),
               ),
               const SizedBox(height: 2),
               Text(
@@ -389,27 +567,6 @@ class _StartSlotRow extends StatelessWidget {
                       : context.colors.textSecondary,
                 ),
               ),
-              if (valueTag != null) ...[
-                const SizedBox(height: 4),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 7,
-                    vertical: 2,
-                  ),
-                  decoration: BoxDecoration(
-                    color: context.colors.deepAlpha(0.06),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    valueTag!,
-                    style: TextStyle(
-                      fontSize: AppType.caption,
-                      fontWeight: AppType.strong,
-                      color: context.colors.primaryColor,
-                    ),
-                  ),
-                ),
-              ],
             ],
           ),
         ),
@@ -423,22 +580,11 @@ class _StartSlotRow extends StatelessWidget {
             ),
             child: const Text('Change'),
           )
-        else if (!done && expanded == null)
+        else if (!done && expanded == null && onTap != null)
           Icon(
             Icons.chevron_right,
             size: context.iconXl,
-            color: context.colors.deepAlpha(0.3),
-          ),
-        if (done && onClear != null)
-          IconButton(
-            tooltip: 'Remove',
-            visualDensity: VisualDensity.compact,
-            onPressed: onClear,
-            icon: Icon(
-              Icons.close,
-              size: context.iconBase,
-              color: context.colors.deepAlpha(0.4),
-            ),
+            color: context.colors.deepAlpha(0.35),
           ),
       ],
     );

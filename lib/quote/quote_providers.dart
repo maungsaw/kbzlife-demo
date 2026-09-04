@@ -81,10 +81,27 @@ class QuoteFormController extends StateNotifier<Map<String, dynamic>> {
     final age = ageAt(DateTime.now());
     if (age == null) return 'Date of birth ထည့်ပါ';
     if (age < 1 || age > 80) return 'အသက် မှန်ကန်စွာ ရွေးပါ';
+    // Every field the product asks for has to be answered — the e-App
+    // starts blank, so an unanswered select or an empty cover list would
+    // otherwise sail through on the number checks alone.
     for (final field in product.calculatorFields) {
-      if (field.type == QuoteFieldType.number &&
-          (state[field.key] as num? ?? 0) <= 0) {
-        return '${field.label} ဖြည့်ပါ';
+      switch (field.type) {
+        case QuoteFieldType.number:
+          if ((state[field.key] as num? ?? 0) <= 0) {
+            return '${field.label} ဖြည့်ပါ';
+          }
+        case QuoteFieldType.singleSelect:
+          final v = state[field.key];
+          if (v == null || (v is String && v.trim().isEmpty)) {
+            return '${field.label} ရွေးပါ';
+          }
+        case QuoteFieldType.multiSelect:
+          final picked = state[field.key] as Set<String>? ?? const {};
+          if (picked.isEmpty) return '${field.label} ရွေးပါ';
+        case QuoteFieldType.date:
+          if (state[field.key] == null) return '${field.label} ထည့်ပါ';
+        case QuoteFieldType.computed:
+          break;
       }
     }
     return null;

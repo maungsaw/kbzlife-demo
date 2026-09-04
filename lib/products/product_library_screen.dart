@@ -255,7 +255,9 @@ class _ProductRowCard extends StatelessWidget {
                         FaIcon(
                           FontAwesomeIcons.arrowRight,
                           size: context.iconSm,
-                          color: context.colors.primaryColor.withValues(alpha: 0.8),
+                          color: context.colors.primaryColor.withValues(
+                            alpha: 0.8,
+                          ),
                         ),
                       ],
                     ),

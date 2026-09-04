@@ -1015,8 +1015,9 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
 
   Widget _buildProductInfoStep() {
     final product = _product;
-    final answers = ref.watch(eappQuoteFormProvider(product));
     final controller = ref.read(eappQuoteFormProvider(product).notifier);
+    // Watched so the card redraws when the FA edits the inputs.
+    ref.watch(eappQuoteFormProvider(product));
     final result = controller.calculate();
     final error = controller.validate();
 
@@ -1034,12 +1035,9 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
                 ),
                 const SizedBox(width: 10),
                 Expanded(
-                  child: Text(
+                  child: AppBodyText(
                     error ?? 'Premium inputs are incomplete.',
-                    style: TextStyle(
-                      fontSize: AppType.body,
-                      color: context.colors.textSecondary,
-                    ),
+                    muted: true,
                   ),
                 ),
               ],
@@ -1055,20 +1053,6 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
       );
     }
 
-    String premiumLabel() {
-      for (final field in product.calculatorFields) {
-        if (field.key == 'paymentType' && field.options.isNotEmpty) {
-          final selected = answers['paymentType'];
-          final option = field.options.firstWhere(
-            (o) => o.value == selected,
-            orElse: () => field.options.first,
-          );
-          return 'Premium (${option.label})';
-        }
-      }
-      return 'Premium (Lumpsum)';
-    }
-
     return SoftCard(
       padding: EdgeInsets.zero,
       child: Column(
@@ -1076,47 +1060,17 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
-            child: Text(
-              product.name,
-              style: TextStyle(
-                fontSize: AppType.title,
-                fontWeight: AppType.strong,
-                color: context.colors.textPrimary,
-              ),
-            ),
-          ),
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            color: context.colors.primaryColor.withValues(alpha: 0.10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  premiumLabel(),
-                  style: TextStyle(
-                    fontSize: AppType.label,
-                    fontWeight: FontWeight.w600,
-                    color: context.colors.textPrimary,
-                  ),
-                ),
-                Text(
-                  _productInfoMoney.format(result.premium),
-                  style: TextStyle(
-                    fontSize: AppType.title,
-                    fontWeight: AppType.strong,
-                    color: context.colors.primaryColor,
-                  ),
-                ),
-              ],
-            ),
+            child: AppSectionTitle(product.name),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+            padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
             child: Column(
               children: [
                 _Row('Product Name', product.name),
                 for (final (label, val) in result.lines) _Row(label, val),
+                // Premium sits with the figures it came from, directly
+                // above the fee that is added to it.
+                _Row('Premium', _productInfoMoney.format(result.premium)),
                 _Row(
                   'Stamp Fee',
                   _productInfoMoney.format(_productInfoStampFee),
@@ -1133,20 +1087,13 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  'Total Amount',
-                  style: TextStyle(
-                    fontSize: AppType.body,
-                    fontWeight: AppType.strong,
-                    color: context.colors.textPrimary,
-                  ),
-                ),
+                const AppSectionTitle('Total Amount'),
                 Text(
                   _productInfoMoney.format(result.total),
                   style: TextStyle(
                     fontSize: AppType.title,
                     fontWeight: AppType.strong,
-                    color: context.colors.textPrimary,
+                    color: context.colors.primaryColor,
                   ),
                 ),
               ],

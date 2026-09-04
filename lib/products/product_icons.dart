@@ -31,11 +31,12 @@ class ProductVisuals {
   static FaIconData iconFor(Product product) =>
       _byCode[product.code] ?? categoryIcon(product.category);
 
-  static FaIconData categoryIcon(ProductCategory category) => switch (category) {
-    ProductCategory.protection => FontAwesomeIcons.shield,
-    ProductCategory.saving => FontAwesomeIcons.piggyBank,
-    ProductCategory.health => FontAwesomeIcons.heart,
-  };
+  static FaIconData categoryIcon(ProductCategory category) =>
+      switch (category) {
+        ProductCategory.protection => FontAwesomeIcons.shield,
+        ProductCategory.saving => FontAwesomeIcons.piggyBank,
+        ProductCategory.health => FontAwesomeIcons.heart,
+      };
 
   /// Category colour — the pairing the product detail and quote screens
   /// already used before this file existed, so unifying on it changes no
