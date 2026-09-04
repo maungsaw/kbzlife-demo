@@ -306,7 +306,7 @@ class _ServiceTileState extends ConsumerState<_ServiceTile> {
         scale: _isPressed ? 0.94 : 1.0,
         duration: const Duration(milliseconds: 100),
         child: AnimatedOpacity(
-          opacity: widget.isLocked ? .8 : 1.0,
+          opacity: widget.isLocked ? 1.0 : 1.0,
           duration: const Duration(milliseconds: 150),
           child: LayoutBuilder(
             builder: (context, constraints) {

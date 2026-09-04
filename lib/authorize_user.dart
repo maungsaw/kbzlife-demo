@@ -215,9 +215,9 @@ class _AuthorizedAgentScreenState extends ConsumerState<AuthorizedAgentScreen> {
                 Text(
                   'My Performance',
                   style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
+                    fontSize: 18,
+                    letterSpacing: -0.3,
+                    fontWeight: .bold,
                   ),
                 ),
                 TextButton(
