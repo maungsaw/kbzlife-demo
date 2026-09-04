@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../const.dart';
+import 'app_text.dart';
 
 class AppTextField extends ConsumerStatefulWidget {
   final TextEditingController? controller;
@@ -72,15 +73,13 @@ class _AppTextFieldState extends ConsumerState<AppTextField> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          widget.label,
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.bold,
-            color: context.colors.accentNavy,
-          ),
-        ),
-        const SizedBox(height: 6),
+        // A field wrapped by something that already prints the label (the
+        // quote renderer does) passes an empty one — it must not leave a
+        // blank line behind.
+        if (widget.label.isNotEmpty) ...[
+          AppLabelText(widget.label),
+          const SizedBox(height: 6),
+        ],
         if (widget.child != null)
           InputDecorator(
             decoration: _inputDecoration(),
@@ -101,7 +100,10 @@ class _AppTextFieldState extends ConsumerState<AppTextField> {
             onChanged: widget.onChanged,
             inputFormatters: widget.inputFormatters,
             onTap: widget.onTap,
-            style: TextStyle(fontSize: 13, color: context.colors.accentNavy),
+            style: TextStyle(
+              fontSize: AppType.body,
+              color: context.colors.textPrimary,
+            ),
             validator: widget.validator,
             decoration: _inputDecoration(),
           ),
@@ -120,7 +122,10 @@ class _AppTextFieldState extends ConsumerState<AppTextField> {
       helperText: widget.helperText,
       helperMaxLines: 2,
       errorText: widget.errorText,
-      hintStyle: TextStyle(fontSize: 12, color: context.colors.muted),
+      hintStyle: TextStyle(
+        fontSize: AppType.body,
+        color: context.colors.textSecondary,
+      ),
       contentPadding:
           widget.contentPadding ??
           const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
@@ -161,9 +166,9 @@ class _AppTextFieldState extends ConsumerState<AppTextField> {
             Text(
               '+95',
               style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
-                color: context.colors.accentNavy,
+                fontSize: AppType.body,
+                fontWeight: AppType.strong,
+                color: context.colors.textPrimary,
               ),
             ),
             const SizedBox(width: 8),

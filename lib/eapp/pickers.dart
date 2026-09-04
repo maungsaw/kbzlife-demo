@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../const.dart';
+import '../widgets/app_text.dart';
 import '../widgets/app_text_field.dart';
 import 'applicant_card.dart';
 
@@ -28,9 +29,9 @@ Future<ImageSource?> showImageSourceSheet(
             Text(
               title,
               style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w800,
-                color: context.colors.accentNavy,
+                fontSize: AppType.body,
+                fontWeight: AppType.strong,
+                color: context.colors.textPrimary,
               ),
             ),
             const SizedBox(height: 12),
@@ -58,7 +59,10 @@ Future<ImageSource?> showImageSourceSheet(
             const SizedBox(height: 10),
             Text(
               'JPG or PNG, up to 5 MB.',
-              style: TextStyle(fontSize: 11, color: context.colors.muted),
+              style: TextStyle(
+                fontSize: AppType.caption,
+                color: context.colors.textSecondary,
+              ),
             ),
           ],
         ),
@@ -104,17 +108,17 @@ class _SourceTile extends StatelessWidget {
             Text(
               label,
               style: TextStyle(
-                fontSize: 12.5,
-                fontWeight: FontWeight.w800,
-                color: context.colors.accentNavy,
+                fontSize: AppType.label,
+                fontWeight: AppType.strong,
+                color: context.colors.textPrimary,
               ),
             ),
             const SizedBox(height: 2),
             Text(
               hint,
               style: TextStyle(
-                fontSize: 10.5,
-                color: context.colors.accentNavy.withValues(alpha: 0.5),
+                fontSize: AppType.caption,
+                color: context.colors.textPrimary,
               ),
             ),
           ],
@@ -215,9 +219,9 @@ class _IdSheetState extends ConsumerState<_IdSheet> {
           Text(
             'Identification',
             style: TextStyle(
-              fontWeight: FontWeight.w800,
-              fontSize: 16,
-              color: context.colors.accentNavy,
+              fontWeight: AppType.strong,
+              fontSize: AppType.title,
+              color: context.colors.textPrimary,
             ),
           ),
           const SizedBox(height: 14),
@@ -294,10 +298,8 @@ class _IdSheetState extends ConsumerState<_IdSheet> {
                     Text(
                       '$_state/$_township($_idType)${_numberController.text}',
                       style: TextStyle(
-                        fontSize: 11,
-                        color: context.colors.accentNavy.withValues(
-                          alpha: 0.45,
-                        ),
+                        fontSize: AppType.caption,
+                        color: context.colors.textPrimary,
                       ),
                     ),
                   ] else if (_type == 'Passport') ...[
@@ -311,8 +313,8 @@ class _IdSheetState extends ConsumerState<_IdSheet> {
                     Text(
                       'No identification on file',
                       style: TextStyle(
-                        fontSize: 12,
-                        color: context.colors.deepAlpha(0.5),
+                        fontSize: AppType.label,
+                        color: context.colors.textSecondary,
                       ),
                     ),
                   ],
@@ -373,8 +375,8 @@ class _IdTypeTile extends StatelessWidget {
               child: Text(
                 label,
                 style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 12.5,
+                  fontWeight: AppType.strong,
+                  fontSize: AppType.label,
                   color: selected
                       ? context.colors.primaryColor
                       : context.colors.deepAlpha(0.6),
@@ -475,17 +477,17 @@ class _WheelPickerSheetState extends ConsumerState<_WheelPickerSheet> {
           Text(
             widget.title,
             style: TextStyle(
-              fontWeight: FontWeight.w800,
-              fontSize: 15,
-              color: context.colors.deep,
+              fontWeight: AppType.strong,
+              fontSize: AppType.title,
+              color: context.colors.textPrimary,
             ),
           ),
           const SizedBox(height: 12),
           Text(
             widget.formatPreview(left, right),
             style: TextStyle(
-              fontWeight: FontWeight.w800,
-              fontSize: 22,
+              fontWeight: AppType.strong,
+              fontSize: AppType.heading,
               color: context.colors.primaryColor,
             ),
           ),
@@ -497,9 +499,9 @@ class _WheelPickerSheetState extends ConsumerState<_WheelPickerSheet> {
                   child: Text(
                     widget.leftLabel,
                     style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w700,
-                      color: context.colors.deepAlpha(0.5),
+                      fontSize: AppType.caption,
+                      fontWeight: AppType.strong,
+                      color: context.colors.textSecondary,
                     ),
                   ),
                 ),
@@ -510,9 +512,9 @@ class _WheelPickerSheetState extends ConsumerState<_WheelPickerSheet> {
                   child: Text(
                     widget.rightLabel,
                     style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w700,
-                      color: context.colors.deepAlpha(0.5),
+                      fontSize: AppType.caption,
+                      fontWeight: AppType.strong,
+                      color: context.colors.textSecondary,
                     ),
                   ),
                 ),
@@ -575,9 +577,9 @@ class _Wheel extends StatelessWidget {
             child: Text(
               values[i],
               style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
-                color: context.colors.deep,
+                fontSize: AppType.title,
+                fontWeight: AppType.strong,
+                color: context.colors.textPrimary,
               ),
             ),
           ),

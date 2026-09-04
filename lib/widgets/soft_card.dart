@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../const.dart';
+import 'app_text.dart';
 
 /// Mirrors the prototype's `.soft-card` — paper surface with a soft,
 /// colored (not default grey) shadow.
@@ -49,8 +50,8 @@ class SectionLabel extends StatelessWidget {
     return Text(
       text.toUpperCase(),
       style: TextStyle(
-        fontSize: 11,
-        fontWeight: FontWeight.w800,
+        fontSize: AppType.caption,
+        fontWeight: AppType.strong,
         letterSpacing: 1.1,
         color: context.colors.deepAlpha(0.55),
       ),

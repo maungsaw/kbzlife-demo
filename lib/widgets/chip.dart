@@ -33,10 +33,15 @@ class AppIconChip extends StatelessWidget {
             ? LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [context.colors.primaryColor, context.colors.secondaryColor],
+                colors: [
+                  context.colors.primaryColor,
+                  context.colors.secondaryColor,
+                ],
               )
             : null,
-        color: solid ? null : context.colors.primaryColor.withValues(alpha: 0.14),
+        color: solid
+            ? null
+            : context.colors.primaryColor.withValues(alpha: 0.14),
       ),
       child: Icon(
         icon,

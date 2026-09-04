@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../const.dart';
+import 'app_text.dart';
 
 class PillTab {
   final String label;
@@ -151,8 +152,8 @@ class _PillTabsState extends State<PillTabs>
                           duration: const Duration(milliseconds: 250),
                           curve: Curves.easeOut,
                           style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w800,
+                            fontSize: AppType.body,
+                            fontWeight: AppType.strong,
                             color: t.key == _selectedIndex
                                 ? Colors.white
                                 : context.colors.deepAlpha(0.6),

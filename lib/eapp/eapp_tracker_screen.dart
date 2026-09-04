@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../const.dart';
+import '../widgets/app_text.dart';
 import '../widgets/soft_card.dart';
 import '../widgets/app_selection_chip.dart';
 import 'eapp_status.dart';
@@ -59,7 +60,7 @@ class _EappTrackerScreenState extends ConsumerState<EappTrackerScreen> {
                     child: Text(
                       'No applications',
                       style: TextStyle(
-                        color: context.colors.deepAlpha(0.4),
+                        color: context.colors.textSecondary,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -126,25 +127,25 @@ class _AppRow extends StatelessWidget {
                 Text(
                   app.holderName,
                   style: TextStyle(
-                    fontWeight: FontWeight.w800,
-                    fontSize: 13,
-                    color: context.colors.deep,
+                    fontWeight: AppType.strong,
+                    fontSize: AppType.body,
+                    color: context.colors.textPrimary,
                   ),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   '${app.productName} · ${app.ref}',
                   style: TextStyle(
-                    fontSize: 11.5,
-                    color: context.colors.deepAlpha(0.5),
+                    fontSize: AppType.label,
+                    color: context.colors.textSecondary,
                   ),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   app.status.whatsNext,
                   style: TextStyle(
-                    fontSize: 10.5,
-                    color: context.colors.deepAlpha(0.4),
+                    fontSize: AppType.caption,
+                    color: context.colors.textSecondary,
                   ),
                 ),
               ],
@@ -172,7 +173,11 @@ class _StatusPill extends StatelessWidget {
       ),
       child: Text(
         status.label,
-        style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w800, color: fg),
+        style: TextStyle(
+          fontSize: AppType.caption,
+          fontWeight: AppType.strong,
+          color: context.colors.textPrimary,
+        ),
       ),
     );
   }

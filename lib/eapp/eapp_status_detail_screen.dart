@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../app_date.dart';
 import '../const.dart';
+import '../widgets/app_text.dart';
 import '../widgets/soft_card.dart';
 import 'eapp_status.dart';
 import 'eapp_tracker_data.dart';
@@ -34,7 +35,7 @@ class _EappStatusDetailScreenState
         body: Center(
           child: Text(
             'Application not found',
-            style: TextStyle(color: context.colors.deepAlpha(0.4)),
+            style: TextStyle(color: context.colors.textSecondary),
           ),
         ),
       );
@@ -57,17 +58,17 @@ class _EappStatusDetailScreenState
                 Text(
                   app.holderName,
                   style: TextStyle(
-                    fontWeight: FontWeight.w800,
-                    fontSize: 16,
-                    color: context.colors.deep,
+                    fontWeight: AppType.strong,
+                    fontSize: AppType.title,
+                    color: context.colors.textPrimary,
                   ),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   '${app.productName} · ${app.ref}',
                   style: TextStyle(
-                    fontSize: 12,
-                    color: context.colors.deepAlpha(0.5),
+                    fontSize: AppType.label,
+                    color: context.colors.textSecondary,
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -83,9 +84,9 @@ class _EappStatusDetailScreenState
                   child: Text(
                     app.status.label,
                     style: TextStyle(
-                      fontSize: 11.5,
-                      fontWeight: FontWeight.w800,
-                      color: fg,
+                      fontSize: AppType.label,
+                      fontWeight: AppType.strong,
+                      color: context.colors.textPrimary,
                     ),
                   ),
                 ),
@@ -118,17 +119,17 @@ class _EappStatusDetailScreenState
                 Text(
                   app.latestEvent.status.label,
                   style: TextStyle(
-                    fontWeight: FontWeight.w800,
-                    fontSize: 13,
-                    color: context.colors.deep,
+                    fontWeight: AppType.strong,
+                    fontSize: AppType.body,
+                    color: context.colors.textPrimary,
                   ),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   '${AppDate.dMyHm(app.latestEvent.at)} · ${app.latestEvent.actor}',
                   style: TextStyle(
-                    fontSize: 11,
-                    color: context.colors.deepAlpha(0.5),
+                    fontSize: AppType.caption,
+                    color: context.colors.textSecondary,
                   ),
                 ),
                 if (app.latestEvent.note != null) ...[
@@ -136,8 +137,8 @@ class _EappStatusDetailScreenState
                   Text(
                     app.latestEvent.note!,
                     style: TextStyle(
-                      fontSize: 12,
-                      color: context.colors.deepAlpha(0.65),
+                      fontSize: AppType.label,
+                      color: context.colors.textSecondary,
                     ),
                   ),
                 ],
@@ -245,10 +246,10 @@ class _TimelineTile extends StatelessWidget {
                   Text(
                     status.label,
                     style: TextStyle(
-                      fontWeight: FontWeight.w800,
-                      fontSize: 12.5,
+                      fontWeight: AppType.strong,
+                      fontSize: AppType.label,
                       color: future
-                          ? context.colors.deepAlpha(0.35)
+                          ? context.colors.textSecondary
                           : context.colors.deep,
                     ),
                   ),
@@ -257,8 +258,8 @@ class _TimelineTile extends StatelessWidget {
                     Text(
                       '${AppDate.dMyHm(localEvent.at)} · ${localEvent.actor}',
                       style: TextStyle(
-                        fontSize: 10.5,
-                        color: context.colors.deepAlpha(0.45),
+                        fontSize: AppType.caption,
+                        color: context.colors.textSecondary,
                       ),
                     ),
                     if (localEvent.note != null) ...[
@@ -266,8 +267,8 @@ class _TimelineTile extends StatelessWidget {
                       Text(
                         localEvent.note!,
                         style: TextStyle(
-                          fontSize: 11,
-                          color: context.colors.deepAlpha(0.55),
+                          fontSize: AppType.caption,
+                          color: context.colors.textSecondary,
                         ),
                       ),
                     ],
@@ -275,8 +276,8 @@ class _TimelineTile extends StatelessWidget {
                     Text(
                       future ? 'Not yet reached' : '',
                       style: TextStyle(
-                        fontSize: 10.5,
-                        color: context.colors.deepAlpha(0.3),
+                        fontSize: AppType.caption,
+                        color: context.colors.textSecondary,
                       ),
                     ),
                 ],
@@ -301,8 +302,8 @@ class _StatusCta extends StatelessWidget {
           "You'll get a notification when this status changes.",
           textAlign: TextAlign.center,
           style: TextStyle(
-            fontSize: 11.5,
-            color: context.colors.deepAlpha(0.45),
+            fontSize: AppType.label,
+            color: context.colors.textSecondary,
           ),
         );
       case EappStatus.correction:
@@ -438,21 +439,21 @@ class _TimeInProcessCardState extends State<_TimeInProcessCard> {
                     Text(
                       overdue ? 'OVERDUE' : 'TIME REMAINING',
                       style: TextStyle(
-                        fontSize: 9,
-                        fontWeight: FontWeight.bold,
+                        fontSize: AppType.caption,
+                        fontWeight: AppType.strong,
                         letterSpacing: 0.8,
-                        color: context.colors.deepAlpha(0.45),
+                        color: context.colors.textSecondary,
                       ),
                     ),
                     const SizedBox(height: 6),
                     Text(
                       _label,
                       style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w800,
+                        fontSize: AppType.heading,
+                        fontWeight: AppType.strong,
                         color: overdue
                             ? context.colors.warn
-                            : context.colors.accentNavy,
+                            : context.colors.textPrimary,
                       ),
                     ),
                     const SizedBox(height: 10),
@@ -494,8 +495,8 @@ class _TimeInProcessCardState extends State<_TimeInProcessCard> {
                 : 'Typically reviewed within 30 minutes during working hours.',
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 11,
-              fontWeight: overdue ? FontWeight.w700 : FontWeight.normal,
+              fontSize: AppType.caption,
+              fontWeight: overdue ? AppType.strong : FontWeight.normal,
               color: overdue
                   ? context.colors.warn
                   : context.colors.deepAlpha(0.5),
@@ -612,12 +613,12 @@ class _StageStepper extends StatelessWidget {
                     maxLines: 1,
                     softWrap: false,
                     style: TextStyle(
-                      fontSize: 10.5,
+                      fontSize: AppType.caption,
                       fontWeight: i <= current
-                          ? FontWeight.w800
+                          ? AppType.strong
                           : FontWeight.w600,
                       color: i <= current
-                          ? context.colors.deep
+                          ? context.colors.textPrimary
                           : context.colors.deepAlpha(0.35),
                     ),
                   ),
@@ -681,8 +682,8 @@ class _StageDot extends StatelessWidget {
               '$number',
               style: const TextStyle(
                 color: Colors.white,
-                fontSize: 11.5,
-                fontWeight: FontWeight.w800,
+                fontSize: AppType.label,
+                fontWeight: AppType.strong,
               ),
             ),
     );
