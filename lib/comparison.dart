@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'const.dart';
+import 'widgets/app_selection_chip.dart';
 
 class ComparisonScreen extends ConsumerStatefulWidget {
   final int age;
@@ -115,26 +116,9 @@ class _ComparisonScreenState extends ConsumerState<ComparisonScreen> {
                 final isSelected = _selectedProductIndex == index;
                 return Padding(
                   padding: const EdgeInsets.only(right: 8),
-                  child: ChoiceChip(
-                    label: Text(products[index].name),
+                  child: AppSelectionChip(
+                    label: products[index].name,
                     selected: isSelected,
-                    selectedColor: context.colors.primaryColor,
-                    backgroundColor: Colors.white,
-                    labelStyle: TextStyle(
-                      color: isSelected ? Colors.white : Colors.black87,
-                      fontWeight: isSelected
-                          ? FontWeight.bold
-                          : FontWeight.normal,
-                      fontSize: 12,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    side: BorderSide(
-                      color: isSelected
-                          ? context.colors.primaryColor
-                          : Colors.grey.shade300,
-                    ),
                     onSelected: (_) =>
                         setState(() => _selectedProductIndex = index),
                   ),

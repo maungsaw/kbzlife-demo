@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../const.dart';
 import '../providers/router_provider.dart';
 import '../providers/task_provider.dart';
+import '../widgets/pill_tabs.dart';
 
 enum CalendarViewMode { day, week, month }
 
@@ -16,7 +17,8 @@ class ModernTaskCalendarScreen extends ConsumerStatefulWidget {
       _ModernTaskCalendarScreenState();
 }
 
-class _ModernTaskCalendarScreenState extends ConsumerState<ModernTaskCalendarScreen> {
+class _ModernTaskCalendarScreenState
+    extends ConsumerState<ModernTaskCalendarScreen> {
   int _selectedDay = 24;
 
   final Map<int, List<Map<String, dynamic>>> _tasksByDay = {
@@ -126,7 +128,9 @@ class _ModernTaskCalendarScreenState extends ConsumerState<ModernTaskCalendarScr
             context.push(RoutePaths.taskCreate);
           },
           backgroundColor: context.colors.primaryColor,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
           child: Icon(Icons.add, color: Colors.white, size: context.icon4xl),
         ),
       ),
@@ -216,44 +220,22 @@ class _ModernTaskCalendarScreenState extends ConsumerState<ModernTaskCalendarScr
 
   // --- Day / Week / Month Switcher ---
   Widget _buildSegmentedViewSelector(String viewMode) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16),
-      padding: const EdgeInsets.all(4),
-      decoration: BoxDecoration(
-        color: context.colors.surfaceBg,
-        borderRadius: BorderRadius.circular(24),
-      ),
-      child: Row(
-        children: [
-          _buildSegmentButton('Day', CalendarViewMode.day, viewMode),
-          _buildSegmentButton('Week', CalendarViewMode.week, viewMode),
-          _buildSegmentButton('Month', CalendarViewMode.month, viewMode),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSegmentButton(String title, CalendarViewMode mode, String currentViewMode) {
-    final isSelected = currentViewMode == mode.name;
-    return Expanded(
-      child: GestureDetector(
-        onTap: () => ref.read(taskListProvider.notifier).setViewMode(mode.name),
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          decoration: BoxDecoration(
-            color: isSelected ? context.colors.primaryColor : Colors.transparent,
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Center(
-            child: Text(
-              title,
-              style: TextStyle(
-                fontSize: 13,
-                fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                color: isSelected ? Colors.white : context.colors.muted,
-              ),
-            ),
-          ),
+    final idx = CalendarViewMode.values
+        .indexWhere((m) => m.name == viewMode)
+        .clamp(0, CalendarViewMode.values.length - 1);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: SizedBox(
+        child: PillTabs(
+          initialIndex: idx,
+          tabs: const [
+            PillTab(label: 'Day'),
+            PillTab(label: 'Week'),
+            PillTab(label: 'Month'),
+          ],
+          onPageChanged: (i) => ref
+              .read(taskListProvider.notifier)
+              .setViewMode(CalendarViewMode.values[i].name),
         ),
       ),
     );
@@ -269,10 +251,26 @@ class _ModernTaskCalendarScreenState extends ConsumerState<ModernTaskCalendarScr
       ),
       child: Row(
         children: [
-          Expanded(child: _buildMetricColumn('6', 'Total Tasks', context.colors.accentNavy)),
-          Expanded(child: _buildMetricColumn('2', 'Open', context.colors.primaryColor)),
-          Expanded(child: _buildMetricColumn('1', 'In Progress', context.colors.warn)),
-          Expanded(child: _buildMetricColumn('1', 'Completed', context.colors.emeraldAccent)),
+          Expanded(
+            child: _buildMetricColumn(
+              '6',
+              'Total Tasks',
+              context.colors.accentNavy,
+            ),
+          ),
+          Expanded(
+            child: _buildMetricColumn('2', 'Open', context.colors.primaryColor),
+          ),
+          Expanded(
+            child: _buildMetricColumn('1', 'In Progress', context.colors.warn),
+          ),
+          Expanded(
+            child: _buildMetricColumn(
+              '1',
+              'Completed',
+              context.colors.emeraldAccent,
+            ),
+          ),
         ],
       ),
     );
@@ -389,7 +387,7 @@ class _ModernTaskCalendarScreenState extends ConsumerState<ModernTaskCalendarScr
                                     Container(
                                       width: 3,
                                       height: 3,
-                                       decoration: BoxDecoration(
+                                      decoration: BoxDecoration(
                                         color: context.colors.primaryColor,
                                         shape: BoxShape.circle,
                                       ),
@@ -398,7 +396,7 @@ class _ModernTaskCalendarScreenState extends ConsumerState<ModernTaskCalendarScr
                                     Container(
                                       width: 3,
                                       height: 3,
-                                       decoration: BoxDecoration(
+                                      decoration: BoxDecoration(
                                         color: context.colors.warn,
                                         shape: BoxShape.circle,
                                       ),
@@ -475,7 +473,9 @@ class _ModernTaskCalendarScreenState extends ConsumerState<ModernTaskCalendarScr
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
-                        color: isActive ? Colors.white : context.colors.primaryColor,
+                        color: isActive
+                            ? Colors.white
+                            : context.colors.primaryColor,
                       ),
                     ),
                   ),
@@ -550,7 +550,8 @@ class _ModernTaskCalendarScreenState extends ConsumerState<ModernTaskCalendarScr
   ) {
     return InkWell(
       onTap: () {
-        context.push(RoutePaths.taskDetail.replaceFirst(':id', ''));      },
+        context.push(RoutePaths.taskDetail.replaceFirst(':id', ''));
+      },
       borderRadius: BorderRadius.circular(12),
       child: Container(
         margin: const EdgeInsets.only(bottom: 8),
@@ -604,7 +605,11 @@ class _ModernTaskCalendarScreenState extends ConsumerState<ModernTaskCalendarScr
             ),
             _buildStackedAssignees(assignees),
             const SizedBox(width: 8),
-            Icon(Icons.chevron_right, size: context.iconLg, color: context.colors.border),
+            Icon(
+              Icons.chevron_right,
+              size: context.iconLg,
+              color: context.colors.border,
+            ),
           ],
         ),
       ),
@@ -726,7 +731,8 @@ class _ModernTaskCalendarScreenState extends ConsumerState<ModernTaskCalendarScr
   ) {
     return InkWell(
       onTap: () {
-        context.push(RoutePaths.taskDetail.replaceFirst(':id', ''));      },
+        context.push(RoutePaths.taskDetail.replaceFirst(':id', ''));
+      },
       borderRadius: BorderRadius.circular(12),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
@@ -751,10 +757,7 @@ class _ModernTaskCalendarScreenState extends ConsumerState<ModernTaskCalendarScr
                 const SizedBox(height: 2),
                 Text(
                   timeRange,
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: context.colors.muted,
-                  ),
+                  style: TextStyle(fontSize: 11, color: context.colors.muted),
                 ),
               ],
             ),

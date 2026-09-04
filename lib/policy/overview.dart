@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../const.dart';
 import '../providers/router_provider.dart';
+import '../widgets/app_selection_chip.dart';
 import 'data.dart';
 
 class OverviewPage extends ConsumerStatefulWidget {
@@ -150,15 +151,9 @@ class _OverviewPageState extends ConsumerState<OverviewPage> {
                     spacing: 8,
                     children: ['All', 'Active', 'Pending'].map((status) {
                       final isSelected = _selectedStatusFilter == status;
-                      return ChoiceChip(
-                        label: Text(status),
-                        showCheckmark: false,
+                      return AppSelectionChip(
+                        label: status,
                         selected: isSelected,
-                        selectedColor: context.colors.primaryColor,
-                        labelStyle: TextStyle(
-                          color: isSelected ? Colors.white : Colors.black,
-                          fontWeight: FontWeight.w600,
-                        ),
                         onSelected: (_) {
                           setModalState(() {
                             _selectedStatusFilter = status;

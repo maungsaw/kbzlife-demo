@@ -93,6 +93,7 @@ class _PillTabsState extends State<PillTabs>
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         Container(
           padding: const EdgeInsets.all(4),

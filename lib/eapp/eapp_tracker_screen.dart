@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../const.dart';
 import '../widgets/soft_card.dart';
+import '../widgets/app_selection_chip.dart';
 import 'eapp_status.dart';
 import 'eapp_tracker_data.dart';
 
@@ -34,17 +35,17 @@ class _EappTrackerScreenState extends ConsumerState<EappTrackerScreen> {
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: [
-                  _FilterChip(
+                  AppSelectionChip(
                     label: 'All',
                     selected: _filter == null,
-                    onTap: () => setState(() => _filter = null),
+                    onSelected: (_) => setState(() => _filter = null),
                   ),
                   const SizedBox(width: 8),
                   for (final s in EappStatus.values) ...[
-                    _FilterChip(
+                    AppSelectionChip(
                       label: s.label,
                       selected: _filter == s,
-                      onTap: () => setState(() => _filter = s),
+                      onSelected: (_) => setState(() => _filter = s),
                     ),
                     if (s != EappStatus.values.last) const SizedBox(width: 8),
                   ],
@@ -173,37 +174,6 @@ class _StatusPill extends StatelessWidget {
       child: Text(
         status.label,
         style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w800, color: fg),
-      ),
-    );
-  }
-}
-
-class _FilterChip extends StatelessWidget {
-  const _FilterChip({
-    required this.label,
-    required this.selected,
-    required this.onTap,
-  });
-  final String label;
-  final bool selected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return ChoiceChip(
-      label: Text(label),
-      selected: selected,
-      onSelected: (_) => onTap(),
-      selectedColor: AppColors.deep,
-      labelStyle: TextStyle(
-        color: selected ? Colors.white : AppColors.deepAlpha(0.6),
-        fontWeight: FontWeight.w700,
-        fontSize: 11.5,
-      ),
-      backgroundColor: AppColors.paper,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(999),
-        side: BorderSide(color: AppColors.deepAlpha(0.08)),
       ),
     );
   }

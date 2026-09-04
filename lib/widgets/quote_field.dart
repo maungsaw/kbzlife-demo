@@ -4,6 +4,7 @@ import '../app_date.dart';
 import '../../data/models/quote_field.dart';
 import '../const.dart';
 import 'app_text_field.dart';
+import 'app_selection_chip.dart';
 
 class QuoteFieldRenderer extends StatelessWidget {
   const QuoteFieldRenderer({
@@ -95,23 +96,10 @@ class QuoteFieldRenderer extends StatelessWidget {
                 runSpacing: 8,
                 children: [
                   for (final option in field.options)
-                    ChoiceChip(
-                      label: Text(option.label),
+                    AppSelectionChip(
+                      label: option.label,
                       selected: value == option.value,
                       onSelected: (_) => onChanged(option.value),
-                      selectedColor: context.colors.primaryColor,
-                      labelStyle: TextStyle(
-                        fontSize: 11.5,
-                        fontWeight: FontWeight.w700,
-                        color: value == option.value
-                            ? Colors.white
-                            : context.colors.deepAlpha(0.6),
-                      ),
-                      backgroundColor: context.colors.cream,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(999),
-                        side: BorderSide(color: context.colors.deepAlpha(0.08)),
-                      ),
                     ),
                 ],
               ),

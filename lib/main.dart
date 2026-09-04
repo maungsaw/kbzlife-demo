@@ -61,6 +61,8 @@ class MyApp extends ConsumerWidget {
           labelColor: kAppColors.primaryColor,
           unselectedLabelColor: kAppColors.muted,
           indicatorColor: kAppColors.primaryColor,
+
+          dividerColor: kAppColors.baltic,
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
