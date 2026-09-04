@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../app_date.dart';
 import '../../data/models/quote_field.dart';
 import '../const.dart';
+import 'app_text.dart';
 import 'app_text_field.dart';
 import 'app_selection_chip.dart';
 
@@ -39,7 +40,7 @@ class QuoteFieldRenderer extends StatelessWidget {
           child: Text(
             value == null ? 'Select date' : AppDate.dMy(value as DateTime),
             style: TextStyle(
-              fontSize: 13,
+              fontSize: AppType.body,
               fontWeight: value == null ? FontWeight.normal : FontWeight.w600,
               color: value == null
                   ? context.colors.muted
@@ -63,8 +64,8 @@ class QuoteFieldRenderer extends StatelessWidget {
                   ? '—'
                   : '$value${field.suffix != null ? ' ${field.suffix}' : ''}',
               style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w700,
+                fontSize: AppType.body,
+                fontWeight: AppType.strong,
                 color: context.colors.deep,
               ),
             ),
@@ -109,7 +110,7 @@ class QuoteFieldRenderer extends StatelessWidget {
                   child: Text(
                     field.helperText!,
                     style: TextStyle(
-                      fontSize: 10,
+                      fontSize: AppType.caption,
                       color: context.colors.deepAlpha(0.4),
                     ),
                   ),
@@ -131,7 +132,7 @@ class QuoteFieldRenderer extends StatelessWidget {
                   title: Text(
                     option.label,
                     style: TextStyle(
-                      fontSize: 12.5,
+                      fontSize: AppType.label,
                       color: context.colors.deep,
                     ),
                   ),
@@ -148,18 +149,7 @@ class QuoteFieldRenderer extends StatelessWidget {
   Widget _labeled(String label, Widget child) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w700,
-            color: kAppColors.deepAlpha(0.5),
-          ),
-        ),
-        const SizedBox(height: 6),
-        child,
-      ],
+      children: [AppLabelText(label), const SizedBox(height: 6), child],
     );
   }
 }

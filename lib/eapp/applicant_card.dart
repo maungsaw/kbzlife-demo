@@ -1,4 +1,5 @@
 import 'package:demo_ui/widgets/pill_tabs.dart';
+import 'package:demo_ui/widgets/app_text.dart';
 import 'package:demo_ui/widgets/app_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,19 +11,14 @@ import 'address_master.dart';
 import 'applicant.dart';
 import 'pickers.dart';
 
+/// Card title inside the e-App. Kept as a name the cards already use, but
+/// it is now just [AppSectionTitle] — the scale lives in one file.
 class EappCardTitle extends StatelessWidget {
   const EappCardTitle(this.text, {super.key});
   final String text;
 
   @override
-  Widget build(BuildContext context) => Text(
-    text,
-    style: TextStyle(
-      fontSize: 14,
-      fontWeight: FontWeight.bold,
-      color: context.colors.accentNavy,
-    ),
-  );
+  Widget build(BuildContext context) => AppSectionTitle(text);
 }
 
 class EappDropdownField extends StatelessWidget {
@@ -47,12 +43,12 @@ class EappDropdownField extends StatelessWidget {
           value: value,
           isExpanded: true,
           isDense: true,
-          hint: const Text('Select', style: TextStyle(fontSize: 12.5)),
+          hint: const Text('Select', style: TextStyle(fontSize: AppType.label)),
           items: [
             for (final o in options)
               DropdownMenuItem(
                 value: o,
-                child: Text(o, style: const TextStyle(fontSize: 12.5)),
+                child: Text(o, style: const TextStyle(fontSize: AppType.label)),
               ),
           ],
           onChanged: onChanged,
@@ -119,11 +115,11 @@ class EappDobField extends StatelessWidget {
             ? 'Select a date'
             : DateFormat('dd-MMM-yyyy', 'en_US').format(date!),
         style: TextStyle(
-          fontSize: 13,
-          fontWeight: date == null ? FontWeight.normal : FontWeight.bold,
+          fontSize: AppType.body,
+          fontWeight: date == null ? FontWeight.normal : AppType.strong,
           color: date == null
-              ? context.colors.muted
-              : context.colors.accentNavy,
+              ? context.colors.textSecondary
+              : context.colors.textPrimary,
         ),
       ),
     );
@@ -192,8 +188,8 @@ class _OptionalDetailsState extends State<OptionalDetails> {
                       ? 'Optional details · ${widget.filledCount} filled'
                       : 'Add optional details',
                   style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
+                    fontSize: AppType.label,
+                    fontWeight: AppType.strong,
                     color: context.colors.primaryColor,
                   ),
                 ),
@@ -760,11 +756,11 @@ class _AddressRow extends StatelessWidget {
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
         style: TextStyle(
-          fontSize: 13,
+          fontSize: AppType.body,
           fontWeight: summary == null ? FontWeight.normal : FontWeight.w600,
           color: summary == null
-              ? context.colors.muted
-              : context.colors.accentNavy,
+              ? context.colors.textSecondary
+              : context.colors.textPrimary,
         ),
       ),
     );
@@ -835,8 +831,8 @@ class ShareAllocationBar extends StatelessWidget {
               ? 'Over-allocated by ${total - 100}%'
               : 'Remaining $remaining% of 100%',
           style: TextStyle(
-            fontSize: 11.5,
-            fontWeight: FontWeight.w800,
+            fontSize: AppType.label,
+            fontWeight: AppType.strong,
             color: full
                 ? context.colors.mint
                 : total > 100
@@ -866,8 +862,8 @@ class ShareAllocationBar extends StatelessWidget {
                     Text(
                       '${labels[i]} ${shares[i]}%',
                       style: TextStyle(
-                        fontSize: 10.5,
-                        color: context.colors.deepAlpha(0.6),
+                        fontSize: AppType.caption,
+                        color: context.colors.textSecondary,
                       ),
                     ),
                   ],
@@ -913,12 +909,15 @@ class _TownFieldState extends State<_TownField> {
             for (final t in kTownMaster)
               ListTile(
                 dense: true,
-                title: Text(t.town, style: const TextStyle(fontSize: 13.5)),
+                title: Text(
+                  t.town,
+                  style: const TextStyle(fontSize: AppType.body),
+                ),
                 subtitle: Text(
                   '${t.district} · ${t.stateRegion}',
                   style: TextStyle(
-                    fontSize: 11.5,
-                    color: context.colors.deepAlpha(0.5),
+                    fontSize: AppType.label,
+                    color: context.colors.textSecondary,
                   ),
                 ),
                 onTap: () => Navigator.pop(context, t),
@@ -957,8 +956,8 @@ class _TownFieldState extends State<_TownField> {
               '${a.townshipController.text} · ${a.districtController.text} · '
               '${a.stateRegionController.text}',
               style: TextStyle(
-                fontSize: 11.5,
-                color: context.colors.deepAlpha(0.55),
+                fontSize: AppType.label,
+                color: context.colors.textSecondary,
               ),
             ),
           ),
@@ -1004,11 +1003,11 @@ class MeasurementRow extends StatelessWidget {
             child: Text(
               ft.isEmpty ? 'Tap to set' : "$ft' $inch\"",
               style: TextStyle(
-                fontSize: 13,
+                fontSize: AppType.body,
                 fontWeight: ft.isEmpty ? FontWeight.normal : FontWeight.w600,
                 color: ft.isEmpty
-                    ? context.colors.muted
-                    : context.colors.accentNavy,
+                    ? context.colors.textSecondary
+                    : context.colors.textPrimary,
               ),
             ),
           ),

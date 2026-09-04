@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../const.dart';
+import 'app_text.dart';
 
 /// One exclusive choice, shown as a segmented tab strip: a cream track with
 /// the chosen segment raised on white. It started on the Sign step
@@ -65,8 +66,8 @@ class AppSegmentedTabs<T> extends StatelessWidget {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
+                            fontSize: AppType.label,
+                            fontWeight: AppType.strong,
                             color: value == v
                                 ? context.colors.primaryColor
                                 : context.colors.muted,
@@ -90,8 +91,8 @@ class AppSegmentedTabs<T> extends StatelessWidget {
         Text(
           label!,
           style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.bold,
+            fontSize: AppType.label,
+            fontWeight: AppType.strong,
             color: context.colors.accentNavy,
           ),
         ),

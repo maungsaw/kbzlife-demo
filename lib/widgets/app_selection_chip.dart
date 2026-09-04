@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../const.dart';
+import 'app_text.dart';
 
 class AppSelectionChip extends ConsumerStatefulWidget {
   const AppSelectionChip({
@@ -34,7 +35,9 @@ class _AppSelectionChipState extends ConsumerState<AppSelectionChip> {
         onSelected: widget.onSelected,
         showCheckmark: true,
         checkmarkColor: Colors.white,
-        avatar: widget.icon == null ? null : Icon(widget.icon, size: context.iconBase),
+        avatar: widget.icon == null
+            ? null
+            : Icon(widget.icon, size: context.iconBase),
         selectedColor: context.colors.primaryColor,
         backgroundColor: context.colors.paper,
         side: BorderSide(
@@ -49,8 +52,8 @@ class _AppSelectionChipState extends ConsumerState<AppSelectionChip> {
           color: widget.selected
               ? Colors.white
               : context.colors.primaryColor.withValues(alpha: 0.68),
-          fontWeight: FontWeight.w700,
-          fontSize: 12,
+          fontWeight: AppType.strong,
+          fontSize: AppType.label,
         ),
         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
         visualDensity: VisualDensity.compact,

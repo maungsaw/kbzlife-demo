@@ -1,29 +1,22 @@
 import 'dart:io';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:signature/signature.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../data/mock/mock_crm_data.dart';
 import '../../data/mock/mock_data.dart';
 import '../../data/models/product.dart';
-import '../app_date.dart';
 import '../const.dart';
+import '../widgets/app_key_value_row.dart';
+import '../widgets/app_text.dart';
 import '../crm/provider.dart';
-import '../crm/model.dart';
-import '../products/product_icons.dart';
 import '../quote/quote_providers.dart';
 import '../widgets/app_text_field.dart';
-import '../widgets/app_selection_chip.dart';
-import '../widgets/chip.dart';
-import '../widgets/quote_field.dart';
 import '../widgets/pill_tabs.dart';
 import '../widgets/soft_card.dart';
 import 'address_master.dart';
@@ -31,6 +24,8 @@ import 'applicant.dart';
 import 'applicant_card.dart';
 import 'eapp_status.dart';
 import 'pickers.dart';
+import 'start_step.dart';
+import 'success_screen.dart';
 
 class EAppScreen extends ConsumerStatefulWidget {
   const EAppScreen({
@@ -96,6 +91,8 @@ const _stepTitleMap = {
   _EStep.sign: 'Sign',
   _EStep.review: 'Review',
 };
+
+final _startMoney = NumberFormat('#,##0', 'en_US');
 
 class _EAppScreenState extends ConsumerState<EAppScreen> {
   late int _step = (widget.initialStep ?? 0).clamp(
@@ -669,7 +666,7 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
   @override
   Widget build(BuildContext context) {
     if (!_startDone) {
-      return _EappStartStep(
+      return EappStartStep(
         initialProductCode: _selectedProductCode,
         initialCustomerId: _selectedCustomerId,
         onContinue: (productCode, customerId) {
@@ -683,7 +680,7 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
       );
     }
     if (_status != EappStatus.draft) {
-      return _SuccessScreen(
+      return EappSuccessScreen(
         status: _status,
         isRenewal: widget.renewalPolicyNo != null,
         proposalNo: _proposalNo,
@@ -832,9 +829,9 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
                 'Leave this application?',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 15.5,
-                  fontWeight: FontWeight.w800,
-                  color: context.colors.deep,
+                  fontSize: AppType.title,
+                  fontWeight: AppType.strong,
+                  color: context.colors.textPrimary,
                 ),
               ),
               const SizedBox(height: 6),
@@ -843,9 +840,9 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
                 'it up later, or discard what you have filled in.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 12.5,
+                  fontSize: AppType.label,
                   height: 1.4,
-                  color: context.colors.deepAlpha(0.6),
+                  color: context.colors.textSecondary,
                 ),
               ),
               const SizedBox(height: 18),
@@ -984,7 +981,10 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
                 dense: true,
                 title: Text(
                   'Special Case',
-                  style: TextStyle(fontSize: 12.5, color: context.colors.deep),
+                  style: TextStyle(
+                    fontSize: AppType.label,
+                    color: context.colors.textPrimary,
+                  ),
                 ),
                 value: _specialCase,
                 onChanged: (v) => setState(() => _specialCase = v),
@@ -1037,8 +1037,8 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
                   child: Text(
                     error ?? 'Premium inputs are incomplete.',
                     style: TextStyle(
-                      fontSize: 13,
-                      color: context.colors.deepAlpha(0.6),
+                      fontSize: AppType.body,
+                      color: context.colors.textSecondary,
                     ),
                   ),
                 ),
@@ -1079,9 +1079,9 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
             child: Text(
               product.name,
               style: TextStyle(
-                fontSize: 15.5,
-                fontWeight: FontWeight.bold,
-                color: context.colors.accentNavy,
+                fontSize: AppType.title,
+                fontWeight: AppType.strong,
+                color: context.colors.textPrimary,
               ),
             ),
           ),
@@ -1095,16 +1095,16 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
                 Text(
                   premiumLabel(),
                   style: TextStyle(
-                    fontSize: 12.5,
+                    fontSize: AppType.label,
                     fontWeight: FontWeight.w600,
-                    color: context.colors.deep,
+                    color: context.colors.textPrimary,
                   ),
                 ),
                 Text(
                   _productInfoMoney.format(result.premium),
                   style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w800,
+                    fontSize: AppType.title,
+                    fontWeight: AppType.strong,
                     color: context.colors.primaryColor,
                   ),
                 ),
@@ -1136,17 +1136,17 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
                 Text(
                   'Total Amount',
                   style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w800,
-                    color: context.colors.deep,
+                    fontSize: AppType.body,
+                    fontWeight: AppType.strong,
+                    color: context.colors.textPrimary,
                   ),
                 ),
                 Text(
                   _productInfoMoney.format(result.total),
                   style: TextStyle(
-                    fontSize: 15.5,
-                    fontWeight: FontWeight.w800,
-                    color: context.colors.deep,
+                    fontSize: AppType.title,
+                    fontWeight: AppType.strong,
+                    color: context.colors.textPrimary,
                   ),
                 ),
               ],
@@ -1219,9 +1219,9 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
                     Text(
                       'Insured is the policy holder',
                       style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w700,
-                        color: context.colors.deep,
+                        fontSize: AppType.body,
+                        fontWeight: AppType.strong,
+                        color: context.colors.textPrimary,
                       ),
                     ),
                     const SizedBox(height: 2),
@@ -1230,8 +1230,8 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
                     //       ? 'Step 3 is filled from this card'
                     //       : 'Leave off to fill the insured separately',
                     //   style: TextStyle(
-                    //     fontSize: 11.5,
-                    //     color: context.colors.deepAlpha(0.55),
+                    //     fontSize: AppType.label,
+                    //     color: context.colors.textSecondary,
                     //   ),
                     // ),
                   ],
@@ -1440,8 +1440,8 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
               Text(
                 'Answer each question to complete the health declaration.',
                 style: TextStyle(
-                  fontSize: 11.5,
-                  color: context.colors.deepAlpha(0.5),
+                  fontSize: AppType.label,
+                  color: context.colors.textSecondary,
                 ),
               ),
               const SizedBox(height: 8),
@@ -1452,8 +1452,8 @@ class _EAppScreenState extends ConsumerState<EAppScreen> {
                   title: Text(
                     q,
                     style: TextStyle(
-                      fontSize: 12.5,
-                      color: context.colors.deep,
+                      fontSize: AppType.label,
+                      color: context.colors.textPrimary,
                     ),
                   ),
                   value: _healthAnswers[q]!,
@@ -1877,102 +1877,6 @@ class _DocGroup {
 }
 
 /// Doc 111 §2.3 — prefill must be visible. An FA who cannot tell what came
-/// from where will not trust the Review step, so say it plainly once at the
-/// top of the step and mark each field individually.
-class _PrefillBanner extends StatelessWidget {
-  const _PrefillBanner({required this.customerName, required this.count});
-  final String customerName;
-  final int count;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      decoration: BoxDecoration(
-        color: context.colors.mint.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: context.colors.mint.withValues(alpha: 0.4)),
-      ),
-      child: Row(
-        children: [
-          Icon(
-            Icons.auto_awesome,
-            size: context.iconBase,
-            color: context.colors.mint,
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              count == 0
-                  ? 'Linked to $customerName — you have edited every prefilled field.'
-                  : '$count ${count == 1 ? 'field' : 'fields'} filled from '
-                        '$customerName\u2019s record.',
-              style: TextStyle(
-                fontSize: 11.5,
-                fontWeight: FontWeight.w700,
-                color: context.colors.deep,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// Shown on the Insured step when the FA answered "same as the policy
-/// holder" a step earlier: it says where the values came from and offers
-/// the way back, since the switch itself no longer lives on this step.
-class _CopiedFromHolderBanner extends StatelessWidget {
-  const _CopiedFromHolderBanner({required this.name, required this.onEdit});
-  final String name;
-  final VoidCallback onEdit;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(12, 8, 8, 8),
-      decoration: BoxDecoration(
-        color: context.colors.mint.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: context.colors.mint.withValues(alpha: 0.4)),
-      ),
-      child: Row(
-        children: [
-          Icon(
-            Icons.copy_all_outlined,
-            size: context.iconBase,
-            color: context.colors.mint,
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              name.isEmpty
-                  ? 'Copied from the Policy Holder — edit anything that '
-                        'differs.'
-                  : 'Copied from $name — edit anything that differs.',
-              style: TextStyle(
-                fontSize: 11.5,
-                fontWeight: FontWeight.w700,
-                color: context.colors.deep,
-              ),
-            ),
-          ),
-          TextButton(
-            onPressed: onEdit,
-            style: TextButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              minimumSize: Size.zero,
-              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            ),
-            child: const Text('Change'),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class _CorrectionBanner extends StatelessWidget {
   const _CorrectionBanner({required this.note, required this.onDismiss});
   final String note;
@@ -2004,17 +1908,17 @@ class _CorrectionBanner extends StatelessWidget {
                 Text(
                   'Underwriting asked for a fix here',
                   style: TextStyle(
-                    fontWeight: FontWeight.w800,
-                    fontSize: 12,
-                    color: context.colors.deep,
+                    fontWeight: AppType.strong,
+                    fontSize: AppType.label,
+                    color: context.colors.textPrimary,
                   ),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   note,
                   style: TextStyle(
-                    fontSize: 11.5,
-                    color: context.colors.deepAlpha(0.6),
+                    fontSize: AppType.label,
+                    color: context.colors.textSecondary,
                   ),
                 ),
               ],
@@ -2046,20 +1950,19 @@ class _ProgressHeader extends StatelessWidget {
   final int step;
   final List<String> titles;
 
-  /// Whether each step's own validators are currently satisfied — drives
-  /// the segment colour and the "n/m done" counter.
+  /// Whether each step's own validators are currently satisfied. Used for
+  /// the steps already behind the FA — a filled step that later became
+  /// invalid still has to show as unfinished.
   final List<bool> complete;
 
-  /// Doc 111 §4.3 — steps are tappable. An FA sitting with a customer
-  /// collects data in whatever order the conversation goes; Review is the
-  /// gate, not the Continue button.
+  /// Only steps already visited are tappable: the wizard runs one step at
+  /// a time, so a segment ahead is a progress indicator, not a shortcut.
   final ValueChanged<int> onTapStep;
   final String? renewal;
   final String? productName;
 
   @override
   Widget build(BuildContext context) {
-    final done = complete.where((c) => c).length;
     return Container(
       color: context.colors.paper,
       padding: const EdgeInsets.fromLTRB(16, 10, 16, 12),
@@ -2080,8 +1983,8 @@ class _ProgressHeader extends StatelessWidget {
               child: Text(
                 'Renewal · $renewal',
                 style: TextStyle(
-                  fontSize: 10.5,
-                  fontWeight: FontWeight.w800,
+                  fontSize: AppType.caption,
+                  fontWeight: AppType.strong,
                   color: context.colors.primaryColor,
                 ),
               ),
@@ -2097,32 +2000,17 @@ class _ProgressHeader extends StatelessWidget {
               child: Text(
                 'Product · $productName',
                 style: TextStyle(
-                  fontSize: 10.5,
-                  fontWeight: FontWeight.bold,
-                  color: context.colors.accentNavy,
+                  fontSize: AppType.caption,
+                  fontWeight: AppType.strong,
+                  color: context.colors.textPrimary,
                 ),
               ),
             ),
           Row(
             children: [
-              Expanded(
-                child: Text(
-                  'Step ${step + 1} of ${titles.length} · ${titles[step]}',
-                  style: TextStyle(
-                    fontSize: 12.5,
-                    fontWeight: FontWeight.w800,
-                    color: context.colors.deep,
-                  ),
-                ),
-              ),
-              Text(
-                '$done/${titles.length} done',
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w700,
-                  color: context.colors.deepAlpha(0.5),
-                ),
-              ),
+              Expanded(child: AppHeading(titles[step], maxLines: 1)),
+              const SizedBox(width: 10),
+              AppCaptionText('Step ${step + 1} of ${titles.length}'),
             ],
           ),
           const SizedBox(height: 8),
@@ -2131,25 +2019,25 @@ class _ProgressHeader extends StatelessWidget {
               for (var i = 0; i < titles.length; i++) ...[
                 Expanded(
                   child: Semantics(
-                    button: true,
-                    label: '${titles[i]}${complete[i] ? ', complete' : ''}',
+                    button: i <= step,
+                    label:
+                        '${titles[i]}'
+                        '${i < step && complete[i] ? ', complete' : ''}',
+                    // Forward is earned by pressing Next, so only a step
+                    // already visited can be jumped back to.
                     child: InkWell(
-                      onTap: () => onTapStep(i),
-                      // A wider hit box than the 4px bar it draws — the
-                      // segments are a real control, not just an indicator.
+                      onTap: i <= step ? () => onTapStep(i) : null,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 6),
                         child: Container(
                           height: 4,
                           decoration: BoxDecoration(
-                            color: complete[i]
-                                ? context.colors.mint
-                                : i == step
+                            color: i == step
                                 ? context.colors.primaryColor
                                 : i < step
-                                ? context.colors.primaryColor.withValues(
-                                    alpha: 0.45,
-                                  )
+                                ? (complete[i]
+                                      ? context.colors.mint
+                                      : context.colors.warn)
                                 : context.colors.deepAlpha(0.1),
                             borderRadius: BorderRadius.circular(999),
                           ),
@@ -2174,829 +2062,11 @@ class _Row extends StatelessWidget {
   final String value;
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            child: Text(
-              label,
-              style: TextStyle(
-                fontSize: 12.5,
-                fontWeight: FontWeight.bold,
-                color: context.colors.accentNavy,
-              ),
-            ),
-          ),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 12.5,
-              fontWeight: FontWeight.bold,
-              color: context.colors.accentNavy,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// Doc 111 §2 — the single entry funnel. Every door into the e-App lands
-/// here, and whichever of the three slots the door already knows arrives
-/// filled and collapsed: CRM brings the customer, "Buy"/"Continue" from a
-/// product or quote brings the product and its premium. What is left open
-/// is exactly what the FA still has to decide.
-class _EappStartStep extends ConsumerStatefulWidget {
-  const _EappStartStep({
-    required this.initialProductCode,
-    required this.initialCustomerId,
-    required this.onContinue,
-  });
-
-  final String? initialProductCode;
-  final String? initialCustomerId;
-  final void Function(String productCode, String? customerId) onContinue;
-
-  @override
-  ConsumerState<_EappStartStep> createState() => _EappStartStepState();
-}
-
-class _EappStartStepState extends ConsumerState<_EappStartStep> {
-  String? _productCode;
-  String? _customerId;
-  late ProductCategory? _category;
-
-  @override
-  void initState() {
-    super.initState();
-    _productCode = widget.initialProductCode;
-    _customerId = widget.initialCustomerId;
-    _category = _product?.category;
-  }
-
-  Product? get _product => _productCode == null
-      ? null
-      : MockData.products.where((p) => p.code == _productCode).firstOrNull;
-
-  /// The linked contact as the slot shows it. Two stores feed this screen —
-  /// the Customer records and the CRM contact list, whose IDs do not overlap —
-  /// so a pick from either has to resolve here or the slot reads as empty.
-  ({String name, String tag})? get _customerDisplay {
-    final id = _customerId;
-    if (id == null) return null;
-
-    final controller = ref.read(crmControllerProvider.notifier);
-    final customer = controller.byId(id) ?? controller.byName(id);
-    if (customer != null) {
-      return (name: customer.name, tag: customer.isClient ? 'Client' : 'Lead');
-    }
-
-    final contacts = ref.watch(crmContactsProvider).value;
-    final contact = contacts
-        ?.where((c) => c.id == id || c.name == id)
-        .firstOrNull;
-    if (contact == null) return null;
-    return (
-      name: contact.name,
-      tag: switch (contact.contactType.name) {
-        'client' => 'Client',
-        'halfQualified' => 'Half-Qualified',
-        _ => 'Lead',
-      },
-    );
-  }
-
-  Future<void> _pickCustomer() async {
-    final contacts = await ref.read(crmContactsProvider.future);
-    if (!mounted) return;
-    final picked = await showModalBottomSheet<String>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: context.colors.paper,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      builder: (context) => _CustomerPickerSheet(contacts: contacts),
-    );
-    if (picked != null) setState(() => _customerId = picked);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final product = _product;
-    final controller = product == null
-        ? null
-        : ref.read(eappQuoteFormProvider(product).notifier);
-    final answers = product == null
-        ? <String, dynamic>{}
-        : ref.watch(eappQuoteFormProvider(product));
-    final error = controller?.validate();
-    final result = controller?.calculate();
-    final customer = _customerDisplay;
-
-    final categoryProducts = _category == null
-        ? const <Product>[]
-        : MockData.products.where((p) => p.category == _category).toList();
-
-    final ready = product != null && error == null && result != null;
-
-    return Scaffold(
-      backgroundColor: context.colors.cream,
-      appBar: AppBar(
-        title: const Text('Start e-Application'),
-        leading: IconButton(
-          tooltip: 'Back',
-          onPressed: () =>
-              context.canPop() ? context.pop() : context.go('/products'),
-          icon: const Icon(Icons.arrow_back),
-        ),
-      ),
-      // Doc 116 §4 — the CTA is pinned rather than floating at the end of a
-      // short list, so it is always where the thumb expects it and the page
-      // never shows a button stranded above half a screen of empty cream.
-      bottomNavigationBar: SafeArea(
-        minimum: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (product != null && result == null)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: Text(
-                  'Fill in the premium inputs for this product before '
-                  'continuing.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: context.colors.deepAlpha(0.5),
-                  ),
-                ),
-              ),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: ready
-                    ? () => widget.onContinue(product.code, _customerId)
-                    : null,
-                icon: Icon(Icons.arrow_forward, size: context.iconLg),
-                label: const Text('Continue to e-Application'),
-              ),
-            ),
-          ],
-        ),
-      ),
-      // Doc 116 §1 — the three slots are one checklist, so they live in one
-      // card separated by hairlines. As three separate SoftCards, a
-      // satisfied slot still cost a full card of padding for one line of
-      // text, and the page read as three unrelated blocks.
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-        children: [
-          SoftCard(
-            padding: EdgeInsets.zero,
-            child: Column(
-              children: [
-                // --- Slot 1: customer (optional) ------------------------
-                _StartSlotRow(
-                  icon: Icons.person_search_outlined,
-                  title: 'Customer',
-                  optional: true,
-                  done: customer != null,
-                  value: customer?.name,
-                  valueTag: customer?.tag,
-                  hint: 'Prefill from a lead or client · skip for a walk-in',
-                  onTap: _pickCustomer,
-                  onClear: customer == null
-                      ? null
-                      : () => setState(() => _customerId = null),
-                ),
-                const _SlotDivider(),
-
-                // --- Slot 2: category then product ----------------------
-                _StartSlotRow(
-                  icon: Icons.inventory_2_outlined,
-                  title: 'Product',
-                  done: product != null,
-                  value: product?.name,
-                  hint: 'Pick a category, then the product',
-                  onTap: product == null
-                      ? null
-                      : () => setState(() => _productCode = null),
-                  expanded: product != null
-                      ? null
-                      : Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                for (final c in ProductCategory.values) ...[
-                                  Expanded(
-                                    child: _CategoryTile(
-                                      category: c,
-                                      count: MockData.products
-                                          .where((p) => p.category == c)
-                                          .length,
-                                      selected: c == _category,
-                                      onTap: () => setState(() {
-                                        _category = c;
-                                        _productCode = null;
-                                      }),
-                                    ),
-                                  ),
-                                  if (c != ProductCategory.values.last)
-                                    const SizedBox(width: 8),
-                                ],
-                              ],
-                            ),
-                            // The product list opens below the category row
-                            // rather than on its own page, so switching
-                            // category stays one tap.
-                            for (final item in categoryProducts) ...[
-                              const SizedBox(height: 8),
-                              _ProductChoiceTile(
-                                product: item,
-                                selected: item.code == _productCode,
-                                onTap: () =>
-                                    setState(() => _productCode = item.code),
-                              ),
-                            ],
-                          ],
-                        ),
-                ),
-
-                // --- Slot 3: premium ------------------------------------
-                if (product != null) ...[
-                  const _SlotDivider(),
-                  _StartSlotRow(
-                    icon: Icons.calculate_outlined,
-                    title: 'Premium',
-                    done: result != null,
-                    value: result == null ? null : 'Inputs completed',
-                    hint: 'Fill in the details for this product',
-                    // The inputs stay on screen after the figure lands: the
-                    // FA is still typing the customer's numbers in, and
-                    // collapsing them hid the field they were editing.
-                    expanded: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        for (final field in product.calculatorFields)
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 12),
-                            child: QuoteFieldRenderer(
-                              field: field,
-                              value: answers[field.key],
-                              onChanged: (value) =>
-                                  controller!.setValue(field.key, value),
-                              onToggleMulti: (value) =>
-                                  controller!.toggleMulti(field.key, value),
-                            ),
-                          ),
-                        if (error != null)
-                          Text(
-                            error,
-                            style: TextStyle(
-                              fontSize: 11,
-                              color: context.colors.danger,
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                ],
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-final _startMoney = NumberFormat('#,##0', 'en_US');
-
-class _StartSlotRow extends StatelessWidget {
-  const _StartSlotRow({
-    required this.icon,
-    required this.title,
-    required this.done,
-    required this.hint,
-    this.value,
-    this.valueTag,
-    this.optional = false,
-    this.onTap,
-    this.onClear,
-    this.expanded,
-  });
-
-  final IconData icon;
-  final String title;
-  final bool done;
-  final String hint;
-  final String? value;
-  final String? valueTag;
-  final bool optional;
-  final VoidCallback? onTap;
-  final VoidCallback? onClear;
-
-  final Widget? expanded;
-
-  @override
-  Widget build(BuildContext context) {
-    final header = Row(
-      children: [
-        Container(
-          width: 26,
-          height: 26,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: done ? context.colors.mint : context.colors.deepAlpha(0.06),
-            shape: BoxShape.circle,
-          ),
-          child: Icon(
-            done ? Icons.check : icon,
-            size: context.iconBase,
-            color: done ? Colors.white : context.colors.primaryColor,
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 0.3,
-                      color: context.colors.deepAlpha(0.55),
-                    ),
-                  ),
-                  if (optional) ...[
-                    const SizedBox(width: 6),
-                    Text(
-                      'Optional',
-                      style: TextStyle(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w600,
-                        color: context.colors.deepAlpha(0.35),
-                      ),
-                    ),
-                  ],
-                ],
-              ),
-              const SizedBox(height: 2),
-              Row(
-                children: [
-                  Flexible(
-                    child: Text(
-                      value ?? hint,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: value == null ? 12 : 13.5,
-                        fontWeight: value == null
-                            ? FontWeight.w400
-                            : FontWeight.w800,
-                        color: value == null
-                            ? context.colors.deepAlpha(0.45)
-                            : context.colors.accentNavy,
-                      ),
-                    ),
-                  ),
-                  if (valueTag != null) ...[
-                    const SizedBox(width: 6),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 7,
-                        vertical: 2,
-                      ),
-                      decoration: BoxDecoration(
-                        color: context.colors.deepAlpha(0.06),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        valueTag!,
-                        style: TextStyle(
-                          fontSize: 9.5,
-                          fontWeight: FontWeight.w800,
-                          color: context.colors.primaryColor,
-                        ),
-                      ),
-                    ),
-                  ],
-                ],
-              ),
-            ],
-          ),
-        ),
-        if (done && onTap != null)
-          TextButton(
-            onPressed: onTap,
-            style: TextButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              minimumSize: Size.zero,
-              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            ),
-            child: const Text('Change'),
-          )
-        else if (!done && expanded == null)
-          Icon(
-            Icons.chevron_right,
-            size: context.iconXl,
-            color: context.colors.deepAlpha(0.3),
-          ),
-        if (done && onClear != null)
-          IconButton(
-            tooltip: 'Remove',
-            visualDensity: VisualDensity.compact,
-            onPressed: onClear,
-            icon: Icon(
-              Icons.close,
-              size: context.iconBase,
-              color: context.colors.deepAlpha(0.4),
-            ),
-          ),
-      ],
-    );
-
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(14, 12, 8, 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (!done && expanded == null && onTap != null)
-            InkWell(
-              onTap: onTap,
-              borderRadius: BorderRadius.circular(10),
-              child: header,
-            )
-          else
-            header,
-          if (expanded != null) ...[
-            const SizedBox(height: 12),
-            Padding(padding: const EdgeInsets.only(right: 6), child: expanded!),
-          ],
-        ],
-      ),
-    );
-  }
-}
-
-class _CustomerPickerSheet extends StatefulWidget {
-  const _CustomerPickerSheet({required this.contacts});
-  final List<CRMContactModel> contacts;
-
-  @override
-  State<_CustomerPickerSheet> createState() => _CustomerPickerSheetState();
-}
-
-class _CustomerPickerSheetState extends State<_CustomerPickerSheet> {
-  final _searchController = TextEditingController();
-
-  /// null = all; true = clients only; false = leads only.
-  String? _contactTypeFilter;
-
-  @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
-  }
-
-  List<CRMContactModel> get _results {
-    final q = _searchController.text.trim().toLowerCase();
-    return widget.contacts.where((c) {
-      if (_contactTypeFilter != null &&
-          c.contactType.name != _contactTypeFilter) {
-        return false;
-      }
-      if (q.isEmpty) return true;
-      return c.name.toLowerCase().contains(q) ||
-          c.phone.replaceAll(' ', '').contains(q);
-    }).toList();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final results = _results;
-    final clients = widget.contacts
-        .where((c) => c.contactType.name == 'client')
-        .length;
-    final halfQualified = widget.contacts
-        .where((c) => c.contactType.name == 'halfQualified')
-        .length;
-    final leads = widget.contacts.length - clients - halfQualified;
-
-    return DraggableScrollableSheet(
-      expand: false,
-      initialChildSize: 0.75,
-      maxChildSize: 0.92,
-      builder: (context, scrollController) => Padding(
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom,
-        ),
-        child: Column(
-          children: [
-            // Grab handle — the sheet is draggable, so say so.
-            Container(
-              width: 38,
-              height: 4,
-              margin: const EdgeInsets.only(top: 10, bottom: 6),
-              decoration: BoxDecoration(
-                color: context.colors.deepAlpha(0.15),
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 6, 16, 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const EappCardTitle('Select contact'),
-                  const SizedBox(height: 10),
-                  AppTextField(
-                    controller: _searchController,
-                    onChanged: (_) => setState(() {}),
-                    label: 'Search name or phone',
-                    prefixIcon: Icon(Icons.search),
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    children: [
-                      AppSelectionChip(
-                        label: 'All (${widget.contacts.length})',
-                        selected: _contactTypeFilter == null,
-                        onSelected: (_) =>
-                            setState(() => _contactTypeFilter = null),
-                      ),
-                      const SizedBox(width: 8),
-                      AppSelectionChip(
-                        label: 'Clients ($clients)',
-                        selected: _contactTypeFilter == 'client',
-                        onSelected: (_) =>
-                            setState(() => _contactTypeFilter = 'client'),
-                      ),
-                      const SizedBox(width: 8),
-                      AppSelectionChip(
-                        label: 'Leads ($leads)',
-                        selected: _contactTypeFilter == 'lead',
-                        onSelected: (_) =>
-                            setState(() => _contactTypeFilter = 'lead'),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: results.isEmpty
-                  // An empty result is a dead end unless it offers the way
-                  // out — here, proceeding without a linked record.
-                  ? ListView(
-                      controller: scrollController,
-                      padding: const EdgeInsets.fromLTRB(24, 40, 24, 24),
-                      children: [
-                        Icon(
-                          Icons.person_off_outlined,
-                          size: context.icon5xl,
-                          color: context.colors.deepAlpha(0.25),
-                        ),
-                        const SizedBox(height: 12),
-                        Text(
-                          'No match for "${_searchController.text.trim()}"',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w700,
-                            color: context.colors.deep,
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        Text(
-                          'You can start the application without linking a '
-                          'record and fill the details by hand.',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 11.5,
-                            color: context.colors.deepAlpha(0.5),
-                          ),
-                        ),
-                        const SizedBox(height: 14),
-                        Center(
-                          child: OutlinedButton(
-                            onPressed: () => Navigator.pop(context),
-                            child: const Text('Continue without a contact'),
-                          ),
-                        ),
-                      ],
-                    )
-                  : ListView.separated(
-                      controller: scrollController,
-                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-                      itemCount: results.length,
-                      separatorBuilder: (_, _) => Divider(
-                        height: 1,
-                        color: context.colors.deepAlpha(0.06),
-                      ),
-                      itemBuilder: (context, i) {
-                        final c = results[i];
-                        return ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          leading: CircleAvatar(
-                            radius: 18,
-                            backgroundColor: context.colors.deepAlpha(0.07),
-                            child: Text(
-                              c.name.isEmpty ? '?' : c.name[0].toUpperCase(),
-                              style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w800,
-                                color: context.colors.deep,
-                              ),
-                            ),
-                          ),
-                          title: Text(
-                            c.name,
-                            style: TextStyle(
-                              fontSize: 13.5,
-                              fontWeight: FontWeight.w700,
-                              color: context.colors.deep,
-                            ),
-                          ),
-                          subtitle: Text(
-                            c.phone,
-                            style: TextStyle(
-                              fontSize: 11.5,
-                              color: context.colors.deepAlpha(0.55),
-                            ),
-                          ),
-                          trailing: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 3,
-                            ),
-                            decoration: BoxDecoration(
-                              color: c.contactType.name == 'client'
-                                  ? context.colors.mint.withValues(alpha: 0.14)
-                                  : c.contactType.name == 'halfQualified'
-                                  ? context.colors.warn.withValues(alpha: 0.14)
-                                  : context.colors.deepAlpha(0.06),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Text(
-                              c.contactType.name == 'client'
-                                  ? 'Client'
-                                  : c.contactType.name == 'halfQualified'
-                                  ? 'Half-Qualified'
-                                  : 'Lead',
-                              style: TextStyle(
-                                fontSize: 9.5,
-                                fontWeight: FontWeight.w800,
-                                color: c.contactType.name == 'client'
-                                    ? context.colors.mint
-                                    : c.contactType.name == 'halfQualified'
-                                    ? context.colors.warn
-                                    : context.colors.primaryColor,
-                              ),
-                            ),
-                          ),
-                          onTap: () => Navigator.pop(context, c.name),
-                        );
-                      },
-                    ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _SlotDivider extends StatelessWidget {
-  const _SlotDivider();
-
-  @override
-  Widget build(BuildContext context) => Divider(
-    height: 1,
-    thickness: 1,
-    indent: 14,
-    endIndent: 14,
-    color: context.colors.deepAlpha(0.06),
+  Widget build(BuildContext context) => AppKeyValueRow(
+    label: label,
+    value: value,
+    padding: const EdgeInsets.only(bottom: 10),
   );
-}
-
-/// Doc 111 §2.1 — three categories deserve one tap, not a dropdown.
-class _CategoryTile extends StatelessWidget {
-  const _CategoryTile({
-    required this.category,
-    required this.count,
-    required this.selected,
-    required this.onTap,
-  });
-  final ProductCategory category;
-  final int count;
-  final bool selected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: selected ? context.colors.deep : context.colors.deepAlpha(0.04),
-      borderRadius: BorderRadius.circular(12),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(12),
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 6),
-          child: Column(
-            children: [
-              FaIcon(
-                ProductVisuals.categoryIcon(category),
-                size: context.iconXl,
-                color: selected
-                    ? Colors.white
-                    : ProductVisuals.colorFor(category),
-              ),
-              const SizedBox(height: 6),
-              Text(
-                ProductVisuals.labelFor(category),
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w800,
-                  color: selected ? Colors.white : context.colors.deep,
-                ),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                '$count product${count == 1 ? '' : 's'}',
-                style: TextStyle(
-                  fontSize: 10,
-                  color: selected
-                      ? Colors.white.withValues(alpha: 0.75)
-                      : context.colors.deepAlpha(0.45),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _ProductChoiceTile extends StatelessWidget {
-  const _ProductChoiceTile({
-    required this.product,
-    required this.selected,
-    required this.onTap,
-  });
-  final Product product;
-  final bool selected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: selected
-          ? context.colors.primaryColor.withValues(alpha: 0.12)
-          : context.colors.deepAlpha(0.035),
-      borderRadius: BorderRadius.circular(12),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
-          child: Row(
-            children: [
-              ProductIllustration(product: product, size: 34),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Text(
-                  product.name,
-                  style: TextStyle(
-                    fontSize: 12.5,
-                    fontWeight: FontWeight.w700,
-                    color: context.colors.deep,
-                  ),
-                ),
-              ),
-              Icon(
-                selected ? Icons.radio_button_checked : Icons.radio_button_off,
-                color: selected
-                    ? context.colors.primaryColor
-                    : context.colors.deepAlpha(0.3),
-                size: context.iconXl,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 }
 
 class _DocsStep extends StatelessWidget {
@@ -3042,8 +2112,8 @@ class _DocsStep extends StatelessWidget {
           Text(
             subtitle.isEmpty ? 'Name not set' : subtitle,
             style: TextStyle(
-              fontSize: 11.5,
-              color: context.colors.deepAlpha(0.55),
+              fontSize: AppType.label,
+              color: context.colors.textSecondary,
             ),
           ),
           const SizedBox(height: 10),
@@ -3063,9 +2133,9 @@ class _DocsStep extends StatelessWidget {
               Text(
                 idLabel,
                 style: TextStyle(
-                  fontSize: 12.5,
-                  fontWeight: FontWeight.w700,
-                  color: context.colors.deep,
+                  fontSize: AppType.label,
+                  fontWeight: AppType.strong,
+                  color: context.colors.textPrimary,
                 ),
               ),
               const Spacer(),
@@ -3151,8 +2221,8 @@ class _NoDocsCard extends StatelessWidget {
                       : '$subtitle · Entity — no NRC or passport capture '
                             'required.',
                   style: TextStyle(
-                    fontSize: 11.5,
-                    color: context.colors.deepAlpha(0.55),
+                    fontSize: AppType.label,
+                    color: context.colors.textSecondary,
                   ),
                 ),
               ],
@@ -3214,9 +2284,9 @@ class _DocumentCaptureTile extends StatelessWidget {
                             Text(
                               'Tap to add',
                               style: TextStyle(
-                                fontSize: 10.5,
-                                fontWeight: FontWeight.w700,
-                                color: context.colors.deepAlpha(0.6),
+                                fontSize: AppType.caption,
+                                fontWeight: AppType.strong,
+                                color: context.colors.textSecondary,
                               ),
                             ),
                             const SizedBox(height: 2),
@@ -3225,8 +2295,8 @@ class _DocumentCaptureTile extends StatelessWidget {
                             Text(
                               'Camera or upload',
                               style: TextStyle(
-                                fontSize: 9.5,
-                                color: context.colors.deepAlpha(0.42),
+                                fontSize: AppType.caption,
+                                color: context.colors.textSecondary,
                               ),
                             ),
                           ],
@@ -3283,9 +2353,9 @@ class _DocumentCaptureTile extends StatelessWidget {
               child: Text(
                 label,
                 style: TextStyle(
-                  fontSize: 11.5,
-                  fontWeight: FontWeight.w700,
-                  color: context.colors.deep,
+                  fontSize: AppType.label,
+                  fontWeight: AppType.strong,
+                  color: context.colors.textPrimary,
                 ),
               ),
             ),
@@ -3493,8 +2563,8 @@ class _SignaturePad extends StatelessWidget {
                                 child: Text(
                                   lockedHint ?? '',
                                   style: TextStyle(
-                                    fontSize: 11.5,
-                                    color: context.colors.deepAlpha(0.4),
+                                    fontSize: AppType.label,
+                                    color: context.colors.textSecondary,
                                   ),
                                 ),
                               )
@@ -3573,8 +2643,8 @@ class _SignaturePad extends StatelessWidget {
                                       Text(
                                         'Tap to upload signature',
                                         style: TextStyle(
-                                          fontSize: 12,
-                                          color: context.colors.deepAlpha(0.4),
+                                          fontSize: AppType.label,
+                                          color: context.colors.textSecondary,
                                         ),
                                       ),
                                     ],
@@ -3635,8 +2705,8 @@ class _ReviewStep extends StatelessWidget {
                     child: Text(
                       'Not set',
                       style: TextStyle(
-                        fontSize: 12,
-                        color: context.colors.deepAlpha(0.4),
+                        fontSize: AppType.label,
+                        color: context.colors.textSecondary,
                       ),
                     ),
                   )
@@ -3667,7 +2737,10 @@ class _ReviewStep extends StatelessWidget {
         ],
         Text(
           'By submitting, I confirm all information is accurate to the best of my knowledge.',
-          style: TextStyle(fontSize: 11, color: context.colors.deepAlpha(0.5)),
+          style: TextStyle(
+            fontSize: AppType.caption,
+            color: context.colors.textSecondary,
+          ),
         ),
       ],
     );
@@ -3690,9 +2763,9 @@ class _SignatureProofBlock extends StatelessWidget {
             Text(
               proof.label,
               style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w700,
-                color: context.colors.deepAlpha(0.55),
+                fontSize: AppType.caption,
+                fontWeight: AppType.strong,
+                color: context.colors.textSecondary,
               ),
             ),
             const SizedBox(width: 6),
@@ -3712,7 +2785,7 @@ class _SignatureProofBlock extends StatelessWidget {
             width: double.infinity,
             decoration: BoxDecoration(
               color: proof.captured
-                  ? context.colors.paper
+                  ? context.colors.textPrimary
                   : context.colors.cream,
               border: Border.all(color: context.colors.deepAlpha(0.1)),
             ),
@@ -3721,8 +2794,8 @@ class _SignatureProofBlock extends StatelessWidget {
                     child: Text(
                       'Not signed',
                       style: TextStyle(
-                        fontSize: 11,
-                        color: context.colors.deepAlpha(0.4),
+                        fontSize: AppType.caption,
+                        color: context.colors.textSecondary,
                       ),
                     ),
                   )
@@ -3739,7 +2812,10 @@ class _SignatureProofBlock extends StatelessWidget {
         const SizedBox(height: 4),
         Text(
           proof.mode == 'upload' ? 'Uploaded image' : 'Signed on screen',
-          style: TextStyle(fontSize: 10, color: context.colors.deepAlpha(0.45)),
+          style: TextStyle(
+            fontSize: AppType.caption,
+            color: context.colors.textSecondary,
+          ),
         ),
       ],
     );
@@ -3752,42 +2828,10 @@ class _ReviewRow extends StatelessWidget {
   final String value;
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 130,
-            child: Text(
-              label,
-              style: TextStyle(
-                fontSize: 11.5,
-                fontWeight: FontWeight.bold,
-                color: context.colors.accentNavy,
-              ),
-            ),
-          ),
-          Expanded(
-            child: Text(
-              value,
-              style: TextStyle(
-                fontSize: 12.5,
-                fontWeight: FontWeight.bold,
-                color: context.colors.accentNavy,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  Widget build(BuildContext context) =>
+      AppKeyValueRow(label: label, value: value);
 }
 
-/// Doc 118 §2 — one party's documents, under that party's own name. The
-/// role and the person's name sit together in the header, so a thumbnail
-/// below only has to say which side it is, not who it belongs to.
 class _DocGroupBlock extends StatelessWidget {
   const _DocGroupBlock({required this.group});
   final _DocGroup group;
@@ -3815,9 +2859,9 @@ class _DocGroupBlock extends StatelessWidget {
                   Text(
                     group.role,
                     style: TextStyle(
-                      fontSize: 12.5,
-                      fontWeight: FontWeight.w800,
-                      color: context.colors.accentNavy,
+                      fontSize: AppType.label,
+                      fontWeight: AppType.strong,
+                      color: context.colors.textPrimary,
                     ),
                   ),
                   // The name is the whole point: "Beneficiary 1" means
@@ -3825,8 +2869,8 @@ class _DocGroupBlock extends StatelessWidget {
                   Text(
                     group.name.isEmpty ? 'Name not set' : group.name,
                     style: TextStyle(
-                      fontSize: 11.5,
-                      color: context.colors.deepAlpha(0.55),
+                      fontSize: AppType.label,
+                      color: context.colors.textSecondary,
                     ),
                   ),
                 ],
@@ -3853,8 +2897,8 @@ class _DocGroupBlock extends StatelessWidget {
                   Text(
                     statusText,
                     style: TextStyle(
-                      fontSize: 9.5,
-                      fontWeight: FontWeight.w800,
+                      fontSize: AppType.caption,
+                      fontWeight: AppType.strong,
                       color: ok ? context.colors.mint : context.colors.warn,
                     ),
                   ),
@@ -3949,9 +2993,9 @@ class _ReviewImageThumb extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
-                fontSize: 9.5,
-                fontWeight: FontWeight.bold,
-                color: context.colors.accentNavy,
+                fontSize: AppType.caption,
+                fontWeight: AppType.strong,
+                color: context.colors.textPrimary,
               ),
             ),
           ),
@@ -3959,794 +3003,4 @@ class _ReviewImageThumb extends StatelessWidget {
       ),
     );
   }
-}
-
-/// Doc 119 — the last screen of the e-App. It answers two questions in
-/// the order the FA asks them: did it go through, and where is it now.
-class _SuccessScreen extends StatelessWidget {
-  const _SuccessScreen({
-    required this.status,
-    required this.isRenewal,
-    required this.proposalNo,
-    required this.customerName,
-    required this.productName,
-  });
-  final EappStatus status;
-  final bool isRenewal;
-  final String proposalNo;
-  final String customerName;
-  final String productName;
-
-  /// Doc 119 §3 — the journey the *customer* is on, derived from the
-  /// workflow status (doc 26 Layer B) so the two can never disagree.
-  /// Proposal is done the moment this screen exists.
-  int get _stage => switch (status) {
-    EappStatus.approved => 2,
-    _ => 1,
-  };
-
-  String get _shareText =>
-      'KBZ Life proposal $proposalNo'
-      '${customerName.isEmpty ? '' : ' for $customerName'}'
-      ' · $productName · ${status.label}.';
-
-  @override
-  Widget build(BuildContext context) {
-    return PopScope(
-      // Back must not walk into the submitted wizard; the application is
-      // gone to underwriting and there is nothing left to edit.
-      canPop: false,
-      onPopInvokedWithResult: (didPop, _) {
-        if (!didPop) context.go('/home');
-      },
-      child: Scaffold(
-        backgroundColor: context.colors.paper,
-        body: Stack(
-          children: [
-            // Confetti sits behind the content and only in the top third —
-            // celebratory without competing with the tracker below it.
-            const Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              height: 340,
-              child: _Confetti(),
-            ),
-            SafeArea(
-              child: Column(
-                children: [
-                  Expanded(
-                    child: SingleChildScrollView(
-                      padding: const EdgeInsets.fromLTRB(24, 40, 24, 16),
-                      child: Column(
-                        children: [
-                          const _SuccessCheck(),
-                          const SizedBox(height: 24),
-                          Text(
-                            isRenewal ? 'Renewal submitted' : 'Success',
-                            style: TextStyle(
-                              fontSize: 21,
-                              fontWeight: FontWeight.w800,
-                              color: context.colors.deep,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Your proposal has been successfully created.',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: context.colors.deepAlpha(0.55),
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          // Doc 120 §2 — which application succeeded. The
-                          // reference number itself now lives one tap away
-                          // on the Proposal stage instead of taking the
-                          // centre of the screen.
-                          Text(
-                            customerName.isEmpty
-                                ? productName
-                                : '$customerName · $productName',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: context.colors.deepAlpha(0.45),
-                            ),
-                          ),
-                          const SizedBox(height: 34),
-                          _JourneyTracker(
-                            stage: _stage,
-                            // Doc 120 §3 — the completed Proposal stage is
-                            // the way back into what was just submitted.
-                            onTapProposal: () => _openProposal(context),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(24, 4, 24, 12),
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              child: ElevatedButton(
-                                onPressed: () => context.push('/e-app/tracker'),
-                                child: const Text('Track application'),
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            _CircleIconButton(
-                              icon: Icons.share_outlined,
-                              tooltip: 'Share',
-                              onTap: () => _share(context),
-                            ),
-                          ],
-                        ),
-                        TextButton(
-                          onPressed: () => context.go('/home'),
-                          child: const Text('Back to home'),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  /// Doc 120 §3 — the proposal itself. There is no proposal-detail route
-  /// in this prototype (the record only exists in the wizard that just
-  /// closed), so it opens as a sheet over the success screen rather than
-  /// a navigation into a screen that would have to invent a record.
-  void _openProposal(BuildContext context) {
-    showModalBottomSheet<void>(
-      context: context,
-      backgroundColor: context.colors.paper,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(AppRadii.sheet),
-        ),
-      ),
-      builder: (context) => SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Container(
-                  width: 38,
-                  height: 4,
-                  margin: const EdgeInsets.only(bottom: 14),
-                  decoration: BoxDecoration(
-                    color: context.colors.deepAlpha(0.15),
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-              ),
-              const EappCardTitle('Proposal'),
-              const SizedBox(height: 12),
-              // The number is the reason this sheet exists, so it is the
-              // largest thing in it and copies on tap.
-              _ProposalNoPill(proposalNo: proposalNo),
-              const SizedBox(height: 14),
-              _ReviewRow(
-                label: 'Policy Holder',
-                value: customerName.isEmpty ? 'Not set' : customerName,
-              ),
-              _ReviewRow(label: 'Product', value: productName),
-              _ReviewRow(label: 'Status', value: status.label),
-              _ReviewRow(
-                label: 'Submitted',
-                value: AppDate.dMyHm(DateTime.now()),
-              ),
-              const SizedBox(height: 16),
-              SizedBox(
-                width: double.infinity,
-                child: OutlinedButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    context.push('/e-app/tracker');
-                  },
-                  child: const Text('Track application'),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  /// Doc 120 §4 — a real share, built from what this app already ships:
-  /// SMS and email through url_launcher, plus the clipboard. No stub.
-  void _share(BuildContext context) {
-    showModalBottomSheet<void>(
-      context: context,
-      backgroundColor: context.colors.paper,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(AppRadii.sheet),
-        ),
-      ),
-      builder: (sheetContext) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 38,
-              height: 4,
-              margin: const EdgeInsets.only(top: 8, bottom: 10),
-              decoration: BoxDecoration(
-                color: context.colors.deepAlpha(0.15),
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.fromLTRB(20, 0, 20, 6),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: EappCardTitle('Share proposal'),
-              ),
-            ),
-            _ShareTile(
-              icon: Icons.sms_outlined,
-              label: 'Send by SMS',
-              onTap: () {
-                Navigator.pop(sheetContext);
-                launchUrl(
-                  Uri(scheme: 'sms', queryParameters: {'body': _shareText}),
-                  mode: LaunchMode.externalApplication,
-                );
-              },
-            ),
-            _ShareTile(
-              icon: Icons.mail_outline,
-              label: 'Send by email',
-              onTap: () {
-                Navigator.pop(sheetContext);
-                launchUrl(
-                  Uri(
-                    scheme: 'mailto',
-                    queryParameters: {
-                      'subject': 'KBZ Life proposal $proposalNo',
-                      'body': _shareText,
-                    },
-                  ),
-                  mode: LaunchMode.externalApplication,
-                );
-              },
-            ),
-            _ShareTile(
-              icon: Icons.copy_all_outlined,
-              label: 'Copy proposal details',
-              onTap: () {
-                Navigator.pop(sheetContext);
-                Clipboard.setData(ClipboardData(text: _shareText));
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Proposal details copied')),
-                );
-              },
-            ),
-            const SizedBox(height: 8),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _ShareTile extends StatelessWidget {
-  const _ShareTile({
-    required this.icon,
-    required this.label,
-    required this.onTap,
-  });
-  final IconData icon;
-  final String label;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      // Doc 124 — shared chip.
-      leading: AppIconChip(
-        icon: icon,
-        size: 38,
-        style: AppIconChipStyle.tinted,
-      ),
-      title: Text(
-        label,
-        style: TextStyle(
-          fontSize: 13.5,
-          fontWeight: FontWeight.w700,
-          color: context.colors.deep,
-        ),
-      ),
-      onTap: onTap,
-    );
-  }
-}
-
-/// Doc 120 §1 — the ring draws itself, then the tick lands inside it.
-/// The old version scaled a finished check in over 620ms, which was over
-/// before the screen had settled; this takes 1.5s and is the thing the
-/// eye follows on arrival.
-class _SuccessCheck extends StatefulWidget {
-  const _SuccessCheck();
-
-  @override
-  State<_SuccessCheck> createState() => _SuccessCheckState();
-}
-
-class _SuccessCheckState extends State<_SuccessCheck>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _c = AnimationController(
-    vsync: this,
-    duration: const Duration(milliseconds: 1500),
-  )..forward();
-
-  @override
-  void dispose() {
-    _c.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 116,
-      height: 116,
-      child: AnimatedBuilder(
-        animation: _c,
-        builder: (context, _) => CustomPaint(
-          painter: _CheckPainter(
-            context: context,
-            ring: Curves.easeOutCubic.transform(
-              (_c.value / 0.55).clamp(0.0, 1.0),
-            ),
-            tick: Curves.easeOutCubic.transform(
-              ((_c.value - 0.5) / 0.5).clamp(0.0, 1.0),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _CheckPainter extends CustomPainter {
-  const _CheckPainter({
-    required this.ring,
-    required this.tick,
-    required this.context,
-  });
-  final double ring;
-  final double tick;
-  final BuildContext context;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = context.colors.mint
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 5
-      ..strokeCap = StrokeCap.round
-      ..strokeJoin = StrokeJoin.round;
-
-    final rect = Offset.zero & size;
-    canvas.drawArc(rect.deflate(3), -pi / 2, 2 * pi * ring, false, paint);
-
-    if (tick <= 0) return;
-    // Two segments of the tick, drawn in order and clipped by [tick].
-    final a = Offset(size.width * 0.29, size.height * 0.52);
-    final b = Offset(size.width * 0.44, size.height * 0.67);
-    final c = Offset(size.width * 0.72, size.height * 0.37);
-    final path = Path()..moveTo(a.dx, a.dy);
-    const split = 0.38; // share of the tick length in the short leg
-    if (tick <= split) {
-      final t = tick / split;
-      path.lineTo(a.dx + (b.dx - a.dx) * t, a.dy + (b.dy - a.dy) * t);
-    } else {
-      final t = (tick - split) / (1 - split);
-      path.lineTo(b.dx, b.dy);
-      path.lineTo(b.dx + (c.dx - b.dx) * t, b.dy + (c.dy - b.dy) * t);
-    }
-    canvas.drawPath(path, paint..strokeWidth = 6);
-  }
-
-  @override
-  bool shouldRepaint(_CheckPainter old) => old.ring != ring || old.tick != tick;
-}
-
-/// Doc 119 §2 — the proposal number, sized to be read across a desk and
-/// tappable to copy. Doc 120 §2 moved it off the success screen and into
-/// the Proposal sheet, which is where someone goes looking for it.
-class _ProposalNoPill extends StatelessWidget {
-  const _ProposalNoPill({required this.proposalNo});
-  final String proposalNo;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: context.colors.primaryColor.withValues(alpha: 0.08),
-      shape: StadiumBorder(
-        side: BorderSide(
-          color: context.colors.primaryColor.withValues(alpha: 0.35),
-        ),
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: () {
-          Clipboard.setData(ClipboardData(text: proposalNo));
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Proposal no $proposalNo copied')),
-          );
-        },
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(18, 10, 14, 10),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'PROPOSAL NO',
-                    style: TextStyle(
-                      fontSize: 9,
-                      letterSpacing: 0.8,
-                      fontWeight: FontWeight.w800,
-                      color: context.colors.primaryColor.withValues(
-                        alpha: 0.75,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 1),
-                  Text(
-                    proposalNo,
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w800,
-                      color: context.colors.baltic,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(width: 10),
-              Icon(
-                Icons.copy_outlined,
-                size: context.iconBase,
-                color: context.colors.primaryColor.withValues(alpha: 0.8),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// Doc 119 §3 — Proposal → Underwriting → Payment → Policy. Stages behind
-/// the current one are solid, the one ahead is dashed: the file has not
-/// travelled that link yet, and a dashed line says so without a caption.
-class _JourneyTracker extends StatelessWidget {
-  const _JourneyTracker({required this.stage, this.onTapProposal});
-
-  /// 0-based index of the stage the application is sitting in.
-  final int stage;
-
-  /// Doc 120 §3 — the Proposal stage is done, and it is also the door
-  /// back to what was submitted. Only that stage is tappable; the ones
-  /// ahead have nothing behind them yet.
-  final VoidCallback? onTapProposal;
-
-  static const _labels = ['Proposal', 'Underwriting', 'Payment', 'Policy'];
-
-  @override
-  Widget build(BuildContext context) {
-    final row = Row(
-      children: [
-        for (var i = 0; i < _labels.length; i++) ...[
-          if (i == 0 && onTapProposal != null)
-            InkWell(
-              onTap: onTapProposal,
-              customBorder: const CircleBorder(),
-              child: _JourneyDot(index: i, stage: stage),
-            )
-          else
-            _JourneyDot(index: i, stage: stage),
-          if (i != _labels.length - 1)
-            Expanded(
-              child: _JourneyLink(done: i < stage, dashed: i >= stage),
-            ),
-        ],
-      ],
-    );
-
-    final labels = Row(
-      children: [
-        for (var i = 0; i < _labels.length; i++)
-          Expanded(
-            child: InkWell(
-              onTap: i == 0 ? onTapProposal : null,
-              borderRadius: BorderRadius.circular(8),
-              child: Column(
-                children: [
-                  Text(
-                    _labels[i],
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 10.5,
-                      fontWeight: i <= stage
-                          ? FontWeight.w800
-                          : FontWeight.w500,
-                      color: i <= stage
-                          ? context.colors.deep
-                          : context.colors.deepAlpha(0.4),
-                    ),
-                  ),
-                  // The one tappable stage says so, rather than hiding a
-                  // link behind an unmarked dot.
-                  if (i == 0 && onTapProposal != null)
-                    Text(
-                      'View',
-                      style: TextStyle(
-                        fontSize: 9.5,
-                        fontWeight: FontWeight.w800,
-                        color: context.colors.primaryColor.withValues(
-                          alpha: 0.9,
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-            ),
-          ),
-      ],
-    );
-
-    return Column(children: [row, const SizedBox(height: 8), labels]);
-  }
-}
-
-class _JourneyDot extends StatelessWidget {
-  const _JourneyDot({required this.index, required this.stage});
-  final int index;
-  final int stage;
-
-  @override
-  Widget build(BuildContext context) {
-    final done = index < stage;
-    final current = index == stage;
-    return Container(
-      width: 28,
-      height: 28,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: done
-            ? context.colors.mint
-            : current
-            ? context.colors.primaryColor
-            : context.colors.primaryColor.withValues(alpha: 0.10),
-        // The current stage carries a halo so it reads as "here" rather
-        // than just another filled dot.
-        border: current
-            ? Border.all(
-                color: context.colors.primaryColor.withValues(alpha: 0.25),
-                width: 3,
-              )
-            : null,
-      ),
-      child: done
-          ? Icon(Icons.check, size: context.iconBase, color: Colors.white)
-          : Text(
-              '${index + 1}',
-              style: TextStyle(
-                fontSize: 11.5,
-                fontWeight: FontWeight.w800,
-                color: current ? Colors.white : context.colors.primaryColor,
-              ),
-            ),
-    );
-  }
-}
-
-class _JourneyLink extends StatelessWidget {
-  const _JourneyLink({required this.done, required this.dashed});
-  final bool done;
-  final bool dashed;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 2,
-      child: CustomPaint(
-        painter: _LinkPainter(
-          color: done
-              ? context.colors.primaryColor
-              : context.colors.deepAlpha(0.18),
-          dashed: dashed,
-        ),
-      ),
-    );
-  }
-}
-
-class _LinkPainter extends CustomPainter {
-  const _LinkPainter({required this.color, required this.dashed});
-  final Color color;
-  final bool dashed;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..strokeWidth = 2
-      ..strokeCap = StrokeCap.round;
-    final y = size.height / 2;
-    if (!dashed) {
-      canvas.drawLine(Offset(0, y), Offset(size.width, y), paint);
-      return;
-    }
-    const dash = 5.0;
-    const gap = 4.0;
-    var x = 0.0;
-    while (x < size.width) {
-      canvas.drawLine(
-        Offset(x, y),
-        Offset((x + dash).clamp(0, size.width), y),
-        paint,
-      );
-      x += dash + gap;
-    }
-  }
-
-  @override
-  bool shouldRepaint(_LinkPainter old) =>
-      old.color != color || old.dashed != dashed;
-}
-
-class _CircleIconButton extends StatelessWidget {
-  const _CircleIconButton({
-    required this.icon,
-    required this.tooltip,
-    required this.onTap,
-  });
-  final IconData icon;
-  final String tooltip;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Tooltip(
-      message: tooltip,
-      child: Material(
-        color: context.colors.primaryColor.withValues(alpha: 0.10),
-        shape: const CircleBorder(),
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: onTap,
-          child: SizedBox(
-            width: 48,
-            height: 48,
-            child: Icon(
-              icon,
-              size: context.iconBase,
-              color: context.colors.primaryColor,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// Doc 120 §1 — confetti that actually falls. Each piece has its own
-/// delay, drop distance and spin over a 2.6s run, so the celebration is
-/// something the FA watches rather than something already finished by the
-/// time the screen settles. The seed is constant, so the layout does not
-/// reshuffle on rebuild.
-class _Confetti extends StatefulWidget {
-  const _Confetti();
-
-  @override
-  State<_Confetti> createState() => _ConfettiState();
-}
-
-class _ConfettiState extends State<_Confetti>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _c = AnimationController(
-    vsync: this,
-    duration: const Duration(milliseconds: 2600),
-  )..forward();
-
-  @override
-  void dispose() {
-    _c.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _c,
-      builder: (context, _) => CustomPaint(
-        painter: _ConfettiPainter(progress: _c.value, context: context),
-      ),
-    );
-  }
-}
-
-class _ConfettiPainter extends CustomPainter {
-  const _ConfettiPainter({required this.progress, required this.context});
-
-  /// 0 → 1 across the whole run.
-  final double progress;
-  final BuildContext context;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final palette = [
-      context.colors.mint,
-      context.colors.primaryColor,
-      context.colors.warn,
-      context.colors.danger,
-      context.colors.primaryColor,
-    ];
-
-    final random = Random(7);
-    for (var i = 0; i < 46; i++) {
-      final x = random.nextDouble() * size.width;
-      final restY = random.nextDouble() * size.height;
-      final color = palette[random.nextInt(palette.length)];
-      final angle = random.nextDouble() * pi;
-      final spin = (random.nextDouble() - 0.5) * 4;
-      final long = 5.0 + random.nextDouble() * 9;
-      final round = random.nextBool();
-      final delay = random.nextDouble() * 0.45;
-
-      // Each piece runs its own 0→1 inside the shared clock.
-      final t = ((progress - delay) / (1 - delay)).clamp(0.0, 1.0);
-      if (t <= 0) continue;
-      final eased = Curves.easeOutQuad.transform(t);
-
-      // Falls from above the top edge to its resting place, drifting
-      // sideways a little on the way down.
-      final y = -40 + (restY + 40) * eased;
-      final drift = sin(eased * pi) * 14 * (round ? 1 : -1);
-      // Pieces lower down fade first, so the field thins towards the
-      // content below instead of ending in a hard line.
-      final fade = (1 - restY / size.height).clamp(0.25, 1.0);
-      final paint = Paint()..color = color.withValues(alpha: 0.55 * fade * t);
-
-      canvas.save();
-      canvas.translate(x + drift, y);
-      canvas.rotate(angle + spin * eased);
-      if (round) {
-        canvas.drawCircle(Offset.zero, 2.5 + random.nextDouble() * 2, paint);
-      } else {
-        canvas.drawRRect(
-          RRect.fromRectAndRadius(
-            Rect.fromCenter(center: Offset.zero, width: long, height: 4),
-            const Radius.circular(2),
-          ),
-          paint,
-        );
-      }
-      canvas.restore();
-    }
-  }
-
-  @override
-  bool shouldRepaint(_ConfettiPainter old) => old.progress != progress;
 }
