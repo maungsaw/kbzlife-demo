@@ -15,9 +15,7 @@ class TeamStructureTabPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final rawTeamList = node.directTeam.isNotEmpty
-        ? node.directTeam
-        : node.indirectTeam;
+    final rawTeamList = node.directTeam;
 
     final teamList = rawTeamList.where((m) => m.role != UserRole.dm).toList();
 
@@ -34,7 +32,7 @@ class TeamStructureTabPage extends StatelessWidget {
 
   Widget _buildManagerCard(HierarchyNodeModel manager) {
     final subordinates = manager.directTeam
-        .where((sub) => sub.role != UserRole.dm)
+        .where((sub) => sub.role == UserRole.dm)
         .toList();
     final metrics = manager.metrics;
 

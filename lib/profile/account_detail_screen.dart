@@ -93,12 +93,14 @@ class AccountDetailScreen extends ConsumerWidget {
                   FontAwesomeIcons.idBadge,
                   'License No.',
                   agentData.agentCode,
-                  context.colors.primaryColor,
+                  context,
+                  context.colors.baltic,
                 ),
                 _buildInfoTile(
                   FontAwesomeIcons.mobileScreen,
                   'Phone',
                   agentData.phone,
+                  context,
                   context.colors.mint,
                   onTap: () => launchUrl(Uri.parse('tel:${agentData.phone}')),
                 ),
@@ -106,6 +108,7 @@ class AccountDetailScreen extends ConsumerWidget {
                   FontAwesomeIcons.envelope,
                   'Email',
                   agentData.email,
+                  context,
                   context.colors.deep,
                   onTap: () =>
                       launchUrl(Uri.parse('mailto:${agentData.email}')),
@@ -114,7 +117,10 @@ class AccountDetailScreen extends ConsumerWidget {
                   FontAwesomeIcons.buildingColumns,
                   'Branch',
                   agentData.branchName,
+
+                  context,
                   context.colors.warn,
+
                   showDivider: false,
                 ),
               ],
@@ -144,6 +150,7 @@ class AccountDetailScreen extends ConsumerWidget {
                   FontAwesomeIcons.userTie,
                   'Supervisor',
                   agentData.supervisorName,
+                  context,
                   context.colors.danger,
                   showDivider: false,
                 ),
@@ -164,6 +171,7 @@ class AccountDetailScreen extends ConsumerWidget {
     FaIconData icon,
     String label,
     String value,
+    BuildContext context,
     Color color, {
     VoidCallback? onTap,
     bool showDivider = true,
@@ -171,7 +179,7 @@ class AccountDetailScreen extends ConsumerWidget {
     return Column(
       children: [
         Material(
-          color: Colors.white,
+          color: context.colors.paper,
           child: InkWell(
             onTap: onTap,
             child: Padding(
@@ -196,7 +204,7 @@ class AccountDetailScreen extends ConsumerWidget {
                           label,
                           style: TextStyle(
                             fontSize: 12,
-                            color: kAppColors.muted,
+                            color: context.colors.muted,
                           ),
                         ),
                         const SizedBox(height: 2),
@@ -205,7 +213,7 @@ class AccountDetailScreen extends ConsumerWidget {
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
-                            color: kAppColors.accentNavy,
+                            color: context.colors.accentNavy,
                           ),
                         ),
                       ],
@@ -215,7 +223,7 @@ class AccountDetailScreen extends ConsumerWidget {
                     FaIcon(
                       FontAwesomeIcons.chevronRight,
                       size: 10,
-                      color: kAppColors.border,
+                      color: context.colors.border,
                     ),
                 ],
               ),
@@ -223,7 +231,10 @@ class AccountDetailScreen extends ConsumerWidget {
           ),
         ),
         if (showDivider)
-          Divider(height: 1, color: kAppColors.border.withValues(alpha: 0.5)),
+          Divider(
+            height: 1,
+            color: context.colors.border.withValues(alpha: 0.5),
+          ),
       ],
     );
   }

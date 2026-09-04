@@ -191,7 +191,7 @@ class _CreateTaskScreenState extends ConsumerState<CreateTaskScreen> {
                 const SizedBox(height: 8),
                 _buildPriorityDropdown(),
                 const SizedBox(height: 16),
-                _buildFieldLabel('Status', isRequired: true),
+                //_buildFieldLabel('Status', isRequired: true),
                 const SizedBox(height: 8),
                 _buildCustomDropdown(
                   value: _status,
@@ -470,7 +470,11 @@ class _CreateTaskScreenState extends ConsumerState<CreateTaskScreen> {
             ),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-              child: Icon(Icons.add, size: context.iconLg, color: context.colors.primaryColor),
+              child: Icon(
+                Icons.add,
+                size: context.iconLg,
+                color: context.colors.primaryColor,
+              ),
             ),
           ],
         ),

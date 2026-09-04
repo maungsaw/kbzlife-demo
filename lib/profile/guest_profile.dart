@@ -37,11 +37,15 @@ class GuestProfileScreen extends StatelessWidget {
                         Container(
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            border: Border.all(color: context.colors.border, width: 3),
+                            border: Border.all(
+                              color: context.colors.border,
+                              width: 3,
+                            ),
                           ),
                           child: CircleAvatar(
                             radius: 45,
-                            backgroundColor: context.colors.primaryColor.withValues(alpha: 0.1),
+                            backgroundColor: context.colors.primaryColor
+                                .withValues(alpha: 0.1),
                             child: Icon(
                               Icons.person_outline_rounded,
                               size: 45,
@@ -75,13 +79,19 @@ class GuestProfileScreen extends StatelessWidget {
                         vertical: 4,
                       ),
                       decoration: BoxDecoration(
-                        color: context.colors.primaryColor.withValues(alpha: 0.08),
+                        color: context.colors.primaryColor.withValues(
+                          alpha: 0.08,
+                        ),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Icons.circle, size: 8, color: Colors.orange.shade400),
+                          Icon(
+                            Icons.circle,
+                            size: 8,
+                            color: Colors.orange.shade400,
+                          ),
                           const SizedBox(width: 6),
                           Text(
                             'Guest Mode',
@@ -173,12 +183,14 @@ class GuestProfileScreen extends StatelessWidget {
                         iconColor: context.colors.emeraldAccent,
                         iconBg: context.colors.emeraldLight,
                         title: 'Language',
+                        context: context,
                       ),
                       _buildIOSSettingTile(
                         icon: Icons.help_outline_rounded,
                         iconColor: context.colors.purpleAccent,
                         iconBg: context.colors.purpleLight,
                         title: 'Help & Support',
+                        context: context,
                       ),
                       _buildIOSSettingTile(
                         icon: Icons.info_outline_rounded,
@@ -186,6 +198,7 @@ class GuestProfileScreen extends StatelessWidget {
                         iconBg: context.colors.chipBg,
                         title: 'About',
                         showDivider: false,
+                        context: context,
                       ),
                     ]),
                   ],
@@ -202,16 +215,22 @@ class GuestProfileScreen extends StatelessWidget {
                       child: ElevatedButton.icon(
                         icon: Icon(Icons.login_rounded, size: context.iconLg),
                         label: const Text('Sign In'),
-                        onPressed: onLogin ?? () => context.push(RoutePaths.login),
+                        onPressed:
+                            onLogin ?? () => context.push(RoutePaths.login),
                       ),
                     ),
                     const SizedBox(height: 10),
                     SizedBox(
                       width: double.infinity,
                       child: OutlinedButton.icon(
-                        icon: Icon(Icons.person_add_outlined, size: context.iconLg),
+                        icon: Icon(
+                          Icons.person_add_outlined,
+                          size: context.iconLg,
+                        ),
                         label: const Text('Create Account'),
-                        onPressed: onRegister ?? () => context.push(RoutePaths.register),
+                        onPressed:
+                            onRegister ??
+                            () => context.push(RoutePaths.register),
                         style: OutlinedButton.styleFrom(
                           foregroundColor: context.colors.primaryColor,
                           side: BorderSide(color: context.colors.primaryColor),
@@ -283,6 +302,7 @@ class GuestProfileScreen extends StatelessWidget {
     VoidCallback? onTap,
     Widget? trailing,
     bool showDivider = true,
+    required BuildContext context,
   }) {
     return Column(
       children: [
@@ -310,7 +330,7 @@ class GuestProfileScreen extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w400,
-                        color: kAppColors.textPrimary,
+                        color: context.colors.textPrimary,
                       ),
                     ),
                   ),
@@ -320,7 +340,7 @@ class GuestProfileScreen extends StatelessWidget {
                     Icon(
                       Icons.chevron_right_rounded,
                       size: 20,
-                      color: kAppColors.divider,
+                      color: context.colors.divider,
                     ),
                 ],
               ),
@@ -328,7 +348,7 @@ class GuestProfileScreen extends StatelessWidget {
           ),
         ),
         if (showDivider)
-          Divider(height: 1, indent: 62, color: kAppColors.divider),
+          Divider(height: 1, indent: 62, color: context.colors.divider),
       ],
     );
   }

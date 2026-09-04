@@ -181,170 +181,186 @@ class _OtpBottomSheetState extends ConsumerState<OtpBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(
-        bottom: MediaQuery.of(context).viewInsets.bottom + 20,
-        top: 20,
-        left: 20,
-        right: 20,
-      ),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      child: SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: context.colors.border,
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              widget.title,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: context.colors.accentNavy,
-              ),
-            ),
-            const SizedBox(height: 6),
-            Text(
-              '${widget.description} Sent to ${widget.phoneNumber}',
-              style: TextStyle(fontSize: 12, color: context.colors.muted),
-            ),
-            const SizedBox(height: 24),
-
-            // OTP Fields
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: List.generate(widget.maxLength, (index) {
-                return SizedBox(
-                  width: 44,
-                  height: 52,
-                  child: KeyboardListener(
-                    focusNode: FocusNode(),
-                    onKeyEvent: (event) {
-                      if (event is KeyDownEvent &&
-                          event.logicalKey == LogicalKeyboardKey.backspace &&
-                          _controllers[index].text.isEmpty &&
-                          index > 0) {
-                        _controllers[index - 1].clear();
-                        _focusNodes[index - 1].requestFocus();
-                      }
-                    },
-                    child: TextFormField(
-                      controller: _controllers[index],
-                      focusNode: _focusNodes[index],
-                      autofocus: index == 0,
-                      keyboardType: TextInputType.number,
-                      textAlign: TextAlign.center,
-                      maxLength: 1,
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: context.colors.accentNavy,
-                      ),
-                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                      decoration: InputDecoration(
-                        counterText: '',
-                        contentPadding: EdgeInsets.zero,
-                        filled: true,
-                        fillColor: context.colors.surfaceBg,
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(color: context.colors.border),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(
-                            color: context.colors.primaryColor,
-                            width: 2,
-                          ),
-                        ),
-                      ),
-                      onChanged: (val) {
-                        if (val.isNotEmpty) {
-                          _onDigitEntered(index, val);
-                        } else {
-                          _onDigitDeleted(index);
-                        }
-                      },
+    return FractionallySizedBox(
+      heightFactor:
+          0.9, // Takes up 90% of screen height (or use 1.0 for absolute full screen)
+      child: Container(
+        padding: EdgeInsets.only(
+          // Keeps bottom sheet clear of keyboard inset plus safety margins
+          bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+          top: 14,
+          left: 24,
+          right: 24,
+        ),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        child: SafeArea(
+          // Wrapped in SingleChildScrollView to prevent overflow when keyboard appears
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 48,
+                    height: 5,
+                    decoration: BoxDecoration(
+                      color: context.colors.border,
+                      borderRadius: BorderRadius.circular(3),
                     ),
                   ),
-                );
-              }),
-            ),
-            const SizedBox(height: 24),
-
-            // Timer & Resend
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  _canResend
-                      ? "Didn't receive the code?"
-                      : 'Resend code in ${_startSeconds.toString().padLeft(2, '0')}s',
-                  style: TextStyle(fontSize: 12, color: context.colors.muted),
                 ),
-                GestureDetector(
-                  onTap: _canResend ? _resendOtp : null,
-                  child: Text(
-                    'Resend OTP (${widget.resendLimit - _otpRequestCount} left)',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: _canResend
-                          ? context.colors.primaryColor
-                          : context.colors.muted,
+                const SizedBox(height: 16),
+                Text(
+                  widget.title,
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: context.colors.accentNavy,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  '${widget.description} Sent to ${widget.phoneNumber}',
+                  style: TextStyle(fontSize: 13, color: context.colors.muted),
+                ),
+                const SizedBox(height: 20),
+
+                // OTP Fields
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: List.generate(widget.maxLength, (index) {
+                    return SizedBox(
+                      width: 46,
+                      height: 52,
+                      child: KeyboardListener(
+                        focusNode: FocusNode(),
+                        onKeyEvent: (event) {
+                          if (event is KeyDownEvent &&
+                              event.logicalKey ==
+                                  LogicalKeyboardKey.backspace &&
+                              _controllers[index].text.isEmpty &&
+                              index > 0) {
+                            _controllers[index - 1].clear();
+                            _focusNodes[index - 1].requestFocus();
+                          }
+                        },
+                        child: TextFormField(
+                          controller: _controllers[index],
+                          focusNode: _focusNodes[index],
+                          autofocus: index == 0,
+                          keyboardType: TextInputType.number,
+                          textAlign: TextAlign.center,
+                          maxLength: 1,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: context.colors.accentNavy,
+                          ),
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
+                          decoration: InputDecoration(
+                            counterText: '',
+                            contentPadding: EdgeInsets.zero,
+                            filled: true,
+                            fillColor: context.colors.surfaceBg,
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: BorderSide(
+                                color: context.colors.border,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: BorderSide(
+                                color: context.colors.primaryColor,
+                                width: 2,
+                              ),
+                            ),
+                          ),
+                          onChanged: (val) {
+                            if (val.isNotEmpty) {
+                              _onDigitEntered(index, val);
+                            } else {
+                              _onDigitDeleted(index);
+                            }
+                          },
+                        ),
+                      ),
+                    );
+                  }),
+                ),
+                const SizedBox(height: 20),
+
+                // Timer & Resend
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      _canResend
+                          ? "Didn't receive the code?"
+                          : 'Resend code in ${_startSeconds.toString().padLeft(2, '0')}s',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: context.colors.muted,
+                      ),
                     ),
+                    GestureDetector(
+                      onTap: _canResend ? _resendOtp : null,
+                      child: Text(
+                        'Resend OTP (${widget.resendLimit - _otpRequestCount} left)',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: _canResend
+                              ? context.colors.primaryColor
+                              : context.colors.muted,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+
+                // Verify Button
+                SizedBox(
+                  width: double.infinity,
+                  height: 48,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: context.colors.primaryColor,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    onPressed: _isVerifying ? null : _verifyOtpCode,
+                    child: _isVerifying
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
+                        : const Text(
+                            'Verify Code',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 24),
-
-            // Verify Button
-            SizedBox(
-              width: double.infinity,
-              height: 48,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: context.colors.primaryColor,
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                onPressed: _isVerifying ? null : _verifyOtpCode,
-                child: _isVerifying
-                    ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: Colors.white,
-                        ),
-                      )
-                    : const Text(
-                        'Verify Code',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );

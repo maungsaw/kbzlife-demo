@@ -1,8 +1,8 @@
-import 'package:demo_ui/widgets/tab_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../const.dart';
+import '../widgets/pill_tabs.dart';
 import 'data.dart';
 import 'overview.dart';
 import 'team_structure.dart';
@@ -14,11 +14,9 @@ class PolicyListScreen extends ConsumerStatefulWidget {
   ConsumerState<PolicyListScreen> createState() => _PolicyListScreenState();
 }
 
-class _PolicyListScreenState extends ConsumerState<PolicyListScreen>
-    with TickerProviderStateMixin {
+class _PolicyListScreenState extends ConsumerState<PolicyListScreen> {
   final PolicyRepository _repository = PolicyRepository();
   final List<CRMUser> _navigationStack = [];
-  TabController? _tabController;
 
   bool _isLoading = true;
   List<PolicyModel> _allPolicies = [];
@@ -31,9 +29,9 @@ class _PolicyListScreenState extends ConsumerState<PolicyListScreen>
   }
 
   @override
-  void dispose() {
-    _tabController?.dispose();
-    super.dispose();
+  void initState() {
+    super.initState();
+    _initData();
   }
 
   Future<void> _initData() async {
@@ -44,20 +42,12 @@ class _PolicyListScreenState extends ConsumerState<PolicyListScreen>
       _navigationStack.add(rootUser);
       _allPolicies = policies;
       _isLoading = false;
-      _updateTabController();
     }
-  }
-
-  void _updateTabController() {
-    _tabController?.dispose();
-    final tabCount = _hasTeamMembers ? 2 : 1;
-    _tabController = TabController(length: tabCount, vsync: this);
   }
 
   void _pushUser(CRMUser user) {
     setState(() {
       _navigationStack.add(user);
-      _updateTabController();
     });
   }
 
@@ -65,15 +55,8 @@ class _PolicyListScreenState extends ConsumerState<PolicyListScreen>
     if (_navigationStack.length > 1) {
       setState(() {
         _navigationStack.removeLast();
-        _updateTabController();
       });
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _initData();
   }
 
   @override
@@ -123,30 +106,37 @@ class _PolicyListScreenState extends ConsumerState<PolicyListScreen>
             _buildBreadcrumbs(),
             Expanded(
               child: showTeamTab == false
-                  ? OverviewPage(
-                      currentUser: _currentUser,
-                      data: _allPolicies,
-                      repository: _repository,
+                  ? Padding(
+                      padding: const .all(8.0),
+                      child: OverviewPage(
+                        currentUser: _currentUser,
+                        data: _allPolicies,
+                        repository: _repository,
+                      ),
                     )
-                  : CustomTabView(
-                      controller: _tabController,
-                      tabs: [
-                        const TabItemData(label: 'Overview'),
-                        const TabItemData(label: 'Team Hierarchy'),
-                      ],
-                      tabViews: [
-                        OverviewPage(
-                          currentUser: _currentUser,
-                          data: _allPolicies,
-                          repository: _repository,
-                        ),
-                        TeamStructurePage(
-                          currentUser: _currentUser,
-                          allPolicies: _allPolicies,
-                          repository: _repository,
-                          onPushUser: _pushUser,
-                        ),
-                      ],
+                  : Padding(
+                      padding: const .all(8.0),
+                      child: PillTabs(
+                        tabs: [
+                          PillTab(
+                            label: 'Overview',
+                            child: OverviewPage(
+                              currentUser: _currentUser,
+                              data: _allPolicies,
+                              repository: _repository,
+                            ),
+                          ),
+                          PillTab(
+                            label: 'Team Hierarchy',
+                            child: TeamStructurePage(
+                              currentUser: _currentUser,
+                              allPolicies: _allPolicies,
+                              repository: _repository,
+                              onPushUser: _pushUser,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
             ),
           ],
@@ -179,7 +169,6 @@ class _PolicyListScreenState extends ConsumerState<PolicyListScreen>
                               index + 1,
                               _navigationStack.length,
                             );
-                            _updateTabController();
                           });
                         },
                   child: Padding(
@@ -190,7 +179,9 @@ class _PolicyListScreenState extends ConsumerState<PolicyListScreen>
                     child: Text(
                       user.name,
                       style: TextStyle(
-                        color: isLast ? context.colors.primaryColor : Colors.grey,
+                        color: isLast
+                            ? context.colors.primaryColor
+                            : Colors.grey,
                         fontSize: 11,
                         fontWeight: isLast ? FontWeight.bold : FontWeight.w500,
                       ),

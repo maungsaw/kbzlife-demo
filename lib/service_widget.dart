@@ -298,7 +298,7 @@ class _ServiceTileState extends ConsumerState<_ServiceTile> {
         scale: _isPressed ? 0.94 : 1.0,
         duration: const Duration(milliseconds: 100),
         child: AnimatedOpacity(
-          opacity: widget.isLocked ? 0.55 : 1.0,
+          opacity: widget.isLocked ? .8 : 1.0,
           duration: const Duration(milliseconds: 150),
           child: LayoutBuilder(
             builder: (context, constraints) {
@@ -322,9 +322,7 @@ class _ServiceTileState extends ConsumerState<_ServiceTile> {
                           child: Container(
                             decoration: BoxDecoration(
                               color: context.colors.primaryColor,
-                              borderRadius: BorderRadius.circular(
-                                containerSize * 0.50,
-                              ),
+                              borderRadius: .circular(containerSize * 0.50),
                             ),
                             child: Center(
                               child: Icon(
@@ -340,21 +338,19 @@ class _ServiceTileState extends ConsumerState<_ServiceTile> {
                             top: -2,
                             right: -2,
                             child: Container(
-                              padding: const EdgeInsets.all(4),
+                              padding: const .all(4),
                               decoration: BoxDecoration(
-                                color: context.colors.primaryColor.withValues(
-                                  alpha: 0.5,
-                                ),
+                                color: context.colors.warningText,
                                 shape: BoxShape.circle,
                                 border: Border.all(
-                                  color: Colors.white,
+                                  color: context.colors.warningText,
                                   width: 1.5,
                                 ),
                               ),
                               child: Icon(
                                 Icons.lock_rounded,
                                 size: lockIconSize,
-                                color: Colors.white,
+                                color: context.colors.paper,
                               ),
                             ),
                           ),
@@ -364,12 +360,12 @@ class _ServiceTileState extends ConsumerState<_ServiceTile> {
                   const SizedBox(height: 4),
                   Text(
                     widget.service.title,
-                    textAlign: TextAlign.center,
+                    textAlign: .center,
                     maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                    overflow: .ellipsis,
                     style: TextStyle(
                       fontSize: 11,
-                      fontWeight: FontWeight.w600,
+                      fontWeight: .w600,
                       color: context.colors.textSecondary,
                       letterSpacing: -0.2,
                     ),
